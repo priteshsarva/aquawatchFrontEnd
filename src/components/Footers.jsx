@@ -1,4 +1,5 @@
 import React from 'react'
+import ContactUsImg from '../assets/ContactUsImg.jpg'
 
 const Footers = () => {
   return (
@@ -73,9 +74,9 @@ const Footers = () => {
     </h2>
   </div>
 
-  <div className="grid grid-cols-1 lg:grid-cols-2 lg:items-center gap-6 md:gap-8 lg:gap-12">
-    <div className="aspect-w-16 aspect-h-6 lg:aspect-h-14 overflow-hidden bg-gray-100 rounded-2xl">
-      <img className="group-hover:scale-105 group-focus:scale-105 transition-transform duration-500 ease-in-out object-cover rounded-2xl" src="https://images.unsplash.com/photo-1572021335469-31706a17aaef?q=80&w=560&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Contacts Image" />
+  <div className="grid grid-cols-1 sm:grid-cols-2 lg:items-center gap-6 md:gap-8 lg:gap-12">
+    <div className="aspect-w-16 aspect-h-6 lg:aspect-h-14 overflow-hidden  rounded-2xl">
+      <img className="group-hover:scale-105 group-focus:scale-105 transition-transform duration-500 ease-in-out object-cover rounded-2xl" src={ContactUsImg} alt="Contacts Image" />
     </div>
     {/* End Col */}
 

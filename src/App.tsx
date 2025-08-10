@@ -8,6 +8,8 @@ import { useLocation } from 'react-router-dom';
 import NotFound from './pages/NotFound';
 import Home from './pages/Home';
 import FaqPage from './pages/FaqPage';
+import ProductDetailPage from './pages/ProductDetailPage';
+
 import Navbar from './components/Navbar';
 import Footers from './components/Footers'
 
@@ -41,6 +43,8 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/faq" element={<FaqPage />} />
+          <Route path="/productpage" element={<ProductDetailPage />} />
+
           {/* Catch-all route for unmatched URLs */}
           <Route path="*" element={<NotFound />} />
         </Routes>
