@@ -1,21 +1,20 @@
-import React from 'react'
 import './App.css'
 import { Routes, Route } from 'react-router-dom';
 
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
-import NotFound from './pages/NotFound';
-import Home from './pages/Home';
-import FaqPage from './pages/legal/FaqPage';
-import TermsOfService from './pages/legal/TermsOfService';
-import ShippingPolicy from './pages/legal/ShippingPolicy';
-import ReturnPolicy from './pages/legal/ReturnPolicy';
-import PrivacyPolices from './pages/legal/PrivacyPolices';
-import ProductDetailPage from './pages/ProductDetailPage';
+// import NotFound from './pages/NotFound.jsx';
+import Home from './pages/Home.jsx';
+import FaqPage from './pages/legal/FaqPage.jsx';
+import TermsOfService from './pages/legal/TermsOfService.jsx';
+import ShippingPolicy from './pages/legal/ShippingPolicy.jsx';
+import ReturnPolicy from './pages/legal/ReturnPolicy.jsx';
+import PrivacyPolices from './pages/legal/PrivacyPolices.jsx';
+import ProductDetailPage from './pages/ProductDetailPage.jsx';
 
-import Navbar from './components/Navbar';
-import Footers from './components/Footers'
+import Navbar from './components/Navbar.jsx';
+import Footers from './components/Footers.jsx'
 
 
 async function loadPreline() {
