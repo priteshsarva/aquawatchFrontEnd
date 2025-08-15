@@ -7,7 +7,11 @@ import { useLocation } from 'react-router-dom';
 
 import NotFound from './pages/NotFound';
 import Home from './pages/Home';
-import FaqPage from './pages/FaqPage';
+import FaqPage from './pages/legal/FaqPage';
+import TermsOfService from './pages/legal/TermsOfService';
+import ShippingPolicy from './pages/legal/ShippingPolicy';
+import ReturnPolicy from './pages/legal/ReturnPolicy';
+import PrivacyPolices from './pages/legal/PrivacyPolices';
 import ProductDetailPage from './pages/ProductDetailPage';
 
 import Navbar from './components/Navbar';
@@ -43,10 +47,15 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/faq" element={<FaqPage />} />
+          <Route path="/PrivacyPolicy" element={<PrivacyPolices />} />
+          <Route path="/ReturnPolicy" element={<ReturnPolicy />} />
+          <Route path="/ShippingPolicy" element={<ShippingPolicy />} />
+          <Route path="/TermsOfService" element={<TermsOfService />} />
           <Route path="/productpage" element={<ProductDetailPage />} />
 
           {/* Catch-all route for unmatched URLs */}
-          <Route path="*" element={<NotFound />} />
+          <Route path="*" element={<Home />} />
+          {/* <Route path="*" element={<NotFound />} /> */}
         </Routes>
     <Footers />
 

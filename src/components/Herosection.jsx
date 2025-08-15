@@ -1,4 +1,5 @@
 import React from 'react'
+import Banner1 from '../assets/banner-1.jpg'
 
 const Herosection = () => {
     return (
@@ -11,8 +12,9 @@ const Herosection = () => {
                     <div className="hs-carousel-body absolute top-0 bottom-0 start-0 flex flex-nowrap transition-transform duration-700 opacity-0">
                         {/* Item */}
                         <div className="hs-carousel-slide">
-                            <div className="h-120 md:h-[calc(100vh-106px)]  flex flex-col bg-[url('https://images.unsplash.com/photo-1615615228002-890bb61cac6e?q=80&w=1920&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')] bg-cover bg-center bg-no-repeat">
-                                <div className="mt-auto w-2/3 md:max-w-lg ps-5 pb-5 md:ps-10 md:pb-10">
+                            <div className="h-120 md:h-[calc(100vh-106px)] flex flex-col bg-cover bg-center bg-no-repeat"
+  style={{ backgroundImage: `url(${Banner1})` }}>
+                                {/* <div className="mt-auto w-2/3 md:max-w-lg ps-5 pb-5 md:ps-10 md:pb-10">
                                     <span className="block text-white">Nike React</span>
                                     <span className="block text-white text-xl md:text-3xl">Rewriting sport's playbook for billions of athletes</span>
                                     <div className="mt-5">
@@ -20,13 +22,13 @@ const Herosection = () => {
                                             Read Case Studies
                                         </a>
                                     </div>
-                                </div>
+                                </div> */}
                             </div>
                         </div>
                         {/* End Item */}
 
                         {/* Item */}
-                        <div className="hs-carousel-slide">
+                        {/* <div className="hs-carousel-slide">
                             <div className="h-120 md:h-[calc(100vh-106px)]  flex flex-col bg-[url('https://images.unsplash.com/photo-1612287230202-1ff1d85d1bdf?q=80&w=1920&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')] bg-cover bg-center bg-no-repeat">
                                 <div className="mt-auto w-2/3 md:max-w-lg ps-5 pb-5 md:ps-10 md:pb-10">
                                     <span className="block text-white">CoolApps</span>
@@ -38,11 +40,11 @@ const Herosection = () => {
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div> */}
                         {/* End Item */}
 
                         {/* Item */}
-                        <div className="hs-carousel-slide">
+                        {/* <div className="hs-carousel-slide">
                             <div className="h-120 md:h-[calc(100vh-106px)]  flex flex-col bg-[url('https://images.unsplash.com/photo-1629666451094-8908989cae90?q=80&w=1920&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')] bg-cover bg-center bg-no-repeat">
                                 <div className="mt-auto w-2/3 md:max-w-lg ps-5 pb-5 md:ps-10 md:pb-10">
                                     <span className="block text-white">Grumpy</span>
@@ -54,7 +56,7 @@ const Herosection = () => {
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div> */}
                         {/* End Item */}
                     </div>
                 </div>
