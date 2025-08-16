@@ -6157,5 +6157,23 @@ export const products = [
   }
 ]
 
+export const category = [
+  {
+    id: 1,
+    desktopSrc: "https://i.ibb.co/QHS8Ngp/pexels-alana-sousa-3294250-1.png",
+    mobileSrc: "https://i.ibb.co/mNPBgQN/pexels-alana-sousa-3294250-1-1.png",
+    alt: "A picture of a sitting dog",
+    title: "Men's Watch",
+    link: '/menss'
+  },
+  {
+    id: 2,
+    desktopSrc: "https://i.ibb.co/T8jgRy3/pexels-leah-kelley-1449667-1.png",
+    mobileSrc: "https://i.ibb.co/YD8nNMR/pexels-leah-kelley-1449667-1-1.png",
+    alt: "Smiling Girl",
+    title: "Women Watch",
+    link: "https://watchhouse11.cartpe.in/ladies-watch.html",
+  }
+];
 
 

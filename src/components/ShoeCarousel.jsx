@@ -24,7 +24,7 @@ export default function ShoeCarousel({ productss }) {
     "45": ["45", "45/10", "45/10.5", "45/11", "45-10", "45-10.5", "45-11", "45-m11", "UK 11", "UK11", "UK-11", "UK 11 / EURO 45", "UK 11|EURO 45", "UK-11 EUR-45", "EURO 45", "Euro 45", "M-11", "m-11", "M11", "Size 45", "11", "10.5", "UK 11/EURO 45", "45/uk11/m11", "45 UK 11", "45-UK 11", "45-UK11", "Euro-45. Uk-10", "M11-45"],
     "46": ["46", "46/11", "46-11", "46-m12", "UK 12", "UK12", "UK-12", "UK 12 / EURO 47", "EURO 46", "Euro 46", "Size 46", "UK-11 EUR-46"],
     "47": ["47", "47/12", "UK 12 / EURO 47", "Size 47"]
-};
+  };
 
   const normalizeSize = (inputSize) => {
     console.log("normalized");
@@ -86,21 +86,25 @@ export default function ShoeCarousel({ productss }) {
   };
 
   return (
-   <div className="max-w-7xl mx-auto py-10 px-4">
-  <h2 className="text-2xl font-semibold text-left md:text-center mb-6 w-full">Our Best Sellers</h2>
-  
-  <Slider {...settings}>
-    {productss.map((product) => (
-      <Card
-        key={product.productId}
-        title={product.productName}
-        price={product.productOriginalPrice}
-        coverImg={product.featuredimg}
-        id={product.productId}
-      />
-    ))}
-  </Slider>
-</div>
+    <div className="max-w-7xl mx-auto pt-10 px-4">
+      <h2 className="text-2xl font-semibold text-left md:text-center mb-6 w-full">Our Best Sellers</h2>
+
+      <Slider {...settings}>
+        {productss.map((product) => (
+          <div key={product.productId}>
+            <div className="w-50 mx-3">
+              <Card
+                key={product.productId}
+                title={product.productName}
+                price={product.productOriginalPrice}
+                coverImg={product.featuredimg}
+                id={product.productId}
+              />
+            </div>
+          </div>
+        ))}
+      </Slider>
+    </div>
 
   );
 }

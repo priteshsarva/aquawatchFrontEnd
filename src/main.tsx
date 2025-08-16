@@ -22,7 +22,7 @@ window.VanillaCalendarPro = VanillaCalendarPro;
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <BrowserRouter>
+    <BrowserRouter basename="/aquawatchFrontEnd">
     <App />
     </BrowserRouter>
   </StrictMode>,
