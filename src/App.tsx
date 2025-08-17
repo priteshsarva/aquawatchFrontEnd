@@ -12,6 +12,7 @@ import ShippingPolicy from './pages/legal/ShippingPolicy.jsx';
 import ReturnPolicy from './pages/legal/ReturnPolicy.jsx';
 import PrivacyPolices from './pages/legal/PrivacyPolices.jsx';
 import ProductDetailPage from './pages/ProductDetailPage.jsx';
+import AllProducts from './pages/AllProducts.jsx';
 
 import Navbar from './components/Navbar.jsx';
 import Footers from './components/Footers.jsx'
@@ -51,6 +52,7 @@ const App = () => {
           <Route path="/ShippingPolicy" element={<ShippingPolicy />} />
           <Route path="/TermsOfService" element={<TermsOfService />} />
           <Route path="/productpage" element={<ProductDetailPage />} />
+          <Route path="/product" element={<AllProducts />} />
 
           {/* Catch-all route for unmatched URLs */}
           <Route path="*" element={<Home />} />

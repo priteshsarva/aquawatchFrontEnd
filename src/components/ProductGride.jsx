@@ -8,7 +8,7 @@ const ProductGride = ({ products }) => {
     return (
         <>
             <div className="max-w-screen-xl mx-auto px-4">
-                <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 gap-4 sm:gap-5">
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 sm:gap-5">
                     {products.products.length === 0 ? (
                         <p className="col-span-full text-center text-gray-500">No Products found</p>
                     ) : (

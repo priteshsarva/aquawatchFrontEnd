@@ -17,7 +17,8 @@ const ProductCategory = () => {
                     </p>
                 </div>
 
-                <div className="grid lg:grid-cols-2 sm:grid-cols-2 grid-cols-2 lg:gap-8 md:gap-6 gap-4 mt-10">
+                <div className="grid lg:grid-cols-4 sm:grid-cols-2 grid-cols-2 lg:gap-8 md:gap-6 gap-4 mt-10">
+                    <div class="hidden lg:block"></div>
                     {category.map((img) => (
                         <Link to={img.link} key={img.id} className="relative group aspect-[1/1.25]">
                             <img src={img.desktopSrc} alt={img.alt} className="lg:block hidden w-full h-full object-cover" />
@@ -57,6 +58,7 @@ const ProductCategory = () => {
                             </div>
                         </Link>
                     ))}
+                <div class="hidden lg:block"></div>
                 </div>
             </div>
         </>
