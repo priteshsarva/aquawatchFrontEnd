@@ -13,6 +13,7 @@ const Home = () => {
 
     return (
         <div>
+            
             <Herosection />
             <ShoeCarousel  productss={products}/>
             <ProductCategory /> 

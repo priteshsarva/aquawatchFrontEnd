@@ -99,6 +99,7 @@ export default function ShoeCarousel({ productss }) {
                 price={product.productOriginalPrice}
                 coverImg={product.featuredimg}
                 id={product.productId}
+             
               />
             </div>
           </div>

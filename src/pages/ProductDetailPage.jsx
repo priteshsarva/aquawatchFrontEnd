@@ -1,6 +1,11 @@
 import { useState } from 'react';
+import { useParams } from 'react-router-dom';
+
 
 const ProductDetailPage = () => {
+      const { id } = useParams();
+      console.log(id);
+      
     const [selectedImage, setSelectedImage] = useState(2);
     const buttons = [1, 2, 3, 4];
 

@@ -15,6 +15,7 @@ import ProductDetailPage from './pages/ProductDetailPage.jsx';
 import AllProducts from './pages/AllProducts.jsx';
 
 import Navbar from './components/Navbar.jsx';
+import NavBarWithSubmenu from './components/NavBarWithSubmenu.jsx';
 import Footers from './components/Footers.jsx'
 
 
@@ -42,7 +43,8 @@ const App = () => {
 
   return (
     <>
-        <Navbar />
+        {/* <Navbar /> */}
+        <NavBarWithSubmenu />
 
         <Routes>
           <Route path="/" element={<Home />} />
@@ -51,7 +53,7 @@ const App = () => {
           <Route path="/ReturnPolicy" element={<ReturnPolicy />} />
           <Route path="/ShippingPolicy" element={<ShippingPolicy />} />
           <Route path="/TermsOfService" element={<TermsOfService />} />
-          <Route path="/productpage" element={<ProductDetailPage />} />
+          <Route path="/productpage/:id" element={<ProductDetailPage />} />
           <Route path="/product" element={<AllProducts />} />
 
           {/* Catch-all route for unmatched URLs */}

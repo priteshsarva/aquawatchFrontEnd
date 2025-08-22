@@ -2,8 +2,11 @@ import React, { useEffect, useState } from 'react'
 import Loader from '../components/Loader';
 import ProductGride from '../components/ProductGride';
 import { useParams } from 'react-router-dom';
+import {products} from '../data/data';
+
 
 const AllProducts = () => {
+    
     
     const { searchterm, searchcategory } = useParams();
     const [products, setproducts] = useState("")
