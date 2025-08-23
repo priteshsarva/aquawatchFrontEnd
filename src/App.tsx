@@ -14,7 +14,7 @@ import PrivacyPolices from './pages/legal/PrivacyPolices.jsx';
 import ProductDetailPage from './pages/ProductDetailPage.jsx';
 import AllProducts from './pages/AllProducts.jsx';
 
-import Navbar from './components/Navbar.jsx';
+// import Navbar from './components/Navbar.jsx';
 import NavBarWithSubmenu from './components/NavBarWithSubmenu.jsx';
 import Footers from './components/Footers.jsx'
 
