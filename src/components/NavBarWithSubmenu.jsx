@@ -16,17 +16,17 @@ export default function NavBarWithSubmenu() {
 
 
     const navLinks = [
-        { name: "Rolex", url: "/rolex" },
-        { name: "Omega", url: "/omega" },
-        { name: "Patek Philippe", url: "/patek-philippe" },
-        { name: "Cartier", url: "/cartier" },
-        { name: "Audemars Piguet", url: "/audemars-piguet" },
+        { name: "Rolex", url: "/rol" },
+        { name: "Omega", url: "/omeg" },
+        { name: "Patek Philippe", url: "/patek" },
+        { name: "Cartier", url: "/cart" },
+        { name: "Audemars Piguet", url: "/audem" },
         { name: "Breitling", url: "/breitling" },
-        { name: "TAG Heuer", url: "/tag-heuer" },
-        { name: "Tissot", url: "/tissot" },
-        { name: "Seiko", url: "/seiko" },
-        { name: "Fossil", url: "/fossil" },
-        { name: "Citize", url: "/citize" },
+        { name: "TAG Heuer", url: "/tag" },
+        { name: "Tissot", url: "/tiss" },
+        { name: "Seiko", url: "/seik" },
+        { name: "Fossil", url: "/foss" },
+        { name: "Citize", url: "/citi" },
     ];
 
 
