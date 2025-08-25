@@ -5,7 +5,7 @@ const Card = ({ title, price, coverImg, id, key }) => {
     return (
         <div>
             {/* <div className="w-full h-screen flex justify-center items-center"  key={id}> */}
-            <Link to={`/productpage?id=${id}`} key={key} className=''>
+            <Link to={`/productpage/${id}`} key={key} className=''>
                
                     <div className="shadow hover:shadow-lg transition duration-300 ease-in-out xl:mb-0 lg:mb-0 md:mb-0 mb-6 cursor-pointer group">
                         <div className="overflow-hidden relative">
@@ -28,7 +28,7 @@ const Card = ({ title, price, coverImg, id, key }) => {
                                 </div> */}
                         </div>
                         <div className="px-4 py-3 bg-white">
-                            <Link to={`/productpage?id=${id}`} className=""><h1 className="text-gray-800 font-semibold text-lg hover:text-red-500 transition duration-300 ease-in-out line-clamp-2">{title}</h1></Link>
+                            <Link to={`/productpage/${id}`} className=""><h1 className="text-gray-800 font-semibold text-lg hover:text-red-500 transition duration-300 ease-in-out line-clamp-2">{title}</h1></Link>
                             <div className="flex py-2">
                                 <p className="mr-2 text-xs text-gray-600">{price}</p>
                                 <p className="mr-2 text-xs text-red-600 line-through">{price}</p>

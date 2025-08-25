@@ -21,10 +21,10 @@
 }
 
 .slick-next {
-  right: -7px;
+  /* right: -7px; */
 }
 
 .slick-prev {
-  left: -7px;
+  /* left: -7px; */
   z-index: 2;
 }

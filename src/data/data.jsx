@@ -6177,3 +6177,4 @@ export const category = [
 ];
 
 
+export const brand = "Aqua Watch"
