@@ -12,7 +12,7 @@ const baseUrl = import.meta.env.VITE_BASE_URL;
 
 const Home = () => {
 
-     let urls = `${baseUrl}/product/fetchdata`;
+     let urls = `${baseUrl}/product/firstdata`;
         fetch(urls, {
             method: 'GET',
         })

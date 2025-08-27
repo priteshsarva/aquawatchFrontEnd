@@ -160,7 +160,7 @@ export default function NavBarWithSubmenu() {
             {navLinks.map((link, index) => (
               <li key={index}>
                 <Link
-                  href={link.url}
+                  to={link.url}
                   className="block px-4 py-2 rounded-md hover:bg-gray-200 transition-colors duration-200 cursor-pointer"
                 >
                   {link.name}
@@ -184,7 +184,7 @@ export default function NavBarWithSubmenu() {
 
           {/* Center: Logo */}
           <div className="flex-1 flex justify-center md:justify-start">
-            <Link href="#" className="inline-flex items-center">
+            <Link to="/#" className="inline-flex items-center">
               <img src={logo1} alt="Logo" className="h-8 w-auto" />
             </Link>
           </div>
@@ -204,7 +204,7 @@ export default function NavBarWithSubmenu() {
           <ul className="w-full max-w-[80%] flex justify-center space-x-4 text-sm font-medium text-gray-700 text-center">
             {navLinks.map((link, index) => (
               <li key={index} className={`${index !== 0 ? 'border-l border-gray-300 pl-4' : ''}`}>
-                <Link href={link.url} className="hover:underline block">
+                <Link to={link.url} className="hover:underline block">
                   {link.name}
                 </Link>
               </li>
