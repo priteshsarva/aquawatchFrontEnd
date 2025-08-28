@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import BreadCrumbs from "../components/BreadCrumbs";
-import { Link } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import Card from "../components/Card";
 const baseUrl1 = import.meta.env.VITE_BASE_URL;
-
 
 // for brand
 // https://aquawatchserver.onrender.com/product/search?q=Adi 
@@ -19,6 +18,9 @@ const AllProductPage = () => {
     const [totalPages, setTotalPages] = useState(1);
     const [url, setUrl] = useState("");
     const [noProductFound, setNoProductFound] = useState(false);
+    const { category, brand } = useParams();
+    const navigate = useNavigate();
+
     const [selectedFilters, setSelectedFilters] = useState({
         category: "",
         brand: "",
@@ -28,7 +30,7 @@ const AllProductPage = () => {
         {
             id: "mensWatches",
             title: "Men's Watches",
-            items: ["Audemars Piguet", "Rolex"],
+            items: [],
         },
         {
             id: "Womenswatches",
@@ -42,19 +44,65 @@ const AllProductPage = () => {
         {
             id: "brandRolex",
             title: "Rolex",
-            items: ["Daytona", "Submariner"],
+            items: [],
+        },
+        // {
+        //     id: "brandFossil",
+        //     title: "Fossil",
+        //     items: ["Chronograph", "Neutra"],
+        // },
+        // {
+        //     id: "brandEmpty",
+        //     title: "Unbranded",
+        //     items: [],
+        // },
+        {
+            id: "brandOmega",
+            title: "Omega",
+            items: [],
         },
         {
-            id: "brandFossil",
-            title: "Fossil",
-            items: ["Chronograph", "Neutra"],
+            id: "brandPatekPhilippe",
+            title: "Patek Philippe",
+            items: [],
         },
         {
-            id: "brandEmpty",
-            title: "Unbranded",
+            id: "brandCartier",
+            title: "Cartier",
+            items: [],
+        },
+        {
+            id: "brandAudemarsPiguet",
+            title: "Audemars Piguet",
+            items: [],
+        },
+        {
+            id: "brandBreitling",
+            title: "Breitling",
+            items: [],
+        },
+        {
+            id: "brandTAGHeuer",
+            title: "TAG Heuer",
+            items: [],
+        },
+        {
+            id: "brandTissot",
+            title: "Tissot",
+            items: [],
+        },
+        {
+            id: "brandSeiko",
+            title: "Seiko",
+            items: [],
+        },
+        {
+            id: "brandCitizen",
+            title: "Citizen",
             items: [],
         },
     ];
+
 
     const combinedSections = [...sidebarDataCategory, ...sidebarDataBrand];
 
@@ -131,12 +179,43 @@ const AllProductPage = () => {
     }, [selectedFilters, currentPage]);
 
     const handleFilterChange = (newBrand, newCategory) => {
+        // Start with current filter values
+        let updatedBrand = selectedFilters.brand;
+        let updatedCategory = selectedFilters.category;
+
+        // If the user clicked a new brand, update it (or toggle off)
+        if (newBrand !== null) {
+            updatedBrand = selectedFilters.brand === newBrand ? "" : newBrand;
+        }
+
+        // If the user clicked a new category, update it (or toggle off)
+        if (newCategory !== null) {
+            updatedCategory = selectedFilters.category === newCategory ? "" : newCategory;
+        }
+
+        // Update state
         setSelectedFilters({
-            brand: newBrand,
-            category: newCategory,
+            brand: updatedBrand,
+            category: updatedCategory,
         });
-        setCurrentPage(1); // Reset to first page on filter change
+
+        setCurrentPage(1);
+
+        // Build URL based on updated values
+        let path = "/product";
+
+        if (updatedCategory && updatedBrand) {
+            path += `/category/${updatedCategory}/brand/${updatedBrand}`;
+        } else if (updatedCategory) {
+            path += `/category/${updatedCategory}`;
+        } else if (updatedBrand) {
+            path += `/brand/${updatedBrand}`;
+        }
+
+        navigate(path);
     };
+
+
 
     const handleLoadMore = () => {
         if (currentPage < totalPages) {
@@ -144,27 +223,41 @@ const AllProductPage = () => {
         }
     };
 
+    useEffect(() => {
+        setSelectedFilters({
+            category: category || "",
+            brand: brand || "",
+        });
+        setCurrentPage(1); // reset pagination
+    }, [category, brand]);
+
     return (
         <>
-            <BreadCrumbs />
+            {/* <BreadCrumbs selectedFilters sidebarDataBrand sidebarDataCategory/> */}
+            <BreadCrumbs
+                selectedFilters={selectedFilters}
+                sidebarDataBrand={sidebarDataBrand}
+                sidebarDataCategory={sidebarDataCategory}
+                handleFilterChange={handleFilterChange}
+            />
             <section className="grid grid-cols-12 gap-4">
                 <div className="hidden md:block md:col-span-3 p-4 border-r border-gray-200 text-sm text-gray-800">
                     <h2 className="font-bold mb-4 text-xl">Filter</h2>
                     <div className="mb-4 border-t border-gray-300 pt-2 ">
                         <h2 className="font-bold mb-4 text-lg">Category</h2>
-                        <div className="cursor-pointer hover:text-grey-600 opacity-85 hover:opacity-100">
+                        <div className="cursor-pointer">
                             {sidebarDataCategory.map(({ id, title, items }) => (
                                 <div key={id} className="pl-4 mb-4">
                                     <button
                                         onClick={() => {
-                                            setSelectedFilters((prev) => ({ ...prev, category: title }))
+                                            handleFilterChange(null, title); // Corrected
                                             toggleSection(id)
                                         }}
-                                        className="flex justify-between items-center w-full font-semibold mb-2 focus:outline-none opacity-85 hover:opacity-100"
+                                        className={`flex justify-between items-center w-full font-semibold mb-2 focus:outline-none hover:opacity-100 ${selectedFilters.category === title ? "opacity-100 font-bold text-grey-600 text-md" : "opacity-65"}`}
                                     >
                                         {title}
                                         {items.length > 0 && (
-                                            <span className="opacity-85 hover:opacity-100">
+                                            <span className="opacity-75 hover:opacity-100">
                                                 {openSections[id] ? "▲" : "▼"}
                                             </span>
                                         )}
@@ -175,9 +268,9 @@ const AllProductPage = () => {
                                             {items.map((item) => (
                                                 <li
                                                     key={item}
-                                                    className="cursor-pointer hover:text-grey-600  opacity-85 hover:opacity-100"
+                                                    className={`cursor-pointer hover:text-gray-600 hover:opacity-100 ${selectedFilters.category === item ? "opacity-100 font-semibold" : "opacity-75"}`}
                                                     onClick={() =>
-                                                        setSelectedFilters((prev) => ({ ...prev, category: item }))
+                                                        handleFilterChange(null, item)
                                                     }
                                                 >
                                                     {item}
@@ -192,19 +285,19 @@ const AllProductPage = () => {
 
                     <div className="mb-4 border-t border-gray-300 pt-2 ">
                         <h2 className="font-bold mb-4 text-lg">Brand</h2>
-                        <div className="cursor-pointer hover:text-grey-600 opacity-85 hover:opacity-100">
+                        <div className="cursor-pointer">
                             {sidebarDataBrand.map(({ id, title, items }) => (
                                 <div key={id} className="pl-4 mb-4">
                                     <button
                                         onClick={() => {
-                                            setSelectedFilters((prev) => ({ ...prev, brand: title }))
+                                            handleFilterChange(title, null)
                                             toggleSection(id)
                                         }}
-                                        className="flex justify-between items-center w-full font-semibold mb-2 focus:outline-none opacity-85 hover:opacity-100"
+                                        className={`flex justify-between items-center w-full font-semibold mb-2 focus:outline-none hover:opacity-100 ${selectedFilters.brand === title ? "opacity-100 font-bold text-grey-600 text-md" : "opacity-65"}`}
                                     >
                                         {title}
                                         {items.length > 0 && (
-                                            <span className="opacity-85 hover:opacity-100">
+                                            <span className="opacity-75 hover:opacity-100">
                                                 {openSections[id] ? "▲" : "▼"}
                                             </span>
                                         )}
@@ -215,9 +308,9 @@ const AllProductPage = () => {
                                             {items.map((item) => (
                                                 <li
                                                     key={item}
-                                                    className="cursor-pointer hover:text-grey-600  opacity-85 hover:opacity-100"
+                                                    className={`cursor-pointer hover:text-gray-600 hover:opacity-100 ${selectedFilters.brand === item ? "opacity-100 font-semibold" : "opacity-75"}`}
                                                     onClick={() =>
-                                                        setSelectedFilters((prev) => ({ ...prev, brand: item }))
+                                                        handleFilterChange(item, snull)
                                                     }
                                                 >
                                                     {item}
@@ -236,7 +329,7 @@ const AllProductPage = () => {
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4">
 
 
-                        {products.map((product) => (
+                        {products.slice(0, products.length - (products.length % 3)).map((product) => (
                             <div className="h-full flex flex-col">
                                 <Card
                                     key={product.productId}
@@ -248,8 +341,11 @@ const AllProductPage = () => {
                             </div>
                         ))}
 
-
-
+                    </div>
+                    <div className='w-full flex justify-center'>
+                        {currentPage < totalPages && (
+                            <div className="mt-6 inline-flex items-center justify-center text-gray-800 font-semibold px-4 py-2 border border-gray-300 hover:border-black transition rounded-none cursor-pointer" onClick={handleLoadMore}>Load more products...</div>
+                        )}
                     </div>
                 </div>
             </section>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import ProductGride from './ProductGride'
 import { Link } from 'react-router-dom'
 
@@ -51,7 +51,7 @@ const SingleCollection = (products) => {
                         <div className='w-full flex justify-center'>
                             <Link
                                 to="/product"
-                                className="mt-6 inline-flex items-center justify-center text-gray-800 font-semibold px-4 py-2 border border-gray-300 hover:border-black transition rounded-none"
+                                className="mt-6 inline-flex items-center justify-center text-gray-800 font-semibold px-4 py-2 border border-gray-300 hover:border-black transition rounded-none cursor-pointer"
                             >
                                 <h6 className="flex items-center gap-2 text-base font-semibold">
                                     View All Products

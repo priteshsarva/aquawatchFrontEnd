@@ -27,43 +27,53 @@ async function loadPreline() {
 const App = () => {
   const location = useLocation();
 
-  
 
-    useEffect(() => {
-        const initPreline = async () => {
-            await loadPreline();
 
-            if (
-                window.HSStaticMethods &&
-                typeof window.HSStaticMethods.autoInit === 'function'
-            ) {
-                window.HSStaticMethods.autoInit();
-            }
-        };
+  useEffect(() => {
+    const initPreline = async () => {
+      await loadPreline();
 
-        initPreline();
-    }, [location.pathname]);
+      if (
+        window.HSStaticMethods &&
+        typeof window.HSStaticMethods.autoInit === 'function'
+      ) {
+        window.HSStaticMethods.autoInit();
+      }
+    };
+
+    initPreline();
+  }, [location.pathname]);
 
   return (
     <>
-        {/* <Navbar /> */}
-        <NavBarWithSubmenu />
+      {/* <Navbar /> */}
+      <NavBarWithSubmenu />
 
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/faq" element={<FaqPage />} />
-          <Route path="/PrivacyPolicy" element={<PrivacyPolices />} />
-          <Route path="/ReturnPolicy" element={<ReturnPolicy />} />
-          <Route path="/ShippingPolicy" element={<ShippingPolicy />} />
-          <Route path="/TermsOfService" element={<TermsOfService />} />
-          <Route path="/productpage/:id" element={<ProductDetailPage />} />
-          <Route path="/product" element={<AllProductPage />} />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/faq" element={<FaqPage />} />
+        <Route path="/PrivacyPolicy" element={<PrivacyPolices />} />
+        <Route path="/ReturnPolicy" element={<ReturnPolicy />} />
+        <Route path="/ShippingPolicy" element={<ShippingPolicy />} />
+        <Route path="/TermsOfService" element={<TermsOfService />} />
+        <Route path="/productpage/:id" element={<ProductDetailPage />} />
+        {/* <Route path="/product" element={<AllProductPage />} /> */}
+        {/* <Route path="/product/:category/:brand" element={<AllProductPage />} /> */}
 
-          {/* Catch-all route for unmatched URLs */}
-          <Route path="*" element={<Home />} />
-          {/* <Route path="*" element={<NotFound />} /> */}
-        </Routes>
-    <Footers />
+        <Route path="/product" element={<AllProductPage />} />
+        <Route path="/product/category/:category" element={<AllProductPage />} />
+        <Route path="/product/brand/:brand" element={<AllProductPage />} />
+        <Route path="/product/category/:category/brand/:brand" element={<AllProductPage />} />
+
+
+
+
+
+        {/* Catch-all route for unmatched URLs */}
+        <Route path="*" element={<Home />} />
+        {/* <Route path="*" element={<NotFound />} /> */}
+      </Routes>
+      <Footers />
 
     </>
   )

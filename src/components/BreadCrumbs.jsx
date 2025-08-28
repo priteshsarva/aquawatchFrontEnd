@@ -1,9 +1,21 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 
-const BreadCrumbs = () => {
+const BreadCrumbs = ({
+    selectedFilters,
+    sidebarDataBrand,
+    sidebarDataCategory,
+    handleFilterChange,
+}) => {
     const [leftDrawerOpen, setLeftDrawerOpen] = useState(false);
+    const combinedSections = [...sidebarDataCategory, ...sidebarDataBrand];
 
+    const [openSections, setOpenSections] = useState(
+        combinedSections.reduce((acc, section) => {
+            acc[section.id] = false;
+            return acc;
+        }, {})
+    );
     return (
         <>
             {/* <!-- component --> */}
@@ -50,7 +62,7 @@ const BreadCrumbs = () => {
                 <div className="fixed top-0 left-0 z-40 h-screen w-80 bg-white shadow transition-transform animate-slide-right p-4 overflow-y-auto text-black">
                     <div className="w-full sticky top-0 z-40 bg-white border-b border-gray-200 flex justify-between items-center mb-2 pb-3">
                         <button onClick={() => setLeftDrawerOpen(false)} className="text-base font-semibold text-gray-500 inline-flex items-center gap-2">
-                          Filter options
+                            Filter options
                         </button>
                         <button
                             onClick={() => setLeftDrawerOpen(false)}
@@ -61,7 +73,96 @@ const BreadCrumbs = () => {
                             </svg>
                         </button>
                     </div>
-                    <ul className="space-y-2 text-sm text-gray-900">                    
+                    <ul className="space-y-2 text-sm text-gray-900">
+
+                        <div className="mb-4 border-gray-300 pt-2 ">
+                            <h2 className="font-bold mb-4 text-lg">Category</h2>
+                            <div className="cursor-pointer">
+                                {sidebarDataCategory.map(({ id, title, items }) => (
+                                    <div key={id} className="pl-4 mb-4">
+                                        <button
+                                            onClick={() => {
+                                                handleFilterChange(null, title); // Corrected
+                                                toggleSection(id)
+                                                setLeftDrawerOpen(false)
+                                            }}
+                                            className={`flex justify-between items-center w-full font-semibold mb-2 focus:outline-none hover:opacity-100 ${selectedFilters.category === title ? "opacity-100 font-bold text-grey-600 text-md" : "opacity-65"}`}
+                                        >
+                                            {title}
+                                            {items.length > 0 && (
+                                                <span className="opacity-75 hover:opacity-100">
+                                                    {openSections[id] ? "▲" : "▼"}
+                                                </span>
+                                            )}
+                                        </button>
+
+                                        {openSections[id] && (
+                                            <ul className="pl-4 space-y-1 border-l border-gray-300">
+                                                {items.map((item) => (
+                                                    <li
+                                                        key={item}
+                                                        className={`cursor-pointer hover:text-gray-600 hover:opacity-100 ${selectedFilters.category === item ? "opacity-100 font-semibold" : "opacity-75"}`}
+                                                        onClick={() => {
+                                                            handleFilterChange(null, item)
+                                                            setLeftDrawerOpen(false)
+                                                        }
+                                                        }
+                                                    >
+                                                        {item}
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className="mb-4 border-t border-gray-300 pt-2 ">
+                            <h2 className="font-bold mb-4 text-lg">Brand</h2>
+                            <div className="cursor-pointer">
+                                {sidebarDataBrand.map(({ id, title, items }) => (
+                                    <div key={id} className="pl-4 mb-4">
+                                        <button
+                                            onClick={() => {
+                                                handleFilterChange(title, null)
+                                                toggleSection(id)
+                                                setLeftDrawerOpen(false)
+                                            }}
+                                            className={`flex justify-between items-center w-full font-semibold mb-2 focus:outline-none hover:opacity-100 ${selectedFilters.brand === title ? "opacity-100 font-bold text-grey-600 text-md" : "opacity-65"}`}
+                                        >
+                                            {title}
+                                            {items.length > 0 && (
+                                                <span className="opacity-75 hover:opacity-100">
+                                                    {openSections[id] ? "▲" : "▼"}
+                                                </span>
+                                            )}
+                                        </button>
+
+                                        {openSections[id] && (
+                                            <ul className="pl-4 space-y-1 border-l border-gray-300">
+                                                {items.map((item) => (
+                                                    <li
+                                                        key={item}
+                                                        className={`cursor-pointer hover:text-gray-600 hover:opacity-100 ${selectedFilters.brand === item ? "opacity-100 font-semibold" : "opacity-75"}`}
+                                                        onClick={() => {
+                                                            handleFilterChange(item, null)
+                                                            setLeftDrawerOpen(false)
+                                                        }
+                                                        }
+                                                    >
+                                                        {item}
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+
+
                         {/* {navLinks.map((link, index) => (
                             <li key={index}>
                                 <Link
