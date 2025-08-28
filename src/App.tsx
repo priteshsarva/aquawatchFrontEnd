@@ -1,5 +1,5 @@
 import './App.css'
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route ,Navigate} from 'react-router-dom';
 
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
