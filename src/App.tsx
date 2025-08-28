@@ -70,7 +70,7 @@ const App = () => {
 
 
         {/* Catch-all route for unmatched URLs */}
-        <Route path="*" element={<Home />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
         {/* <Route path="*" element={<NotFound />} /> */}
       </Routes>
       <Footers />
