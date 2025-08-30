@@ -7,14 +7,14 @@ const ProductCategory = () => {
         <>
             <div className="2xl:container 2xl:mx-auto md:pt-12 lg:px-20 md:px-6 pt-8 px-4">
                 <div className="text-center">
-                    <h2 className="font-semibold dark:text-white lg:text-4xl text-3xl lg:leading-9 md:leading-7 leading-9 text-gray-800 md:w-full w-9/12 mx-auto">
+                    <h2 className="font-semibold  lg:text-4xl text-3xl lg:leading-9 md:leading-7 leading-9 text-gray-800 md:w-full w-9/12 mx-auto">
                         Shop by category
                     </h2>
-                    <p className="font-normal text-base leading-6 dark:text-gray-400 text-gray-600 mt-4 lg:w-5/12 md:w-9/12 mx-auto">
-                        Find your perfect look. Browse Men’s and Women’s fashion by category
+                    {/* <p className="font-normal text-base leading-6 dark:text-gray-400 text-gray-600 mt-4 lg:w-5/12 md:w-9/12 mx-auto"> */}
+                        {/* Find your perfect look. Browse Men’s and Women’s fashion by category */}
                         {/* Follow us on instagram @
                         <span className="underline cursor-pointer">followuspleaseee</span> and tag us to get featured on our timeline */}
-                    </p>
+                    {/* </p> */}
                 </div>
 
                 <div className="grid lg:grid-cols-4 sm:grid-cols-2 grid-cols-2 lg:gap-8 md:gap-6 gap-4 mt-10">

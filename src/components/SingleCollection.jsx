@@ -34,13 +34,16 @@ const SingleCollection = (products) => {
     };
     return (
         <>
-            {/* Products with Filters */}
-            <div className="container mx-auto px-4 py-10">
-                <div className="flex flex-col sm:flex-row gap-6">
+            {/* Products with Filters */} ̰
+            <div className="container mx-auto px-4 py-10 text-center">
+                <h2 className="4">
+                    New Arrival
+                </h2>
+                <div className="flex flex-col sm:flex-row gap-6 mt-10">
 
                     {/* Sidebar for Filters (optional) */}
                     {/* <div className="w-full sm:w-1/3 md:w-1/4 px-2">
-      <ProductFilters onFilterChange={handleFilterChange} />
+      <ProductFilters onFilterChange={handleFilterChange} /> 
     </div> */}
 
                     {/* Product Grid Section */}

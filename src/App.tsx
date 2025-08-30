@@ -66,9 +66,6 @@ const App = () => {
         <Route path="/product/category/:category/brand/:brand" element={<AllProductPage />} />
 
 
-
-
-
         {/* Catch-all route for unmatched URLs */}
         <Route path="*" element={<Navigate to="/" replace />} />
         {/* <Route path="*" element={<NotFound />} /> */}

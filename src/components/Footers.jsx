@@ -1,15 +1,18 @@
 import React from 'react'
 import ContactUsImg from '../assets/ContactUsImg.jpg'
 import { Truck } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { FaInstagram, FaFacebookSquare, FaWhatsapp } from 'react-icons/fa';
+
 
 const Footers = () => {
   return (
     <>
       {/* ========== FOOTER ========== */}
-      <footer className="mt-auto w-full max-w-[85rem] py-10 px-4 sm:px-6 lg:px-8 mx-auto">
+      <footer className="mt-auto w-full max-w-[85rem] px-4 sm:px-6 lg:px-8 mx-auto">
 
         {/* Features */}
-        <div className="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
+        <div className="max-w-[85rem] px-4 sm:px-6 lg:px-8 lg:py-7 mx-auto">
           {/* Title */}
           <div className="mx-auto max-w-2xl mb-8 lg:mb-14 text-center">
             <h2 className="text-3xl lg:text-4xl text-gray-800 font-bold">
@@ -99,9 +102,9 @@ const Footers = () => {
 
         {/* =============Contact Form============== */}
         {/* Contact */}
-        <div className="max-w-7xl px-4 sm:px-6 lg:px-8 py-12 lg:py-24 mx-auto">
+        <div className="max-w-7xl px-4 sm:px-6 lg:px-8 py-6 lg:py-12 mx-auto">
           <div className="mb-6 sm:mb-10 max-w-2xl text-center mx-auto">
-            <h2 className="font-medium text-black text-2xl sm:text-4xl">
+            <h2 className="text-3xl lg:text-4xl text-gray-800 font-bold">
               Contacts
             </h2>
           </div>
@@ -114,12 +117,12 @@ const Footers = () => {
 
             <div className="space-y-8 lg:space-y-16">
               <div>
-                <h3 className="mb-5 font-semibold text-black">
+                {/* <h3 className="mb-5 font-semibold text-black">
                   Our address
-                </h3>
+                </h3> */}
 
                 {/* Grid */}
-                <div className="grid sm:grid-cols-2 gap-4 sm:gap-6 md:gap-8 lg:gap-12">
+                {/* <div className="grid sm:grid-cols-2 gap-4 sm:gap-6 md:gap-8 lg:gap-12">
                   <div className="flex gap-4">
                     <svg className="shrink-0 size-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3"></circle></svg>
 
@@ -133,7 +136,7 @@ const Footers = () => {
                       </address>
                     </div>
                   </div>
-                </div>
+                </div> */}
                 {/* End Grid */}
               </div>
 
@@ -152,9 +155,9 @@ const Footers = () => {
                         Email us
                       </p>
                       <p>
-                        <a className="relative inline-block font-medium text-black before:absolute before:bottom-0.5 before:start-0 before:-z-1 before:w-full before:h-1 before:bg-yellow-400 hover:before:bg-black focus:outline-hidden focus:before:bg-black" href="mailto:example@site.so">
+                        <Link className="relative inline-block font-medium text-black before:absolute before:bottom-0.5 before:start-0 before:-z-1 before:w-full before:h-1 before:bg-yellow-400 hover:before:bg-black focus:outline-hidden focus:before:bg-black" to="mailto:example@site.so">
                           hello@example.so
-                        </a>
+                        </Link>
                       </p>
                     </div>
                   </div>
@@ -167,9 +170,9 @@ const Footers = () => {
                         Call us
                       </p>
                       <p>
-                        <a className="relative inline-block font-medium text-black before:absolute before:bottom-0.5 before:start-0 before:-z-1 before:w-full before:h-1 before:bg-yellow-400 hover:before:bg-black focus:outline-hidden focus:before:bg-black" href="mailto:example@site.so">
+                        <Link className="relative inline-block font-medium text-black before:absolute before:bottom-0.5 before:start-0 before:-z-1 before:w-full before:h-1 before:bg-yellow-400 hover:before:bg-black focus:outline-hidden focus:before:bg-black" to="mailto:example@site.so">
                           +44 222 777-000
-                        </a>
+                        </Link>
                       </p>
                     </div>
                   </div>
@@ -188,69 +191,72 @@ const Footers = () => {
 
 
         {/* Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6 mb-10">
-          <div className="col-span-full hidden lg:col-span-1 lg:block">
-            <a className="flex-none font-semibold text-xl text-black focus:outline-hidden focus:opacity-80" href="#" aria-label="Brand">Brand</a>
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-6 mb-10">
+
+          <div className="">
+            <Link className="flex-none font-semibold text-xl text-black focus:outline-hidden focus:opacity-80" to="/" aria-label="Brand">Aqua watch</Link>
+            <p><Link className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800 focus:outline-hidden focus:text-gray-800 cursor-pointer mt-3" to="mailto:aquawatch@gmail.com">aquawatch@gmail.com</Link></p>
+            <p><Link className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800 focus:outline-hidden focus:text-gray-800 mt-3" to="tel:919586235982">+91 95862 35982</Link></p>
             <p className="mt-3 text-xs sm:text-sm text-gray-600">
-              © 2025 Preline Labs.
+              © 2025 Aqua watch.
             </p>
           </div>
           {/* End Col */}
 
+
+
+
+
           <div>
-            <h4 className="text-xs font-semibold text-gray-900 uppercase">Product</h4>
+            <h4 className="text-xl font-semibold text-gray-900 ">Customer Service</h4>
             <div className="mt-3 grid space-y-3 text-sm">
-              <p><a className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800 focus:outline-hidden focus:text-gray-800" href="#">Pricing</a></p>
-              <p><a className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800 focus:outline-hidden focus:text-gray-800" href="#">Changelog</a></p>
-              <p><a className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800 focus:outline-hidden focus:text-gray-800" href="#">Docs</a></p>
-              <p><a className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800 focus:outline-hidden focus:text-gray-800" href="#">Download</a></p>
+              <p><Link className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800 focus:outline-hidden focus:text-gray-800 cursor-pointer" to="/ShippingPolicy">Shipping Policy</Link></p>
+              <p><Link className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800 focus:outline-hidden focus:text-gray-800" to="/ReturnPolicy">Return & Refund Policy</Link></p>
+              <p><Link className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800 focus:outline-hidden focus:text-gray-800" to="/faq">FAQ</Link></p>
             </div>
           </div>
           {/* End Col */}
 
           <div>
-            <h4 className="text-xs font-semibold text-gray-900 uppercase">Company</h4>
+            <h4 className="text-xl font-semibold text-gray-900 ">Legal</h4>
 
             <div className="mt-3 grid space-y-3 text-sm">
-              <p><a className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800 focus:outline-hidden focus:text-gray-800" href="#">About us</a></p>
-              <p><a className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800 focus:outline-hidden focus:text-gray-800" href="#">Blog</a></p>
-              <p><a className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800 focus:outline-hidden focus:text-gray-800" href="#">Careers</a> <span className="inline text-blue-600">— We're hiring</span></p>
-              <p><a className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800 focus:outline-hidden focus:text-gray-800" href="#">Customers</a></p>
-              <p><a className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800 focus:outline-hidden focus:text-gray-800" href="#">Newsroom</a></p>
-              <p><a className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800 focus:outline-hidden focus:text-gray-800" href="#">Sitemap</a></p>
+              <p><Link className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800 focus:outline-hidden focus:text-gray-800 cursor-pointer" to="#">Terms of Service</Link></p>
+              <p><Link className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800 focus:outline-hidden focus:text-gray-800 cursor-pointer" to="#">Privacy Policy</Link></p>
+              {/* <p><Link className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800 focus:outline-hidden focus:text-gray-800" to="#">Careers</Link> <span className="inline text-blue-600">— We're hiring</span></p> */}
+
             </div>
           </div>
           {/* End Col */}
 
           <div>
-            <h4 className="text-xs font-semibold text-gray-900 uppercase">Resources</h4>
+            <h4 className="text-xl font-semibold text-gray-900 ">Follow Us</h4>
 
-            <div className="mt-3 grid space-y-3 text-sm">
-              <p><a className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800 focus:outline-hidden focus:text-gray-800" href="#">Community</a></p>
-              <p><a className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800 focus:outline-hidden focus:text-gray-800" href="#">Help & Support</a></p>
-              <p><a className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800 focus:outline-hidden focus:text-gray-800" href="#">eBook</a></p>
-              <p><a className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800 focus:outline-hidden focus:text-gray-800" href="#">What's New</a></p>
-              <p><a className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800 focus:outline-hidden focus:text-gray-800" href="#">Status</a></p>
+            <div className="mt-3 flex gap-3 text-sm justify-items-center">
+              <Link to=""><FaInstagram className="text-2xl" /></Link>
+              <Link to=""><FaFacebookSquare className="text-2xl" /></Link>
+              <Link to=""><FaWhatsapp className="text-2xl" /></Link>
             </div>
+
           </div>
           {/* End Col */}
 
-          <div>
+          {/* <div>
             <h4 className="text-xs font-semibold text-gray-900 uppercase">Developers</h4>
 
             <div className="mt-3 grid space-y-3 text-sm">
-              <p><a className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800 focus:outline-hidden focus:text-gray-800" href="#">Api</a></p>
-              <p><a className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800 focus:outline-hidden focus:text-gray-800" href="#">Status</a></p>
-              <p><a className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800 focus:outline-hidden focus:text-gray-800" href="#">GitHub</a> <span className="inline text-blue-600">— New</span></p>
+              <p><Link className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800 focus:outline-hidden focus:text-gray-800" to="#">Api</Link></p>
+              <p><Link className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800 focus:outline-hidden focus:text-gray-800" to="#">Status</Link></p>
+              <p><Link className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800 focus:outline-hidden focus:text-gray-800" to="#">GitHub</Link> <span className="inline text-blue-600">— New</span></p>
             </div>
 
             <h4 className="mt-7 text-xs font-semibold text-gray-900 uppercase">Industries</h4>
 
             <div className="mt-3 grid space-y-3 text-sm">
-              <p><a className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800 focus:outline-hidden focus:text-gray-800" href="#">Financial Services</a></p>
-              <p><a className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800 focus:outline-hidden focus:text-gray-800" href="#">Education</a></p>
+              <p><Link className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800 focus:outline-hidden focus:text-gray-800" to="#">Financial Services</Link></p>
+              <p><Link className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800 focus:outline-hidden focus:text-gray-800" to="#">Education</Link></p>
             </div>
-          </div>
+          </div> */}
           {/* End Col */}
         </div>
         {/* End Grid */}
