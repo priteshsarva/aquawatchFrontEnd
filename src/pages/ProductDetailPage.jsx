@@ -5,6 +5,7 @@ import Slider from 'react-slick';
 // import "slick-carousel/slick/slick-theme.css";
 import { brand } from '../data/data'
 import Card from '../components/Card';
+import VideoModal from '../components/VideoModal';
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
 
@@ -15,8 +16,11 @@ const ProductDetailPage = () => {
     const [simillarproducts, setsimillarproducts] = useState("")
     const [selectedImage, setSelectedImage] = useState(""); // Default to the first image
     const [imageUrlArray, setimageUrlArray] = useState("")
+    const [showModal, setShowModal] = useState(false);
 
-
+    const openModal = () => setShowModal(true);
+    const closeModal = () => setShowModal(false);
+    const videoUrl = "https://www.w3schools.com/html/mov_bbb.mp4"; // Replace with your video URL
     const [quantity, setQuantity] = useState(1);
 
     const increaseQty = () => {
@@ -94,7 +98,7 @@ const ProductDetailPage = () => {
                 setproduct(data.results[0]);
                 setSelectedImage(Array.isArray(data.results[0].image) ? data.results.image[0] : data.results[0].featuredimg);
                 setimageUrlArray(JSON.parse(data.results[0].imageUrl));
-                setsizes(JSON.parse(data.results[0].sizeName));
+                // setsizes(JSON.parse(data.results[0].sizeName));
                 console.log("data", data);
             })
             .catch(error => console.error('Error:', error));
@@ -104,7 +108,7 @@ const ProductDetailPage = () => {
     useEffect(() => {
         // Fetch similar products only when product is available
         if (product) {
-            fetch(`${baseUrl}/product/search?q=${product.productName.slice(0, 3)}&category=${product.catName}&result={30}&page={1}`, {
+            fetch(`${baseUrl}/product/search?q=${product.productName.slice(0, 3)}&category=${product.catName}&result=30&page=1`, {
                 method: 'GET',
             })
                 .then(response => response.json())
@@ -271,7 +275,7 @@ const ProductDetailPage = () => {
 
                             <div className="flex items-center space-x-4 py-4">
                                 {/* Quantity Controls */}
-                                <div className="flex items-center border border-[#1e2939] rounded-xl overflow-hidden">
+                                {/* <div className="flex items-center border border-[#1e2939] rounded-xl overflow-hidden">
                                     <button
                                         type="button"
                                         onClick={decreaseQty}
@@ -291,18 +295,42 @@ const ProductDetailPage = () => {
                                     >
                                         +
                                     </button>
-                                </div>
+                                </div> */}
 
                                 {/* Add to Cart Button */}
+                                {product.videoUrl && (
+                                    <>
+                                        <button
+                                            onClick={openModal}
+                                            className="h-14 px-6 py-2 font-semibold rounded-xl bg-[#1e2939] hover:bg-[#2a3950] text-white transition-colors"
+                                        >
+                                            Live Video
+                                        </button>
+
+                                        <VideoModal
+                                            isOpen={showModal}
+                                            onClose={closeModal}
+                                            videoUrl={product.videoUrl}
+                                            name={product.productName}
+                                        />
+                                    </>
+                                )}
+
                                 <button
-                                    type="button"
                                     onClick={() => {
                                         console.log(`Added ${quantity} item(s) to cart`);
+                                        const whatsappUrl = `https://api.whatsapp.com/send?phone=919586235982&text=${encodeURIComponent(
+                                            `📦 *Product*\n\n🛍️ Product: ${product.productName}\n💰 Price: ${product.productOriginalPrice}\n🔗 URL: ${window.location.href}`
+                                        )}`;
+                                        window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
                                     }}
-                                    className="h-14 px-6 py-2 font-semibold rounded-xl bg-[#1e2939] hover:bg-[#2a3950] text-white transition-colors"
+                                    className="h-14 px-6 py-2 font-semibold rounded-xl bg-[#1e2939] hover:bg-[#2a3950] text-white transition-colors text-center"
                                 >
-                                    Add to Cart
+                                    Buy via WhatsApp
                                 </button>
+
+
+
                             </div>
 
                             {/* Why Choose Us Section */}
