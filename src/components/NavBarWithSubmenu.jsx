@@ -195,7 +195,9 @@ export default function NavBarWithSubmenu() {
             className="flex items-center text-sm font-semibold text-gray-600 hover:underline"
           >
             <FaSearch className="mr-1" />
+            <div className="hidden md:block">
             Search
+            </div>
           </button>
         </div>
 
