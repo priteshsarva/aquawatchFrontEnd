@@ -36,9 +36,16 @@ const SingleCollection = (products) => {
         <>
             {/* Products with Filters */} ̰
             <div className="container mx-auto px-4 py-10 text-center">
-                <h2 className="4">
-                    New Arrival
-                </h2>
+                {/* Title */}
+                <div className=' container mx-auto px-4 bg-white'>
+                    <h4 className=" section-title section-title-center mb-5">
+                        <b></b>
+                        <span className="text-xl  text-black tracking-wide uppercase">
+                          New Arrivals
+                        </span>
+                        <b></b>
+                    </h4>
+                </div>
                 <div className="flex flex-col sm:flex-row gap-6 mt-10">
 
                     {/* Sidebar for Filters (optional) */}
@@ -54,11 +61,11 @@ const SingleCollection = (products) => {
                         <div className='w-full flex justify-center'>
                             <Link
                                 to="/product"
-                                className="mt-6 inline-flex items-center justify-center text-gray-800 font-semibold px-4 py-2 border border-gray-300 hover:border-black transition rounded-none cursor-pointer"
+                                className="mt-6 inline-flex items-center justify-center bg-gray-900 text-white font-semibold px-4 py-2 border hover:bg-gray-700 transition rounded-none cursor-pointer"
                             >
                                 <h6 className="flex items-center gap-2 text-base font-semibold">
                                     View All Products
-                                    <svg
+                                    {/* <svg
                                         viewBox="0 0 14 10"
                                         fill="none"
                                         aria-hidden="true"
@@ -72,7 +79,7 @@ const SingleCollection = (products) => {
                                             d="M8.537.808a.5.5 0 01.817-.162l4 4a.5.5 0 010 .708l-4 4a.5.5 0 11-.708-.708L11.793 5.5H1a.5.5 0 010-1h10.793L8.646 1.354a.5.5 0 01-.109-.546z"
                                             fill="currentColor"
                                         ></path>
-                                    </svg>
+                                    </svg> */}
                                 </h6>
                             </Link>
                         </div>

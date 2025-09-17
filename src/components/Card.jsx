@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { margin, toaddincutvalue } from '../data/data'
+import { calculateAddedPrice, calculateDiscountedPrice, margin, toaddincutvalue } from '../data/data'
 
 const Card = ({ title, price, coverImg, id, key }) => {
 
@@ -12,39 +12,16 @@ const Card = ({ title, price, coverImg, id, key }) => {
                 <div className="transition duration-300 ease-in-out xl:mb-0 lg:mb-0 md:mb-0 mb-6 cursor-pointer group">
                     <div className="overflow-hidden relative">
                         <img className="w-full transition duration-700 ease-in-out group-hover:opacity-60" src={coverImg} alt="image" style={{ aspectRatio: "1/1", objectFit: 'cover' }} />
-                        {/* <div className="flex justify-center">
-                                    <div className="absolute bottom-4 transition duration-500 ease-in-out opacity-0 group-hover:opacity-100">
-                                        <a href="#" className="bg-gray-700 px-3 py-3 hover:bg-red-500 transition duration-300 ease-in-out">
-                                            <i className="fas fa-shopping-cart transition duration-300 ease-in-out flex justify-center items-center text-gray-100"></i>
-                                        </a>
-                                        <a href="#" className="bg-gray-700 px-3 py-3 hover:bg-red-500 transition duration-300 ease-in-out">
-                                            <i className="fas fa-random transition duration-300 ease-in-out flex justify-center items-center text-gray-100"></i>
-                                        </a>
-                                        <a href="#" className="bg-gray-700 px-3 py-3 hover:bg-red-500 transition duration-300 ease-in-out">
-                                            <i className="fas fa-search transition duration-300 ease-in-out flex justify-center items-center text-gray-100"></i>
-                                        </a>
-                                        <a href="#" className="bg-gray-700 px-3 py-3 hover:bg-red-500 transition duration-300 ease-in-out">
-                                            <i className="fas fa-heart transition duration-300 ease-in-out flex justify-center items-center text-gray-100"></i>
-                                        </a>
-                                    </div>
-                                </div> */}
+                       
                     </div>
                     <div className="px-4 py-3 bg-white">
                         <Link to={`/productpage/${id}`} className=""><h1 className="text-center text-gray-800 font-medium text-sm hover:text-black transition duration-300 ease-in-out line-clamp-2">{title}</h1></Link>
                         <div className="flex py-2 justify-center">
                             {/* <p className="mr-2 text-sm text-gray-300 line-through">₹{Number(price) + Number(toaddincutvalue)}</p> */}
-                            <p className="mr-2 text-sm text-gray-300 line-through">₹{
-                                (price * 1.5 < 2000)
-                                    ? (price * 1.3 + 500).toFixed(2)
-                                    : (price * 1.3).toFixed(2)
-                            }</p>
+                            <p className="mr-2 text-sm text-gray-300 line-through">₹{calculateAddedPrice(price)}</p>
 
                             {/* <p className="mr-2 text-sm font-semibold text-gray-600">₹{Number(price) + Number(margin)}</p> */}
-                            <p className="mr-2 text-sm font-semibold text-gray-600"> ₹{
-                                (price * 1.2 < 2000)
-                                    ? (price * 1.2 + 200).toFixed(2)
-                                    : (price * 1.2).toFixed(2)
-                            }</p>
+                            <p className="mr-2 text-sm font-semibold text-gray-600"> ₹{calculateDiscountedPrice(price)}</p>
 
                         </div>
                         {/* <div className="flex">

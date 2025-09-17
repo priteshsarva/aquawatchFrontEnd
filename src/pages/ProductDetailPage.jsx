@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import Slider from 'react-slick';
 // import "slick-carousel/slick/slick.css";
 // import "slick-carousel/slick/slick-theme.css";
-import { brand } from '../data/data'
+import { brand, calculateDiscountedPrice, calculateSavingsPercentage } from '../data/data'
 import Card from '../components/Card';
 import VideoModal from '../components/VideoModal';
 
@@ -263,12 +263,12 @@ const ProductDetailPage = () => {
                                     <div className="rounded-lg bg-gray-100 flex py-2 px-3">
                                         <span className="text-[#1e2939] mr-1 mt-1">₹</span>
                                         <span className="font-bold text-[#1e2939] text-3xl">
-                                            {product.productOriginalPrice}
+                                            {calculateDiscountedPrice(product.productOriginalPrice)}
                                         </span>
                                     </div>
                                 </div>
                                 <div className="flex-1">
-                                    <p className="text-green-500 text-xl font-semibold">Save 12%</p>
+                                    <p className="text-green-500 text-xl font-semibold">Save {calculateSavingsPercentage(product.productOriginalPrice)}%</p>
                                     <p className="text-gray-400 text-sm">Inclusive of all Taxes.</p>
                                 </div>
                             </div>

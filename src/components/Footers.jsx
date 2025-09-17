@@ -4,7 +4,9 @@ import { Truck } from 'lucide-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faThumbsUp, faHeadset, faLock } from '@fortawesome/free-solid-svg-icons';
 import { faWhatsapp } from '@fortawesome/free-brands-svg-icons';
+import { FaInstagram, FaFacebookSquare, FaWhatsapp } from 'react-icons/fa';
 import './Footer.css'
+import { Link } from 'react-router-dom';
 
 const Footers = () => {
   return (
@@ -43,75 +45,79 @@ const Footers = () => {
         
 
 
-        {/* Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6 mb-10">
-          <div className="col-span-full hidden lg:col-span-1 lg:block">
-            <a className="flex-none font-semibold text-xl text-black focus:outline-hidden focus:opacity-80" href="#" aria-label="Brand">Brand</a>
+         {/* Grid */}
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-6 mb-10">
+
+          <div className="">
+            <Link className="flex-none font-semibold text-xl text-black focus:outline-hidden focus:opacity-80" to="/" aria-label="Brand">Aqua watch</Link>
+            <p><Link className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800 focus:outline-hidden focus:text-gray-800 cursor-pointer mt-3" to="mailto:aquawatch@gmail.com">aquawatch@gmail.com</Link></p>
+            <p><Link className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800 focus:outline-hidden focus:text-gray-800 mt-3" to="tel:919586235982">+91 95862 35982</Link></p>
             <p className="mt-3 text-xs sm:text-sm text-gray-600">
-              © 2025 Preline Labs.
+              © 2025 Aqua watch.
             </p>
           </div>
           {/* End Col */}
 
+
+
+
+
           <div>
-            <h4 className="text-xs font-semibold text-gray-900 uppercase">Product</h4>
+            <h4 className="text-xl font-semibold text-gray-900 ">Customer Service</h4>
             <div className="mt-3 grid space-y-3 text-sm">
-              <p><a className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800 focus:outline-hidden focus:text-gray-800" href="#">Pricing</a></p>
-              <p><a className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800 focus:outline-hidden focus:text-gray-800" href="#">Changelog</a></p>
-              <p><a className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800 focus:outline-hidden focus:text-gray-800" href="#">Docs</a></p>
-              <p><a className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800 focus:outline-hidden focus:text-gray-800" href="#">Download</a></p>
+              <p><Link className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800 focus:outline-hidden focus:text-gray-800 cursor-pointer" to="/ShippingPolicy">Shipping Policy</Link></p>
+              <p><Link className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800 focus:outline-hidden focus:text-gray-800" to="/ReturnPolicy">Return & Refund Policy</Link></p>
+              <p><Link className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800 focus:outline-hidden focus:text-gray-800" to="/faq">FAQ</Link></p>
             </div>
           </div>
           {/* End Col */}
 
           <div>
-            <h4 className="text-xs font-semibold text-gray-900 uppercase">Company</h4>
+            <h4 className="text-xl font-semibold text-gray-900 ">Legal</h4>
 
             <div className="mt-3 grid space-y-3 text-sm">
-              <p><a className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800 focus:outline-hidden focus:text-gray-800" href="#">About us</a></p>
-              <p><a className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800 focus:outline-hidden focus:text-gray-800" href="#">Blog</a></p>
-              <p><a className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800 focus:outline-hidden focus:text-gray-800" href="#">Careers</a> <span className="inline text-blue-600">— We're hiring</span></p>
-              <p><a className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800 focus:outline-hidden focus:text-gray-800" href="#">Customers</a></p>
-              <p><a className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800 focus:outline-hidden focus:text-gray-800" href="#">Newsroom</a></p>
-              <p><a className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800 focus:outline-hidden focus:text-gray-800" href="#">Sitemap</a></p>
+              <p><Link className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800 focus:outline-hidden focus:text-gray-800 cursor-pointer" to="/TermsOfService">Terms of Service</Link></p>
+              <p><Link className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800 focus:outline-hidden focus:text-gray-800 cursor-pointer" to="/PrivacyPolicy">Privacy Policy</Link></p>
+              {/* <p><Link className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800 focus:outline-hidden focus:text-gray-800" to="#">Careers</Link> <span className="inline text-blue-600">— We're hiring</span></p> */}
+
             </div>
           </div>
           {/* End Col */}
 
           <div>
-            <h4 className="text-xs font-semibold text-gray-900 uppercase">Resources</h4>
+            <h4 className="text-xl font-semibold text-gray-900 ">Follow Us</h4>
 
-            <div className="mt-3 grid space-y-3 text-sm">
-              <p><a className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800 focus:outline-hidden focus:text-gray-800" href="#">Community</a></p>
-              <p><a className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800 focus:outline-hidden focus:text-gray-800" href="#">Help & Support</a></p>
-              <p><a className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800 focus:outline-hidden focus:text-gray-800" href="#">eBook</a></p>
-              <p><a className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800 focus:outline-hidden focus:text-gray-800" href="#">What's New</a></p>
-              <p><a className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800 focus:outline-hidden focus:text-gray-800" href="#">Status</a></p>
+            <div className="mt-3 flex gap-3 text-sm justify-items-center">
+              <Link to=""><FaInstagram className="text-2xl" /></Link>
+              <Link to=""><FaFacebookSquare className="text-2xl" /></Link>
+              <Link to=""><FaWhatsapp className="text-2xl" /></Link>
             </div>
+
           </div>
           {/* End Col */}
 
-          <div>
+          {/* <div>
             <h4 className="text-xs font-semibold text-gray-900 uppercase">Developers</h4>
 
             <div className="mt-3 grid space-y-3 text-sm">
-              <p><a className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800 focus:outline-hidden focus:text-gray-800" href="#">Api</a></p>
-              <p><a className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800 focus:outline-hidden focus:text-gray-800" href="#">Status</a></p>
-              <p><a className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800 focus:outline-hidden focus:text-gray-800" href="#">GitHub</a> <span className="inline text-blue-600">— New</span></p>
+              <p><Link className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800 focus:outline-hidden focus:text-gray-800" to="#">Api</Link></p>
+              <p><Link className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800 focus:outline-hidden focus:text-gray-800" to="#">Status</Link></p>
+              <p><Link className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800 focus:outline-hidden focus:text-gray-800" to="#">GitHub</Link> <span className="inline text-blue-600">— New</span></p>
             </div>
 
             <h4 className="mt-7 text-xs font-semibold text-gray-900 uppercase">Industries</h4>
 
             <div className="mt-3 grid space-y-3 text-sm">
-              <p><a className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800 focus:outline-hidden focus:text-gray-800" href="#">Financial Services</a></p>
-              <p><a className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800 focus:outline-hidden focus:text-gray-800" href="#">Education</a></p>
+              <p><Link className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800 focus:outline-hidden focus:text-gray-800" to="#">Financial Services</Link></p>
+              <p><Link className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800 focus:outline-hidden focus:text-gray-800" to="#">Education</Link></p>
             </div>
-          </div>
+          </div> */}
           {/* End Col */}
         </div>
         {/* End Grid */}
 
       </footer>
+      
       {/* ========== END FOOTER ========== */}
     </>
   )

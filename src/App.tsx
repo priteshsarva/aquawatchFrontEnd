@@ -18,6 +18,7 @@ import AllProductPage from './pages/AllProductPage.jsx';
 // import Navbar from './components/Navbar.jsx';
 import NavBarWithSubmenu from './components/NavBarWithSubmenu.jsx';
 import Footers from './components/Footers.jsx'
+import ScrollToTop from './components/ScrollToTop.jsx';
 
 
 async function loadPreline() {
@@ -48,7 +49,7 @@ const App = () => {
     <>
       {/* <Navbar /> */}
       <NavBarWithSubmenu />
-
+<ScrollToTop />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/faq" element={<FaqPage />} />
