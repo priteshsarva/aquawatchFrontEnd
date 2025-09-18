@@ -1,3 +1,9 @@
+import manWearingWatch from '../assets/manholdingwatch.png'
+import womenholdingwatch1 from '../assets/womenholdingwatch1.png'
+import luxurywatches from '../assets/luxurywatches.png'
+
+export const brand = "Aqua Watch"
+
 export const products = [
   {
     "productId": 324,
@@ -6159,22 +6165,138 @@ export const products = [
 
 export const category = [
   {
-    id: 1,
-    desktopSrc: "https://i.ibb.co/QHS8Ngp/pexels-alana-sousa-3294250-1.png",
-    mobileSrc: "https://i.ibb.co/mNPBgQN/pexels-alana-sousa-3294250-1-1.png",
-    alt: "A picture of a sitting dog",
-    title: "Men's Watch",
-    link: '/menss'
+    title: "Men's Watches",
+    img: manWearingWatch,
+    link: "/product/category/mens-watch/",
   },
   {
-    id: 2,
-    desktopSrc: "https://i.ibb.co/T8jgRy3/pexels-leah-kelley-1449667-1.png",
-    mobileSrc: "https://i.ibb.co/YD8nNMR/pexels-leah-kelley-1449667-1-1.png",
-    alt: "Smiling Girl",
-    title: "Women Watch",
-    link: "https://watchhouse11.cartpe.in/ladies-watch.html",
-  }
+    title: "Womens Watches",
+    img: womenholdingwatch1,
+    link: "/product/category/womens-watch/",
+  },
+  {
+    title: "Luxury Watches",
+    img: luxurywatches,
+    link: "/product/category/Luxury/",
+  },
+
 ];
 
 
-export const brand = "Aqua Watch"
+export const watchBrand = [
+  {
+    name: "Rolex",
+    url: "/product/brand/rolex  ",
+    image: "https://crepculture.com/wp-content/uploads/2024/10/m126718grnr-0001_drp-upright-bba-with-shadow-1.webp",
+    count: 95
+  },
+  {
+    name: "Omega",
+    url: "/product/brand/omega/",
+    image: "https://crepculture.com/wp-content/uploads/2024/10/omega-speedmaster-moonwatch-professional-co-axial-master-chronometer-chronograph-42-mm-31030425004001-5bcb6e_7273227b-f967-4d05-9aad-a038e56804e8-1.webp",
+    count: 16
+  },
+  {
+    name: "Audemars Piguet",
+    url: "/product/brand/audemars-piguet/",
+    image: "https://crepculture.com/wp-content/uploads/2024/10/IMG-20240730-WA0453-1.webp",
+    count: 17
+  },
+  {
+    name: "G-shock",
+    url: "/product/brand/g-shock/",
+    image: "https://crepculture.com/wp-content/uploads/2024/10/g1277.webp",
+    count: 32
+  },
+  {
+    name: "Armani",
+    url: "/product/brand/armani/",
+    image: "https://crepculture.com/wp-content/uploads/2024/10/emporio-armani-ar1452-black-men-wrist-watch.webp",
+    count: 9
+  },
+  {
+    name: "Fossil",
+    url: "/product/brand/fossil/",
+    image: "https://crepculture.com/wp-content/uploads/2024/10/freepik-untitled-project-20241005161640vQik.webp",
+    count: 23
+  },
+  {
+    name: "Tissot",
+    url: "/product/brand/tissot-watches/",
+    image: "https://crepculture.com/wp-content/uploads/2024/10/tissot-prx-powermatic-80-p1666-4720_medium-1.webp",
+    count: 135
+  },
+  {
+    name: "Rado",
+    url: "/product/brand/rado/",
+    image: "https://crepculture.com/wp-content/uploads/2024/10/rgb_cat_original_763_0637_3_016_3-1.webp",
+    count: 20
+  },
+  {
+    name: "Maserati",
+    url: "/product/brand/maserati/",
+    image: "https://crepculture.com/wp-content/uploads/2024/10/1117Wx1400H-463985463-blue-MODEL.avif",
+    count: 3
+  },
+  {
+    name: "Patek Phillipe",
+    url: "/product/brand/patek-phillipe/",
+    image: "https://crepculture.com/wp-content/uploads/2024/10/patek-philippe-nautilus-5711A1-018-luxury-souq.jpg-1.webp",
+    count: 23
+  },
+  {
+    name: "Cartier",
+    url: "/product/brand/cartier-watches/",
+    image: "https://crepculture.com/wp-content/uploads/2024/10/freepik-untitled-project-20241005161241ICqB-1.webp",
+    count: 6
+  },
+  {
+    name: "Hublot",
+    url: "/product/brand/hublot/",
+    image: "https://crepculture.com/wp-content/uploads/2024/10/CLASSIC-FUSION-CHRONOGRAPH-TITANIUM-BLUE-ON-RUBBER-45-MM.webp",
+    count: 18
+  },
+  {
+    name: "Edifice",
+    url: "/product/brand/edifice/",
+    image: "https://crepculture.com/wp-content/uploads/2024/10/efr-552d-1avuef2-1.webp",
+    count: 12
+  }
+];
+
+export const joinUsOnWhatsapp = 'https://wa.me/919408386083'
+
+
+export const toaddincutvalue = 2000;
+export const margin = 1000;
+
+//----------------------------price game---------------------------------
+
+export function calculateAddedPrice(price) {
+  const basePrice = price * 1.5;
+
+  if (basePrice < 2000) {
+    return (price * 1.3 + 500).toFixed(2);
+  } else {
+    return (price * 1.3).toFixed(2);
+  }
+}
+
+export function calculateDiscountedPrice(price) {
+  const basePrice = price * 1.2;
+
+  if (basePrice < 2000) {
+    return (price * 1.2 + 200).toFixed(2);
+  } else {
+    return (price * 1.2).toFixed(2);
+  }
+}
+
+export function calculateSavingsPercentage(price) {
+  const savings = calculateAddedPrice(price) - calculateDiscountedPrice(price);
+
+  if (calculateAddedPrice(price) === 0) return '0.00';
+
+  const percentage = (savings / calculateAddedPrice(price)) * 100;
+  return percentage.toFixed(0);
+}

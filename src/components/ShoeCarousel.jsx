@@ -86,8 +86,8 @@ export default function ShoeCarousel({ productss }) {
   };
 
   return (
-    <div className="max-w-7xl mx-auto pt-10 px-4 text-center">
-      <h2 className="text-3xl lg:text-4xl font-bold leading-9 text-gray-800 md:w-full w-9/12 mx-auto mb-10" >Our Best Sellers</h2>
+    <div className="max-w-7xl mx-auto pt-10 px-4">
+      <h2 className="text-2xl font-semibold text-left md:text-center mb-6 w-full">Our Best Sellers</h2>
 
       <Slider {...settings}>
         {productss.map((product) => (
