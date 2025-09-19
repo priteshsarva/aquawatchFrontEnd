@@ -1,4 +1,5 @@
 import React from 'react'
+import { brand, BrandEmail, Brandphone, BrandUrl } from '../../data/data'
 
 const PrivacyPolices = () => {
   return (
@@ -9,8 +10,8 @@ const PrivacyPolices = () => {
       <h3 class="text-3xl font-bold mb-6">Privacy Policy</h3>
 
       <p class="mb-4">
-        At <span class="font-semibold">crepculture</span>, 
-        <a href="https://crepculture.com/" class="text-blue-600 underline hover:text-blue-800" target="_blank">https://crepculture.com/</a>, 
+        At <span class="font-semibold">{brand}</span>, 
+        <a href={`https://{BrandUrl}`} class="text-black font-semibold" target="_blank">{BrandUrl}</a>, 
         we are committed to protecting your privacy and ensuring that your personal information is handled in a safe and responsible manner. 
         This Privacy Policy outlines how we collect, use, and protect your data when you visit our website and make purchases.
       </p>
@@ -59,7 +60,7 @@ const PrivacyPolices = () => {
         <li>Opt out of marketing communications.</li>
         <li>Request a copy of the personal data we hold about you.</li>
       </ul>
-      <p class="mb-4">To exercise these rights, please contact us at <span class="italic">[Insert Contact Email]</span>.</p>
+      <p class="mb-4">To exercise these rights, please contact us at <span class="italic">{BrandEmail}</span>.</p>
 
       <h3 class="text-2xl font-semibold mt-8 mb-3">7. Changes to This Policy</h3>
       <p class="mb-4">We may update this Privacy Policy from time to time. Any changes will be posted on this page with the updated effective date. It is your responsibility to review this page regularly.</p>
@@ -67,8 +68,8 @@ const PrivacyPolices = () => {
       <h3 class="text-2xl font-semibold mt-8 mb-3">8. Contact Us</h3>
       <p class="mb-2">If you have any questions regarding this Privacy Policy, please contact us:</p>
       <ul class="list-disc pl-6 space-y-1">
-        <li><strong>Email</strong>: <span class="italic">[Insert Contact Email]</span></li>
-        <li><strong>Phone</strong>: <span class="italic">+919624679114</span></li>
+        <li><strong>Email</strong>: <span class="italic"><a href={`mailto:${BrandEmail}`}> {BrandEmail}</a></span></li>
+        <li><strong>Phone</strong>: <span class="italic"> <a href={`tel:${Brandphone.replace(/\s+/g, '')}`}>{Brandphone}</a> </span></li>
       </ul>
 
     </div>

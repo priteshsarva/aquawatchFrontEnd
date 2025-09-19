@@ -7,6 +7,7 @@ import { faWhatsapp } from '@fortawesome/free-brands-svg-icons';
 import { FaInstagram, FaFacebookSquare, FaWhatsapp } from 'react-icons/fa';
 import './Footer.css'
 import { Link } from 'react-router-dom';
+import { brand, BrandEmail, Brandphone } from '../data/data';
 
 const Footers = () => {
   return (
@@ -50,10 +51,10 @@ const Footers = () => {
 
           <div className="">
             <Link className="flex-none font-semibold text-xl text-black focus:outline-hidden focus:opacity-80" to="/" aria-label="Brand">Aqua watch</Link>
-            <p><Link className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800 focus:outline-hidden focus:text-gray-800 cursor-pointer mt-3" to="mailto:aquawatch@gmail.com">aquawatch@gmail.com</Link></p>
-            <p><Link className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800 focus:outline-hidden focus:text-gray-800 mt-3" to="tel:919586235982">+91 95862 35982</Link></p>
+            <p><Link className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800 focus:outline-hidden focus:text-gray-800 cursor-pointer mt-3" to={`mailto:${BrandEmail}`}>{BrandEmail}</Link></p>
+            <p><Link className="inline-flex gap-x-2 text-gray-600 hover:text-gray-800 focus:outline-hidden focus:text-gray-800 mt-3" to={`tel:${Brandphone.replace(/\s+/g, '')}`}>{Brandphone}</Link></p>
             <p className="mt-3 text-xs sm:text-sm text-gray-600">
-              © 2025 Aqua watch.
+              {`© 2025 ${brand}.`}
             </p>
           </div>
           {/* End Col */}

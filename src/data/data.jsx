@@ -3,6 +3,9 @@ import womenholdingwatch1 from '../assets/womenholdingwatch1.png'
 import luxurywatches from '../assets/luxurywatches.png'
 
 export const brand = "Aqua Watch"
+export const BrandEmail = "aquawatch@gmail.com"
+export const Brandphone = "+91 95862 35982"
+export const BrandUrl = "aquawatch.com"
 
 export const products = [
   {
