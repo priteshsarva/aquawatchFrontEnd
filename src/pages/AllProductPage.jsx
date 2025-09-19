@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import BreadCrumbs from "../components/BreadCrumbs";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import Card from "../components/Card";
+import { brandMap, categorymap, sidebarDataBrand, sidebarDataCategory } from "../data/data";
 const baseUrl1 = import.meta.env.VITE_BASE_URL;
 
 // for brand
@@ -26,84 +27,6 @@ const AllProductPage = () => {
         brand: "",
     });
 
-    const sidebarDataCategory = [
-        {
-            id: "mensWatches",
-            title: "Men's Watches",
-            items: [],
-        },
-        {
-            id: "Womenswatches",
-            title: "Women's Watches",
-            items: [],
-        },
-    ];
-
-    // Sample data for brands
-    const sidebarDataBrand = [
-        {
-            id: "brandRolex",
-            title: "Rolex",
-            items: [],
-        },
-        // {
-        //     id: "brandFossil",
-        //     title: "Fossil",
-        //     items: ["Chronograph", "Neutra"],
-        // },
-        // {
-        //     id: "brandEmpty",
-        //     title: "Unbranded",
-        //     items: [],
-        // },
-        {
-            id: "brandOmega",
-            title: "Omega",
-            items: [],
-        },
-        {
-            id: "brandPatekPhilippe",
-            title: "Patek Philippe",
-            items: [],
-        },
-        {
-            id: "brandCartier",
-            title: "Cartier",
-            items: [],
-        },
-        {
-            id: "brandAudemarsPiguet",
-            title: "Audemars Piguet",
-            items: [],
-        },
-        {
-            id: "brandBreitling",
-            title: "Breitling",
-            items: [],
-        },
-        {
-            id: "brandTAGHeuer",
-            title: "TAG Heuer",
-            items: [],
-        },
-        {
-            id: "brandTissot",
-            title: "Tissot",
-            items: [],
-        },
-        {
-            id: "brandSeiko",
-            title: "Seiko",
-            items: [],
-        },
-        {
-            id: "brandCitizen",
-            title: "Citizen",
-            items: [],
-        },
-    ];
-
-
     const combinedSections = [...sidebarDataCategory, ...sidebarDataBrand];
 
     const [openSections, setOpenSections] = useState(
@@ -126,19 +49,18 @@ const AllProductPage = () => {
 
         if (filters.brand && filters.brand.trim() !== "") {
             // Map certain brand names to query terms if needed
-            const brandMap = {
-                "Crocs Slide": "croc",
-                Airforce: "force",
-                "Louis Vuitton": "Vuitton",
-                Converse: "conver",
-            };
+
 
             const brandQuery = brandMap[filters.brand] || filters.brand;
             params.push(`q=${encodeURIComponent(brandQuery.slice(0, 3))}`);
         }
 
         if (filters.category && filters.category.trim() !== "") {
-            params.push(`category=${encodeURIComponent(filters.category.slice(0, 3))}`);
+
+
+            const categoryQuery = categorymap[filters.category] || filters.category;
+            params.push(`category=${encodeURIComponent(categoryQuery)}`);
+            // params.push(`category=${encodeURIComponent(filters.category)}`);
         }
 
         params.push(`result=20`);
@@ -215,7 +137,19 @@ const AllProductPage = () => {
         navigate(path);
     };
 
+    const clearFilters = () => {
+        // Reset the selected filters
+        setSelectedFilters({
+            brand: "",
+            category: "",
+        });
 
+        // Reset the current page to 1 (optional)
+        setCurrentPage(1);
+
+        // Build URL to the base path "/product" (without any filters)
+        navigate("/product");
+    };
 
     const handleLoadMore = () => {
         if (currentPage < totalPages) {
@@ -240,7 +174,7 @@ const AllProductPage = () => {
                 sidebarDataCategory={sidebarDataCategory}
                 handleFilterChange={handleFilterChange}
             />
-            <section className="grid grid-cols-12 gap-4">
+            <section className="container mx-auto grid grid-cols-12 gap-4">
                 <div className="hidden md:block md:col-span-3 p-4 border-r border-gray-200 text-sm text-gray-800">
                     <h2 className="font-bold mb-4 text-xl">Filter</h2>
                     <div className="mb-4 border-t border-gray-300 pt-2 ">
@@ -302,31 +236,24 @@ const AllProductPage = () => {
                                             </span>
                                         )}
                                     </button>
-
-                                    {openSections[id] && (
-                                        <ul className="pl-4 space-y-1 border-l border-gray-300">
-                                            {items.map((item) => (
-                                                <li
-                                                    key={item}
-                                                    className={`cursor-pointer hover:text-gray-600 hover:opacity-100 ${selectedFilters.brand === item ? "opacity-100 font-semibold" : "opacity-75"}`}
-                                                    onClick={() =>
-                                                        handleFilterChange(item, snull)
-                                                    }
-                                                >
-                                                    {item}
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    )}
                                 </div>
                             ))}
                         </div>
                     </div>
 
+                    <div className="cursor-pointer mb-4 border-t border-gray-300 pt-2 ">
+                        <h2 className="font-bold mb-4 text-lg" onClick={() => {
+                            clearFilters()
+                        }}>Clear Filters</h2>
+
+
+                    </div>
+
+
                 </div>
 
                 <div className="col-span-12 md:col-span-9 p-4">
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
 
 
                         {products.slice(0, products.length - (products.length % 3)).map((product) => (

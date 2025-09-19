@@ -12,6 +12,8 @@ import ShippingPolicy from './pages/legal/ShippingPolicy.jsx';
 import ReturnPolicy from './pages/legal/ReturnPolicy.jsx';
 import PrivacyPolices from './pages/legal/PrivacyPolices.jsx';
 import ProductDetailPage from './pages/ProductDetailPage.jsx';
+import OriginalProductDetailPageWithprice from './pages/OriginalProductDetailPageWithprice.jsx';
+
 // import AllProducts from './pages/AllProducts.jsx';
 import AllProductPage from './pages/AllProductPage.jsx';
 
@@ -19,6 +21,7 @@ import AllProductPage from './pages/AllProductPage.jsx';
 import NavBarWithSubmenu from './components/NavBarWithSubmenu.jsx';
 import Footers from './components/Footers.jsx'
 import ScrollToTop from './components/ScrollToTop.jsx';
+import {msterCode } from './data/data.jsx'
 
 
 async function loadPreline() {
@@ -27,8 +30,6 @@ async function loadPreline() {
 
 const App = () => {
   const location = useLocation();
-
-
 
   useEffect(() => {
     const initPreline = async () => {
@@ -58,16 +59,12 @@ const App = () => {
         <Route path="/ShippingPolicy" element={<ShippingPolicy />} />
         <Route path="/TermsOfService" element={<TermsOfService />} />
         <Route path="/productpage/:id" element={<ProductDetailPage />} />
-        {/* <Route path="/product" element={<AllProductPage />} /> */}
-        {/* <Route path="/product/:category/:brand" element={<AllProductPage />} /> */}
+        <Route path={`/productpage/:id/${msterCode}`} element={<OriginalProductDetailPageWithprice />} />
 
         <Route path="/product" element={<AllProductPage />} />
         <Route path="/product/category/:category" element={<AllProductPage />} />
         <Route path="/product/brand/:brand" element={<AllProductPage />} />
         <Route path="/product/category/:category/brand/:brand" element={<AllProductPage />} />
-
-
-
 
 
         {/* Catch-all route for unmatched URLs */}

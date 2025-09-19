@@ -6,6 +6,98 @@ export const brand = "Aqua Watch"
 export const BrandEmail = "aquawatch@gmail.com"
 export const Brandphone = "+91 95862 35982"
 export const BrandUrl = "aquawatch.com"
+export const msterCode = "vikash"
+export const joinUsOnWhatsapp = 'https://wa.me/919586235982'
+
+
+export const sidebarDataCategory = [
+  {
+    id: "mensWatches",
+    title: "Men's Watches",
+    items: [],
+  },
+  {
+    id: "Womenswatches",
+    title: "Women's Watches",
+    items: [],
+  },
+];
+export const categorymap = {
+  "Women's Watches": "Womens watchs",
+  "Men's Watches": "mens watch",
+};
+
+// Sample data for brands
+export const sidebarDataBrand = [
+  {
+    id: "brandRolex",
+    title: "Rolex",
+    items: [],
+  },
+  // {
+  //     id: "brandFossil",
+  //     title: "Fossil",
+  //     items: ["Chronograph", "Neutra"],
+  // },
+  // {
+  //     id: "brandEmpty",
+  //     title: "Unbranded",
+  //     items: [],
+  // },
+  {
+    id: "brandOmega",
+    title: "Omega",
+    items: [],
+  },
+  {
+    id: "brandPatekPhilippe",
+    title: "Patek Philippe",
+    items: [],
+  },
+  {
+    id: "brandCartier",
+    title: "Cartier",
+    items: [],
+  },
+  {
+    id: "brandAudemarsPiguet",
+    title: "Audemars Piguet",
+    items: [],
+  },
+  {
+    id: "brandBreitling",
+    title: "Breitling",
+    items: [],
+  },
+  {
+    id: "brandTAGHeuer",
+    title: "TAG Heuer",
+    items: [],
+  },
+  {
+    id: "brandTissot",
+    title: "Tissot",
+    items: [],
+  },
+  {
+    id: "brandSeiko",
+    title: "Seiko",
+    items: [],
+  },
+  {
+    id: "brandCitizen",
+    title: "Citizen",
+    items: [],
+  },
+];
+
+export const brandMap = {
+  "Crocs Slide": "croc",
+  Airforce: "force",
+  "Louis Vuitton": "Vuitton",
+  Converse: "conver",
+};
+
 
 export const products = [
   {
@@ -6267,7 +6359,6 @@ export const watchBrand = [
   }
 ];
 
-export const joinUsOnWhatsapp = 'https://wa.me/919408386083'
 
 
 export const toaddincutvalue = 2000;
@@ -6294,6 +6385,7 @@ export function calculateDiscountedPrice(price) {
     return (price * 1.2).toFixed(2);
   }
 }
+
 
 export function calculateSavingsPercentage(price) {
   const savings = calculateAddedPrice(price) - calculateDiscountedPrice(price);
