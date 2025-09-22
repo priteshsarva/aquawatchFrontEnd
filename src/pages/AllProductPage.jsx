@@ -170,9 +170,12 @@ const AllProductPage = () => {
             {/* <BreadCrumbs selectedFilters sidebarDataBrand sidebarDataCategory/> */}
             <BreadCrumbs
                 selectedFilters={selectedFilters}
+                setSelectedFilters={setSelectedFilters}
                 sidebarDataBrand={sidebarDataBrand}
                 sidebarDataCategory={sidebarDataCategory}
                 handleFilterChange={handleFilterChange}
+                setCurrentPage={setCurrentPage}
+          
             />
             <section className="container mx-auto grid grid-cols-12 gap-4">
                 <div className="hidden md:block md:col-span-3 p-4 border-r border-gray-200 text-sm text-gray-800">
