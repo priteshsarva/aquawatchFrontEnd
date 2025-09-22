@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { FaSearch, FaBars } from 'react-icons/fa';
-import logo1 from '../assets/logo.png'
+import logo1 from '../assets/logo_1.png'
 import { Link } from 'react-router-dom';
 import Card from './Card'
 const baseUrl = import.meta.env.VITE_BASE_URL;

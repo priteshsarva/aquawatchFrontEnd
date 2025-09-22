@@ -8,6 +8,7 @@ export const Brandphone = "+91 95862 35982"
 export const BrandUrl = "aquawatch.com"
 export const msterCode = "vikash"
 export const joinUsOnWhatsapp = 'https://wa.me/919586235982'
+export const brandlogo = '../assets/logo_1.png'
 
 
 export const sidebarDataCategory = [
