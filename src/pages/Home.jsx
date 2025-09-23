@@ -19,7 +19,7 @@ const baseUrl = import.meta.env.VITE_BASE_URL;
 const Home = () => {
     const [product, setproduct] = useState("")
     let urls = `${baseUrl}/product/firstdata`;
-    
+
     useEffect(() => {
         if (product == '') {
             fetch(urls, {
@@ -37,11 +37,10 @@ const Home = () => {
 
     return (
         <>
-
+            <Herosection />
             {product == "" ?
                 <Loader />
                 : <>
-                    <Herosection />
                     {/* <ShoeCarousel productss={products} /> */}
                     <ShopbyBrand />
                     <div className="relative w-full aspect-[3/1]">
