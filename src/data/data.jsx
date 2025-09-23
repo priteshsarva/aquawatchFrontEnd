@@ -100,6 +100,7 @@ export const brandMap = {
 };
 
 
+
 export const products = [
   {
     "productId": 324,

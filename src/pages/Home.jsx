@@ -8,6 +8,7 @@ import ProductCategory from '../components/ProductCategory';
 import SingleCollection from '../components/SingleCollection';
 import ShopbyBrand from '../components/ShopbyBrand';
 import AquwawacthJoinFamily from '../assets/Aquwawacth-join-family.png';
+import ReadyToDispatch from '../components/ReadyToDispatch';
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
 
@@ -70,6 +71,7 @@ const Home = () => {
 
             <ProductCategory />
             <SingleCollection products={products} />
+            <ReadyToDispatch />
         </div>
     )
 }
