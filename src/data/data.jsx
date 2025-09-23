@@ -1,6 +1,8 @@
 import manWearingWatch from '../assets/manholdingwatch.png'
 import womenholdingwatch1 from '../assets/womenholdingwatch1.png'
 import luxurywatches from '../assets/luxurywatches.png'
+import logo2 from '../assets/logo_1.png'
+// import logo1 from '../assets/logo.png '
 
 export const brand = "Aqua Watch"
 export const BrandEmail = "aquawatch@gmail.com"
@@ -8,7 +10,7 @@ export const Brandphone = "+91 95862 35982"
 export const BrandUrl = "aquawatch.com"
 export const msterCode = "vikash"
 export const joinUsOnWhatsapp = 'https://wa.me/919586235982'
-export const brandlogo = '../assets/logo_1.png'
+export const brandlogo = logo2
 
 
 export const sidebarDataCategory = [
@@ -24,7 +26,7 @@ export const sidebarDataCategory = [
   },
 ];
 export const categorymap = {
-  "Women's Watches": "Womens watchs",
+  "Women's Watches": "womens watch",
   "Men's Watches": "mens watch",
 };
 
@@ -99,6 +101,26 @@ export const brandMap = {
   Converse: "conver",
 };
 
+export const box = [
+  {
+    "productId": 324,
+    "productName": "rolex_Spidy Automatic",
+    "productDateCreation": "2025-07-31 17:53:47",
+    "productLastUpdated": 1753984427206,
+    "productPrice": null,
+    "productPriceWithoutDiscount": null,
+    "productOriginalPrice": 1300,
+    "productFetchedFrom": "https://watchhouse11.cartpe.in/",
+    "productUrl": "https://watchhouse11.cartpe.in/fossi-l-spidy-automatic-276964301-watchhouse11.html?color=",
+    "featuredimg": "https://cdn.cartpe.in/images/gallery_sm/68750292c60020.jpg",
+    "imageUrl": "[\"https://cdn.cartpe.in/images/gallery_md/68750292c60020.jpg\",\"https://cdn.cartpe.in/images/gallery_md/68750292c68831.jpg\",\"https://cdn.cartpe.in/images/gallery_md/68750292c6ed82.jpg\"]",
+    "videoUrl": null,
+    "productShortDescription": null,
+    "productDescription": null,
+    "productBrand": "Fossi_l Spidy",
+    "sizeName": "[\"\"]",
+    "catName": "Mens Watch"
+  },]
 
 
 export const products = [

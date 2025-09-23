@@ -3,6 +3,8 @@ import { FaSearch, FaBars } from 'react-icons/fa';
 import logo1 from '../assets/logo_1.png'
 import { Link } from 'react-router-dom';
 import Card from './Card'
+import PromoBar from './PromoBar';
+import { brand, brandlogo } from '../data/data';
 const baseUrl = import.meta.env.VITE_BASE_URL;
 
 export default function NavBarWithSubmenu() {
@@ -142,14 +144,14 @@ export default function NavBarWithSubmenu() {
 
       {/* 🍔 Left Drawer (Mobile Menu) */}
       {leftDrawerOpen && (
-        <div className="fixed top-0 left-0 z-40 h-screen w-80 bg-white shadow transition-transform animate-slide-right p-4 overflow-y-auto text-black">
-          <div className="w-full sticky top-0 z-40 bg-white border-b border-gray-200 flex justify-between items-center mb-2 pb-3">
+        <div className="fixed top-0 left-0 z-40 h-screen w-80 bg-white/80 backdrop-blur-lg shadow transition-transform animate-slide-right p-4 overflow-y-auto text-black">
+          <div className="w-full sticky top-0 z-40   border-b border-gray-500 flex justify-between items-center mb-2 pb-3">
             <Link to='/' onClick={() => setLeftDrawerOpen(false)} className="text-base font-semibold text-gray-500 inline-flex items-center gap-2">
-              <img src={logo1} alt="Logo" className="h-8 w-auto" />
+              <img src={brandlogo} alt={brand} className="h-12 w-auto" />
             </Link>
             <button
               onClick={() => setLeftDrawerOpen(false)}
-              className="text-gray-400 hover:bg-gray-200 rounded-lg p-1"
+              className="text-gray-400 hover:bg-gray-200 rounded-lg p-1 "
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                 <path d="M6 18L18 6M6 6l12 12" />
@@ -172,7 +174,7 @@ export default function NavBarWithSubmenu() {
       )}
 
       {/* 🌐 Navbar */}
-      <nav className="sticky top-0 z-30 bg-white border-b border-gray-200">
+      <nav className="sticky top-0 z-30 bg-white/70 backdrop-blur-md border-b border-gray-200">
         <div className="max-w-screen-xl mx-auto px-4 py-3 flex items-center justify-between">
           {/* Left: Hamburger (mobile only) */}
           <button
@@ -183,9 +185,9 @@ export default function NavBarWithSubmenu() {
           </button>
 
           {/* Center: Logo */}
-          <div className="flex-1 flex justify-center md:justify-start">
+          <div className="flex-1 flex justify-center ">
             <Link to="/#" className="inline-flex items-center">
-              <img src={logo1} alt="Logo" className="h-8 w-auto" />
+              <img src={brandlogo} alt={brand} className="h-12 w-auto" />
             </Link>
           </div>
 
@@ -196,7 +198,7 @@ export default function NavBarWithSubmenu() {
           >
             <FaSearch className="mr-1" />
             <div className="hidden md:block">
-            Search
+              Search
             </div>
           </button>
         </div>
@@ -205,7 +207,8 @@ export default function NavBarWithSubmenu() {
         <div className="hidden md:flex justify-center border-t border-gray-100 bg-gray-50 py-2">
           <ul className="w-full max-w-[80%] flex justify-center space-x-4 text-sm font-medium text-gray-700 text-center">
             {navLinks.map((link, index) => (
-              <li key={index} className={`${index !== 0 ? 'border-l border-gray-300 pl-4' : ''}`}>
+              // <li key={index} className={`${index !== 0 ? 'border-l border-gray-300 pl-4' : ''}`}>
+              <li key={index} className={`${index !== 0 ? 'pl-4' : ''}`}>
                 <Link to={link.url} className="hover:underline block">
                   {link.name}
                 </Link>
@@ -214,7 +217,7 @@ export default function NavBarWithSubmenu() {
           </ul>
         </div>
       </nav>
-
+      <PromoBar />
     </>
   );
 }

@@ -1,21 +1,15 @@
 import React from 'react'
 import './Loader.css'
+import { brand } from '../data/data'
 
 const Loader = () => {
     return (
         <div className="loader">
-            <span>A</span>
-            <span>q</span>
-            <span>u</span>
-            <span>a</span>            
-            <span>W</span>
-            <span>a</span>
-            <span>t</span>
-            <span>c</span>
-            <span>h</span>
-            <span>.</span>
-            <span>.</span>
-            <span>.</span>
+            <div className="loader">
+                {brand.split('').map((char, index) => (
+                    <span key={index}>{char}</span>
+                ))}
+            </div>
         </div>
     )
 }

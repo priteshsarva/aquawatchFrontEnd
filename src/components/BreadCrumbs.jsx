@@ -1,14 +1,17 @@
 import React, { useState } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 
 const BreadCrumbs = ({
     selectedFilters,
     sidebarDataBrand,
     sidebarDataCategory,
     handleFilterChange,
+    setSelectedFilters,
+    setCurrentPage
 }) => {
     const [leftDrawerOpen, setLeftDrawerOpen] = useState(false);
     const combinedSections = [...sidebarDataCategory, ...sidebarDataBrand];
+    const navigate = useNavigate();
 
     const [openSections, setOpenSections] = useState(
         combinedSections.reduce((acc, section) => {
@@ -27,6 +30,24 @@ const BreadCrumbs = ({
     // Default product breadcrumb if both category and brand are blank
     const showProductBreadcrumb = !category && !brand;
 
+    const clearFilters = () => {
+        // Reset the selected filters
+        setSelectedFilters({
+            brand: "",
+            category: "",
+        });
+        // Reset the current page to 1 (optional)
+        setCurrentPage(1);
+        // Build URL to the base path "/product" (without any filters)
+        navigate("/product");
+        setLeftDrawerOpen(false)
+    };
+    const toggleSection = (id) => {
+        setOpenSections((prev) => ({
+            ...prev,
+            [id]: !prev[id],
+        }));
+    };
     return (
         <>
             <div className="w-full text-center py-3">
@@ -88,8 +109,8 @@ const BreadCrumbs = ({
             </div>
 
             {leftDrawerOpen && (
-                <div className="fixed top-0 left-0 z-40 h-screen w-80 bg-white shadow transition-transform animate-slide-right p-4 overflow-y-auto text-black">
-                    <div className="w-full sticky top-0 z-40 bg-white border-b border-gray-200 flex justify-between items-center mb-2 pb-3">
+                <div className="fixed top-0 left-0 z-40 h-screen w-80 bg-white/80 backdrop-blur-lg shadow transition-transform animate-slide-right p-4 overflow-y-auto text-black">
+                    <div className="w-full sticky top-0 z-40  border-b border-gray-200 flex justify-between items-center mb-2 pb-3">
                         <button onClick={() => setLeftDrawerOpen(false)} className="text-base font-semibold inline-flex items-center gap-2">
                             Filter options
                         </button>
