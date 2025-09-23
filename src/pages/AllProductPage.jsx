@@ -4,6 +4,8 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import Card from "../components/Card";
 import { brandMap, categorymap, sidebarDataBrand, sidebarDataCategory } from "../data/data";
 const baseUrl1 = import.meta.env.VITE_BASE_URL;
+import Loader from "../components/Loader";
+
 
 // for brand
 // https://aquawatchserver.onrender.com/product/search?q=Adi 
@@ -168,117 +170,120 @@ const AllProductPage = () => {
     return (
         <>
             {/* <BreadCrumbs selectedFilters sidebarDataBrand sidebarDataCategory/> */}
-            <BreadCrumbs
-                selectedFilters={selectedFilters}
-                setSelectedFilters={setSelectedFilters}
-                sidebarDataBrand={sidebarDataBrand}
-                sidebarDataCategory={sidebarDataCategory}
-                handleFilterChange={handleFilterChange}
-                setCurrentPage={setCurrentPage}
-          
-            />
-            <section className="container mx-auto grid grid-cols-12 gap-4">
-                <div className="hidden md:block md:col-span-3 p-4 border-r border-gray-200 text-sm text-gray-800">
-                    <h2 className="font-bold mb-4 text-xl">Filter</h2>
-                    <div className="mb-4 border-t border-gray-300 pt-2 ">
-                        <h2 className="font-bold mb-4 text-lg">Category</h2>
-                        <div className="cursor-pointer">
-                            {sidebarDataCategory.map(({ id, title, items }) => (
-                                <div key={id} className="pl-4 mb-4">
-                                    <button
-                                        onClick={() => {
-                                            handleFilterChange(null, title); // Corrected
-                                            toggleSection(id)
-                                        }}
-                                        className={`flex justify-between items-center w-full font-semibold mb-2 focus:outline-none hover:opacity-100 ${selectedFilters.category === title ? "opacity-100 font-bold text-grey-600 text-md" : "opacity-65"}`}
-                                    >
-                                        {title}
-                                        {items.length > 0 && (
-                                            <span className="opacity-75 hover:opacity-100">
-                                                {openSections[id] ? "▲" : "▼"}
-                                            </span>
+
+            {products === 0 ? <Loader /> : <>
+                <BreadCrumbs
+                    selectedFilters={selectedFilters}
+                    setSelectedFilters={setSelectedFilters}
+                    sidebarDataBrand={sidebarDataBrand}
+                    sidebarDataCategory={sidebarDataCategory}
+                    handleFilterChange={handleFilterChange}
+                    setCurrentPage={setCurrentPage} 
+                />
+
+                <section className="container mx-auto grid grid-cols-12 gap-4">
+                    <div className="hidden md:block md:col-span-3 p-4 border-r border-gray-200 text-sm text-gray-800">
+                        <h2 className="font-bold mb-4 text-xl">Filter</h2>
+                        <div className="mb-4 border-t border-gray-300 pt-2 ">
+                            <h2 className="font-bold mb-4 text-lg">Category</h2>
+                            <div className="cursor-pointer">
+                                {sidebarDataCategory.map(({ id, title, items }) => (
+                                    <div key={id} className="pl-4 mb-4">
+                                        <button
+                                            onClick={() => {
+                                                handleFilterChange(null, title); // Corrected
+                                                toggleSection(id)
+                                            }}
+                                            className={`flex justify-between items-center w-full font-semibold mb-2 focus:outline-none hover:opacity-100 ${selectedFilters.category === title ? "opacity-100 font-bold text-grey-600 text-md" : "opacity-65"}`}
+                                        >
+                                            {title}
+                                            {items.length > 0 && (
+                                                <span className="opacity-75 hover:opacity-100">
+                                                    {openSections[id] ? "▲" : "▼"}
+                                                </span>
+                                            )}
+                                        </button>
+
+                                        {openSections[id] && (
+                                            <ul className="pl-4 space-y-1 border-l border-gray-300">
+                                                {items.map((item) => (
+                                                    <li
+                                                        key={item}
+                                                        className={`cursor-pointer hover:text-gray-600 hover:opacity-100 ${selectedFilters.category === item ? "opacity-100 font-semibold" : "opacity-75"}`}
+                                                        onClick={() =>
+                                                            handleFilterChange(null, item)
+                                                        }
+                                                    >
+                                                        {item}
+                                                    </li>
+                                                ))}
+                                            </ul>
                                         )}
-                                    </button>
-
-                                    {openSections[id] && (
-                                        <ul className="pl-4 space-y-1 border-l border-gray-300">
-                                            {items.map((item) => (
-                                                <li
-                                                    key={item}
-                                                    className={`cursor-pointer hover:text-gray-600 hover:opacity-100 ${selectedFilters.category === item ? "opacity-100 font-semibold" : "opacity-75"}`}
-                                                    onClick={() =>
-                                                        handleFilterChange(null, item)
-                                                    }
-                                                >
-                                                    {item}
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    )}
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-
-                    <div className="mb-4 border-t border-gray-300 pt-2 ">
-                        <h2 className="font-bold mb-4 text-lg">Brand</h2>
-                        <div className="cursor-pointer">
-                            {sidebarDataBrand.map(({ id, title, items }) => (
-                                <div key={id} className="pl-4 mb-4">
-                                    <button
-                                        onClick={() => {
-                                            handleFilterChange(title, null)
-                                            toggleSection(id)
-                                        }}
-                                        className={`flex justify-between items-center w-full font-semibold mb-2 focus:outline-none hover:opacity-100 ${selectedFilters.brand === title ? "opacity-100 font-bold text-grey-600 text-md" : "opacity-65"}`}
-                                    >
-                                        {title}
-                                        {items.length > 0 && (
-                                            <span className="opacity-75 hover:opacity-100">
-                                                {openSections[id] ? "▲" : "▼"}
-                                            </span>
-                                        )}
-                                    </button>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-
-                    <div className="cursor-pointer mb-4 border-t border-gray-300 pt-2 ">
-                        <h2 className="font-bold mb-4 text-lg" onClick={() => {
-                            clearFilters()
-                        }}>Clear Filters</h2>
-
-
-                    </div>
-
-
-                </div>
-
-                <div className="col-span-12 md:col-span-9 p-4">
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-
-
-                        {products.slice(0, products.length - (products.length % 3)).map((product) => (
-                            <div className="h-full flex flex-col">
-                                <Card
-                                    key={product.productId}
-                                    title={product.productName}
-                                    price={product.productOriginalPrice}
-                                    coverImg={product.featuredimg}
-                                    id={product.productId}
-                                />
+                                    </div>
+                                ))}
                             </div>
-                        ))}
+                        </div>
+
+                        <div className="mb-4 border-t border-gray-300 pt-2 ">
+                            <h2 className="font-bold mb-4 text-lg">Brand</h2>
+                            <div className="cursor-pointer">
+                                {sidebarDataBrand.map(({ id, title, items }) => (
+                                    <div key={id} className="pl-4 mb-4">
+                                        <button
+                                            onClick={() => {
+                                                handleFilterChange(title, null)
+                                                toggleSection(id)
+                                            }}
+                                            className={`flex justify-between items-center w-full font-semibold mb-2 focus:outline-none hover:opacity-100 ${selectedFilters.brand === title ? "opacity-100 font-bold text-grey-600 text-md" : "opacity-65"}`}
+                                        >
+                                            {title}
+                                            {items.length > 0 && (
+                                                <span className="opacity-75 hover:opacity-100">
+                                                    {openSections[id] ? "▲" : "▼"}
+                                                </span>
+                                            )}
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className="cursor-pointer mb-4 border-t border-gray-300 pt-2 ">
+                            <h2 className="font-bold mb-4 text-lg" onClick={() => {
+                                clearFilters()
+                            }}>Clear Filters</h2>
+
+
+                        </div>
+
 
                     </div>
-                    <div className='w-full flex justify-center'>
-                        {currentPage < totalPages && (
-                            <div className="mt-6 inline-flex items-center justify-center text-gray-800 font-semibold px-4 py-2 border border-gray-300 hover:border-black transition rounded-none cursor-pointer" onClick={handleLoadMore}>Load more products...</div>
-                        )}
+
+                    <div className="col-span-12 md:col-span-9 p-4">
+                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+
+
+                            {products.slice(0, products.length - (products.length % 3)).map((product) => (
+                                <div className="h-full flex flex-col">
+                                    <Card
+                                        key={product.productId}
+                                        title={product.productName}
+                                        price={product.productOriginalPrice}
+                                        coverImg={product.featuredimg}
+                                        id={product.productId}
+                                    />
+                                </div>
+                            ))}
+
+                        </div>
+                        <div className='w-full flex justify-center'>
+                            {currentPage < totalPages && (
+                                <div className="mt-6 inline-flex items-center justify-center text-gray-800 font-semibold px-4 py-2 border border-gray-300 hover:border-black transition rounded-none cursor-pointer" onClick={handleLoadMore}>Load more products...</div>
+                            )}
+                        </div>
                     </div>
-                </div>
-            </section>
+                </section>
+            </>}
         </>
     )
 };

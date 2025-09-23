@@ -14,10 +14,8 @@ import PrivacyPolices from './pages/legal/PrivacyPolices.jsx';
 import ProductDetailPage from './pages/ProductDetailPage.jsx';
 import OriginalProductDetailPageWithprice from './pages/OriginalProductDetailPageWithprice.jsx';
 
-// import AllProducts from './pages/AllProducts.jsx';
 import AllProductPage from './pages/AllProductPage.jsx';
 
-// import Navbar from './components/Navbar.jsx';
 import NavBarWithSubmenu from './components/NavBarWithSubmenu.jsx';
 import Footers from './components/Footers.jsx'
 import ScrollToTop from './components/ScrollToTop.jsx';

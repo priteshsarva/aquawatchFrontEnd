@@ -2,7 +2,6 @@ import React from 'react'
 import Card from './Card';
 
 const ProductGride = ({ products }) => {
-    console.log(products.products);
 
 
     return (
