@@ -60,10 +60,9 @@ const ReadyToDispatch = () => {
 
                 {/* Grid */}
                 <div className=" mx-auto px-4">
-                    <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 md:gap-9">
+                    <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 md:gap-9 gap-2">
                         {readyToDispatch.map((watch, index) => (
                             <Link
-
                                 className="flex flex-col items-center text-center transform transition duration-300 hover:scale-105 hover:-translate-y-2"
                                 aria-label={`Visit product category ${watch.name}`}
                             >
