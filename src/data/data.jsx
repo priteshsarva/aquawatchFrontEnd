@@ -6389,24 +6389,60 @@ export const toaddincutvalue = 2000;
 export const margin = 1000;
 
 //----------------------------price game---------------------------------
+// old
+// export function calculateAddedPrice(price) {
+//   const basePrice = price * 1.5;
+
+//   if (basePrice < 2000) {
+//     return (price * 1.3 + 500).toFixed(2);
+//   } else {
+//     return (price * 1.3).toFixed(2);
+//   }
+// }
+
+// export function calculateDiscountedPrice(price) {
+//   const basePrice = price * 1.2;
+
+//   if (basePrice < 2000) {
+//     return (price * 1.2 + 200).toFixed(2);
+//   } else {
+//     return (price * 1.2).toFixed(2);
+//   }
+// }
+
+export function calculateDiscountedPrice(price) {
+  const basePrice = price;
+
+
+  if (price > 0 && price <= 500) {
+    return (basePrice + 750).toFixed(2); // Add 750 if price > 0 and <= 500
+  }
+  else if (price > 500 && price <= 4500) {
+    return (basePrice + 1000).toFixed(2); // Add 1000 if price > 500 and <= 4500
+  }
+  else if (price > 4500 && price <= 6000) {
+    return (basePrice + 1250).toFixed(2); // Add 1250 if price > 4500 and <= 6000
+  }
+  else if (price > 6000) {
+    return (basePrice + 1500).toFixed(2); // Add 1500 if price > 6000
+  }
+
+}
 
 export function calculateAddedPrice(price) {
   const basePrice = price * 1.5;
 
-  if (basePrice < 2000) {
-    return (price * 1.3 + 500).toFixed(2);
-  } else {
-    return (price * 1.3).toFixed(2);
+   if (price > 0 && price <= 500) {
+    return (basePrice + 750).toFixed(2); // Add 750 if price > 0 and <= 500
   }
-}
-
-export function calculateDiscountedPrice(price) {
-  const basePrice = price * 1.2;
-
-  if (basePrice < 2000) {
-    return (price * 1.2 + 200).toFixed(2);
-  } else {
-    return (price * 1.2).toFixed(2);
+  else if (price > 500 && price <= 4500) {
+    return (basePrice + 1000).toFixed(2); // Add 1000 if price > 500 and <= 4500
+  }
+  else if (price > 4500 && price <= 6000) {
+    return (basePrice + 1250).toFixed(2); // Add 1250 if price > 4500 and <= 6000
+  }
+  else if (price > 6000) {
+    return (basePrice + 1500).toFixed(2); // Add 1500 if price > 6000
   }
 }
 
