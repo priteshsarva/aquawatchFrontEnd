@@ -7,7 +7,7 @@ import { watchBrand } from '../data/data';
 const ShopbyBrand = () => {
     return (
         <>
-            <section className=" mx-auto px-4 py-10 bg-white">
+            <section className=" mx-auto px-4 py-10 pt-0 bg-white">
                 {/* Title */}
                 <div className=' container mx-auto px-4 py-10 bg-white'>
                     <h4 className=" section-title section-title-center mb-5">

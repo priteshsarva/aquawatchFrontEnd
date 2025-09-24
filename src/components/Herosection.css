@@ -1,0 +1,28 @@
+/* 9:16 aspect ratio */
+.h-screen {
+  height: 100vh; /* Full viewport height */
+}
+
+.swiper-container {
+  aspect-ratio: 9 / 16;
+  width: 100%;
+}
+
+.swiper-slide {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+/* Ensure that the hero banner keeps the 9:16 aspect ratio */
+@layer utilities {
+  .aspect-ratio-16-9 {
+    aspect-ratio: 16 / 9;
+  }
+}
+
+/* You can also specify a minimum height if you need to adjust for extremely small screens */
+@media (max-width: 640px) {
+  .aspect-ratio-16-9 {
+    height: auto; /* Auto adjust height for mobile view */
+  }
+}
