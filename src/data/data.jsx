@@ -1,7 +1,7 @@
 import manWearingWatch from '../assets/manholdingwatch.png'
 import womenholdingwatch1 from '../assets/womenholdingwatch1.png'
 import luxurywatches from '../assets/luxurywatches.png'
-import logo2 from '../assets/logo_1.png'
+import logo2 from '../assets/logo_2.png'
 // import logo1 from '../assets/logo.png '
 
 export const brand = "Aqua Watch"
