@@ -18,6 +18,7 @@ import {
 import { Truck, Recycle, Tag } from "lucide-react";
 import { msterCode } from '../data/data'
 import { useLocation } from 'react-router-dom';
+import BoxSelector from '../components/BoxSelector';
 
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
@@ -37,6 +38,20 @@ const ProductDetailPage = () => {
     const [quantity, setQuantity] = useState(1);
     const [openIndex, setOpenIndex] = useState(null);
     const location = useLocation();
+
+
+    const boxOptions = [
+        { id: "35953", name: "Audemars Piguet box", price: 800 },
+        { id: "35939", name: "Cartier Box", price: 800 },
+        { id: "35941", name: "G-Shock Kit Box", price: 400 },
+        { id: "45223", name: "Hublot Box", price: 800 },
+        {
+            id: "123",
+            name: "Rado Box",
+            price: 700,
+            image: "https://cdn.cartpe.in/images/gallery_sm/66d9cf55ee4080.jpg",
+        },
+    ];
 
 
     const toggle = (index) => {
@@ -268,30 +283,35 @@ const ProductDetailPage = () => {
                                 </p>
 
 
-                                {product.catName !== "Luxury Watch" &&
-                                    <div className="flex items-center space-x-4 my-4">
-                                        <div>
-                                            <div className="flex py-2 pe-3">
-                                                <span className="text-gray-300 mr-1 mt-1">₹</span>
-                                                <span className="font-semibold text-gray-300 text-3xl line-through pe-3">
-                                                    {parseInt(calculateAddedPrice(product.productOriginalPrice))}
-                                                </span>
+                                {/* {product.catName !== "Luxury Watch" && ""} */}
+                                <div className="flex items-center space-x-4 my-4">
+                                    <div>
+                                        <div className="flex py-2 pe-3">
+                                            <span className="text-gray-300 mr-1 mt-1">₹</span>
+                                            <span className="font-semibold text-gray-300 text-3xl line-through pe-3">
+                                                {parseInt(calculateAddedPrice(product.productOriginalPrice))}
+                                            </span>
 
-                                                <span className="text-black mr-1 mt-1">₹</span>
-                                                <span className="font-semibold text-black text-4xl">
-                                                    {parseInt(calculateDiscountedPrice(product.productOriginalPrice))}
-                                                </span>
-                                            </div>
+                                            <span className="text-black mr-1 mt-1">₹</span>
+                                            <span className="font-semibold text-black text-4xl">
+                                                {parseInt(calculateDiscountedPrice(product.productOriginalPrice))}
+                                            </span>
                                         </div>
+                                    </div>
 
-                                        {/* <div className="flex-1">
+                                    {/* <div className="flex-1">
                                         <p className="text-green-500 text-xl font-semibold">
                                             <span className="mr-2 text-sm text-gray-300 line-through">₹{calculateAddedPrice(product.productOriginalPrice)}</span> {calculateSavingsPercentage(product.productOriginalPrice)}%</p>
                                         <p className="text-gray-400 text-sm">Inclusive of all Taxes.</p>
                                     </div> */}
 
-                                    </div>
-                                }
+                                </div>
+
+                                <BoxSelector options={boxOptions}  productPrice={parseInt(calculateDiscountedPrice(product.productOriginalPrice))}/>
+
+
+
+
                                 <div className="flex items-center space-x-4 py-4">
 
                                     {/* Add to Cart Button */}
