@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { calculateAddedPrice, calculateDiscountedPrice, margin, toaddincutvalue } from '../data/data'
 
-const Card = ({ title, price, coverImg, id, key, calculateAddedPriceHidden }) => {
+const Card = ({ title, price, coverImg, id, key, calculateAddedPriceHidden, catName }) => {
 
     return (
         <div>
@@ -16,15 +16,17 @@ const Card = ({ title, price, coverImg, id, key, calculateAddedPriceHidden }) =>
                     </div>
                     <div className="px-4 py-3 bg-white">
                         <Link to={`/productpage/${id}`} className=""><h1 className="text-center text-gray-800 font-medium text-sm hover:text-black transition duration-300 ease-in-out line-clamp-2">{title}</h1></Link>
-                        <div className="flex py-2 justify-center">
-                            {/* <p className="mr-2 text-sm text-gray-300 line-through">₹{Number(price) + Number(toaddincutvalue)}</p> */}
-                            {!calculateAddedPriceHidden ?
-                                <p className="mr-2 text-sm text-gray-300 line-through">₹{calculateAddedPrice(price)}</p>
-                                : ""}
-                            {/* <p className="mr-2 text-sm font-semibold text-gray-600">₹{Number(price) + Number(margin)}</p> */}
-                            <p className="mr-2 text-sm font-semibold text-gray-600"> ₹{calculateDiscountedPrice(price)}</p>
 
-                        </div>
+                        {catName !== "Luxury Watch" &&
+                            <div className="flex py-2 justify-center">
+                                {/* <p className="mr-2 text-sm text-gray-300 line-through">₹{Number(price) + Number(toaddincutvalue)}</p> */}
+                                {!calculateAddedPriceHidden ?
+                                    <p className="mr-2 text-sm text-gray-300 line-through">₹{calculateAddedPrice(price)}</p>
+                                    : ""}
+                                {/* <p className="mr-2 text-sm font-semibold text-gray-600">₹{Number(price) + Number(margin)}</p> */}
+                                <p className="mr-2 text-sm font-bold text-gray-600"> ₹{calculateDiscountedPrice(price)}</p>
+                            </div>
+                        }
                         {/* <div className="flex">
                                     <div className="">
                                         <i className="fas fa-star text-yellow-400 text-xs"></i>

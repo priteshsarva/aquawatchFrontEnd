@@ -1,28 +1,24 @@
 import { useState, useEffect } from "react";
 import BreadCrumbs from "../components/BreadCrumbs";
-import { useParams, useNavigate, Link } from "react-router-dom";
+import { useParams, useNavigate, Link, useLocation } from "react-router-dom";
 import Card from "../components/Card";
 import { brandMap, categorymap, sidebarDataBrand, sidebarDataCategory } from "../data/data";
 const baseUrl1 = import.meta.env.VITE_BASE_URL;
 import Loader from "../components/Loader";
 
 
-// for brand
-// https://aquawatchserver.onrender.com/product/search?q=Adi 
-// for category
-// https://aquawatchserver.onrender.com/product/search?category=Mens%20Shoes&result=20&page=1
-// for page
-// https://aquawatchserver.onrender.com/product/search?category=Mens%20Shoes&&result=20&page=2
-
 
 const AllProductPage = () => {
-    const [products, setProducts] = useState([]);
+    const [products, setProducts] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [url, setUrl] = useState("");
     const [noProductFound, setNoProductFound] = useState(false);
     const { category, brand } = useParams();
     const navigate = useNavigate();
+    const location = useLocation();
+    console.log(location.pathname);
+
 
     const [selectedFilters, setSelectedFilters] = useState({
         category: "",
@@ -49,16 +45,24 @@ const AllProductPage = () => {
         let baseUrl = `${baseUrl1}/product/search?`;
         const params = [];
 
-        if (filters.brand && filters.brand.trim() !== "") {
-            // Map certain brand names to query terms if needed
+        if (location.pathname.includes('search')) {
+            // console.log('from search');
 
-
-            const brandQuery = brandMap[filters.brand] || filters.brand;
-            params.push(`q=${encodeURIComponent(brandQuery.slice(0, 3))}`);
+            if (filters.brand && filters.brand.trim() !== "") {
+                // Map certain brand names to query terms if needed
+                const brandQuery = brandMap[filters.brand] || filters.brand;
+                params.push(`q=${encodeURIComponent(brandQuery)}`);
+            }
+        } else {
+            if (filters.brand && filters.brand.trim() !== "") {
+                // Map certain brand names to query terms if needed
+                const brandQuery = brandMap[filters.brand] || filters.brand;
+                params.push(`q=${encodeURIComponent(brandQuery.slice(0, 3))}`);
+            }
         }
 
-        if (filters.category && filters.category.trim() !== "") {
 
+        if (filters.category && filters.category.trim() !== "") {
 
             const categoryQuery = categorymap[filters.category] || filters.category;
             params.push(`category=${encodeURIComponent(categoryQuery)}`);
@@ -71,9 +75,10 @@ const AllProductPage = () => {
         return baseUrl + params.join("&");
     };
 
-    useEffect(() => {
-        const fetchProducts = async () => {
-            const apiUrl = buildUrl(selectedFilters, currentPage);
+    const fetchProducts = async () => {
+        let apiUrl
+        if (selectedFilters.category || selectedFilters.brand) {
+            apiUrl = buildUrl(selectedFilters, currentPage);
             setUrl(apiUrl);
 
             try {
@@ -97,7 +102,36 @@ const AllProductPage = () => {
             } catch (error) {
                 console.error("Error fetching products:", error);
             }
-        };
+        } else if (location.pathname === '/product') {
+            apiUrl = buildUrl(selectedFilters, currentPage);
+            setUrl(apiUrl);
+
+            try {
+                const response = await fetch(apiUrl);
+                const data = await response.json();
+
+                if (data.results && data.results.length > 0) {
+                    if (currentPage === 1) {
+                        setProducts(data.results);
+                    } else {
+                        setProducts((prev) => [...prev, ...data.results]);
+                    }
+                    setNoProductFound(false);
+                    setTotalPages(data.totalPages);
+                } else {
+                    if (currentPage === 1) {
+                        setProducts([]);
+                        setNoProductFound(true);
+                    }
+                }
+            } catch (error) {
+                console.error("Error fetching products:", error);
+            }
+        }
+
+    };
+
+    useEffect(() => {
 
         fetchProducts();
     }, [selectedFilters, currentPage]);
@@ -171,14 +205,14 @@ const AllProductPage = () => {
         <>
             {/* <BreadCrumbs selectedFilters sidebarDataBrand sidebarDataCategory/> */}
 
-            {products === 0 ? <Loader /> : <>
+            {products == '' ? <Loader /> : <>
                 <BreadCrumbs
                     selectedFilters={selectedFilters}
                     setSelectedFilters={setSelectedFilters}
                     sidebarDataBrand={sidebarDataBrand}
                     sidebarDataCategory={sidebarDataCategory}
                     handleFilterChange={handleFilterChange}
-                    setCurrentPage={setCurrentPage} 
+                    setCurrentPage={setCurrentPage}
                 />
 
                 <section className="container mx-auto grid grid-cols-12 gap-4">
@@ -263,7 +297,7 @@ const AllProductPage = () => {
                         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
 
 
-                            {products.slice(0, products.length - (products.length % 3)).map((product) => (
+                            {products.map((product) => (
                                 <div className="h-full flex flex-col">
                                     <Card
                                         key={product.productId}
@@ -271,6 +305,7 @@ const AllProductPage = () => {
                                         price={product.productOriginalPrice}
                                         coverImg={product.featuredimg}
                                         id={product.productId}
+                                        catName={product.catName}
                                     />
                                 </div>
                             ))}
@@ -278,7 +313,7 @@ const AllProductPage = () => {
                         </div>
                         <div className='w-full flex justify-center'>
                             {currentPage < totalPages && (
-                                <div className="mt-6 inline-flex items-center justify-center text-gray-800 font-semibold px-4 py-2 border border-gray-300 hover:border-black transition rounded-none cursor-pointer" onClick={handleLoadMore}>Load more products...</div>
+                                <div className="mt-6 inline-flex items-center justify-center bg-gray-900 text-white font-semibold px-4 py-2 border hover:bg-gray-700 transition rounded-none cursor-pointer" onClick={handleLoadMore}>View More Products</div>
                             )}
                         </div>
                     </div>

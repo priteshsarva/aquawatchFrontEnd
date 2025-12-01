@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import Card from './Card'
 import PromoBar from './PromoBar';
 import { brand, brandlogo } from '../data/data';
+import AnnouncementBar from './AnnouncementBar';
 const baseUrl = import.meta.env.VITE_BASE_URL;
 
 export default function NavBarWithSubmenu() {
@@ -16,18 +17,25 @@ export default function NavBarWithSubmenu() {
 
 
   const navLinks = [
-    { name: "Rolex", url: "product/brand/Rolex" },
-    { name: "Omega", url: "product/brand/omeg" },
-    { name: "Patek Philippe", url: "product/brand/patek" },
-    { name: "Cartier", url: "product/brand/cart" },
-    { name: "Audemars Piguet", url: "product/brand/audem" },
-    { name: "Breitling", url: "product/brand/breitling" },
-    { name: "TAG Heuer", url: "product/brand/tag" },
-    { name: "Tissot", url: "product/brand/tiss" },
-    { name: "Seiko", url: "product/brand/seik" },
-    { name: "Fossil", url: "product/brand/foss" },
-    { name: "Citize", url: "product/brand/citi" },
+    // { name: "Rolex", url: "product/brand/Rolex" },
+    // { name: "Omega", url: "product/brand/omeg" },
+    // { name: "Patek Philippe", url: "product/brand/patek" },
+    // { name: "Cartier", url: "product/brand/cart" },
+    // { name: "Audemars Piguet", url: "product/brand/audem" },
+    // { name: "Breitling", url: "product/brand/breitling" },
+    // { name: "TAG Heuer", url: "product/brand/tag" },
+    // { name: "Tissot", url: "product/brand/tiss" },
+    // { name: "Seiko", url: "product/brand/seik" },
+    // { name: "Fossil", url: "product/brand/foss" },   
+    // { name: "Citize", url: "product/brand/citi" },
+    { name: "Home", url: "/" },
+    { name: "Shop by Brands ", url: "/home#shopByBrand" },
+    { name: "Men's Watches", url: "/product/category/Men's%20Watch" },
+    { name: "Women's Watches", url: "/product/category/Ladies Watch" },
+    { name: "Luxury collection", url: "/product/category/Luxury Watch" },
+    { name: "Contact info", url: "#contactus" },
   ];
+
 
 
   const handleSearch = (e) => {
@@ -35,16 +43,21 @@ export default function NavBarWithSubmenu() {
     setSearchTerm(term);
 
     console.log(term);
-    let urls = `${baseUrl}/product/search?q=${term}`;
-    fetch(urls, {
-      method: 'GET',
-    })
-      .then(response => response.json())
-      .then(data => {
-        console.log(data.results);
-        setSearchResults(data.results);
+
+    if (term.trim().length >= 3) {
+      let urls = `${baseUrl}/product/search?q=${term}`;
+      fetch(urls, {
+        method: 'GET',
       })
-      .catch(error => console.error('Error:', error));
+        .then(response => response.json())
+        .then(data => {
+          console.log(data.results);
+          setSearchResults(data.results);
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
+
   };
 
   const handleCloseSearch = () => {
@@ -87,7 +100,7 @@ export default function NavBarWithSubmenu() {
             />
           </div>
           <div className="text-sm text-gray-500">
-            {searchTerm.trim() === '' ? (
+            {searchTerm.trim().length <= 2 ? (
               <p className="text-center mt-4">Please enter a search term to see results.</p>
             ) : (
               <>
@@ -101,13 +114,14 @@ export default function NavBarWithSubmenu() {
                             title={product.productName}
                             price={product.productOriginalPrice}
                             coverImg={product.featuredimg}
-                            id={product.productId}
+                            id={product.productId} 
+                            catName={product.catName}
                           />
                         ))}
                       </div>
                     </div>
                     <Link
-                      to={`/search/${searchTerm}`}
+                      to={`/search/brand/${searchTerm}`} 
                       onClick={handleCloseSearch}
                       className="w-full flex justify-center mt-4 btn fw-semibold px-4 rounded-none text-dark"
                     >
@@ -147,7 +161,7 @@ export default function NavBarWithSubmenu() {
         <div className="fixed top-0 left-0 z-40 h-screen w-80 bg-white/80 backdrop-blur-lg shadow transition-transform animate-slide-right p-4 overflow-y-auto text-black">
           <div className="w-full sticky top-0 z-40   border-b border-gray-500 flex justify-between items-center mb-2 pb-3">
             <Link to='/' onClick={() => setLeftDrawerOpen(false)} className="text-base font-semibold text-gray-500 inline-flex items-center gap-2">
-              <img src={brandlogo} alt={brand} className="h-12 w-auto" />
+              <img src={brandlogo} alt={brand} className="h-15 w-auto" />
             </Link>
             <button
               onClick={() => setLeftDrawerOpen(false)}
@@ -163,6 +177,7 @@ export default function NavBarWithSubmenu() {
               <li key={index}>
                 <Link
                   to={link.url}
+                  onClick={() => setLeftDrawerOpen(false)}
                   className="block px-4 py-2 rounded-md hover:bg-gray-200 transition-colors duration-200 cursor-pointer"
                 >
                   {link.name}
@@ -175,6 +190,7 @@ export default function NavBarWithSubmenu() {
 
       {/* 🌐 Navbar */}
       <nav className="sticky top-0 z-30 bg-white/70 backdrop-blur-md border-b border-gray-200">
+        <AnnouncementBar />
         <div className="max-w-screen-xl mx-auto px-4 py-3 flex items-center justify-between">
           {/* Left: Hamburger (mobile only) */}
           <button
@@ -187,7 +203,7 @@ export default function NavBarWithSubmenu() {
           {/* Center: Logo */}
           <div className="flex-1 flex justify-center ">
             <Link to="/#" className="inline-flex items-center">
-              <img src={brandlogo} alt={brand} className="h-12 w-auto" />
+              <img src={brandlogo} alt={brand} className="h-15 w-auto" />
             </Link>
           </div>
 
@@ -216,8 +232,9 @@ export default function NavBarWithSubmenu() {
             ))}
           </ul>
         </div>
+        <PromoBar />
       </nav>
-      <PromoBar />
+
     </>
   );
 }

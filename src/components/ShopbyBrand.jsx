@@ -7,10 +7,10 @@ import { watchBrand } from '../data/data';
 const ShopbyBrand = () => {
     return (
         <>
-            <section className=" mx-auto px-4 py-10 pt-0 bg-white">
+            <section className=" mx-auto px-4 py-10 pt-0 bg-white" id='shopByBrand'>
                 {/* Title */}
                 <div className=' container mx-auto px-4 py-10 bg-white'>
-                    <h4 className=" section-title section-title-center mb-5">
+                    <h4 className=" section-title section-title-center mb-5"  >
                         <b></b>
                         <span className="text-xl  text-black tracking-wide uppercase">
                             Shop by Brand
@@ -40,7 +40,7 @@ const ShopbyBrand = () => {
                                 </div>
 
                                 {/* Text */}
-                                <h5 className="uppercase text-xs text-black">
+                                <h5 className="uppercase text-xs text-neutral-700">
                                     {watch.name}
                                 </h5>
                             </Link>

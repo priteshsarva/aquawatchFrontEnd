@@ -13,6 +13,21 @@
   justify-content: center;
   align-items: center;
 }
+.custom-height {
+    height: calc(100vh - 125px); /* Fallback for older browsers */
+  height: calc(100dvh - 125px);
+}
+@media (min-width: 768px) {
+  .custom-height {
+    height: calc(100vh - 182px);
+  }
+}
+@media (min-width: 867px) {
+  .custom-height {
+    height: calc(100vh - 162px);
+  }
+}
+
 /* Ensure that the hero banner keeps the 9:16 aspect ratio */
 @layer utilities {
   .aspect-ratio-16-9 {

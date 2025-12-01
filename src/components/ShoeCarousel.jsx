@@ -1,6 +1,5 @@
 import Slider from 'react-slick';
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
+
 // import { useCart } from '../contexts/CartContext';
 import './ShoeCarousel.css'
 import { Link } from 'react-router-dom';
@@ -45,7 +44,9 @@ export default function ShoeCarousel({ productss }) {
     slidesToScroll: 1,
     arrows: true,
     swipeToSlide: true,
-
+    // 👇 Add autoplay
+    autoplay: true,
+    autoplaySpeed: 2000, // change speed (ms) to your needs
     // lazyLoad: true,
 
     className: "slider variable-width",
@@ -99,7 +100,7 @@ export default function ShoeCarousel({ productss }) {
                 price={product.productOriginalPrice}
                 coverImg={product.featuredimg}
                 id={product.productId}
-             
+                catName={product.catName}
               />
             </div>
           </div>

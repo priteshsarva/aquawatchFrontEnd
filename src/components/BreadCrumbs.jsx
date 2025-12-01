@@ -1,17 +1,40 @@
 import React, { useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-const BreadCrumbs = ({
-    selectedFilters,
-    sidebarDataBrand,
-    sidebarDataCategory,
-    handleFilterChange,
-    setSelectedFilters,
-    setCurrentPage
-}) => {
+import { faFilter, faSliders, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
+
+
+const BreadCrumbs = ({ selectedFilters, sidebarDataBrand, sidebarDataCategory, handleFilterChange, setSelectedFilters, setCurrentPage }) => {
+
+
     const [leftDrawerOpen, setLeftDrawerOpen] = useState(false);
     const combinedSections = [...sidebarDataCategory, ...sidebarDataBrand];
     const navigate = useNavigate();
+
+
+
+
+    const [searchQuery, setSearchQuery] = useState("");
+
+
+    const handleSearchChange = (event) => {
+        console.log(selectedFilters.category);
+        
+        setSearchQuery(event.target.value);
+        handleFilterChange(event.target.value, null);
+    };
+
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        // Handle form submission, e.g., call an API or redirect
+        console.log(`Searching for: ${searchQuery}`);
+    };
+
+
+
+
+
 
     const [openSections, setOpenSections] = useState(
         combinedSections.reduce((acc, section) => {
@@ -48,32 +71,33 @@ const BreadCrumbs = ({
             [id]: !prev[id],
         }));
     };
+
     return (
         <>
             <div className="w-full text-center py-3">
                 <nav aria-label="breadcrumb" className="block w-full">
-                    <ol className="flex w-full flex-wrap items-center rounded-md bg-blue-gray-50 bg-opacity-60 py-2 px-4 justify-center">
+                    <ol className="flex w-full flex-wrap items-center rounded-md bg-neutral-gray-50 bg-opacity-60 py-2 px-4 justify-center">
                         {/* Home breadcrumb */}
-                        <li className="flex items-center font-sans text-sm font-normal leading-normal text-blue-gray-900 antialiased">
+                        <li className="flex items-center font-sans text-sm font-normal leading-normal text-neutral-gray-900 antialiased">
                             <Link
                                 to="/"
-                                className="flex cursor-pointer items-center font-sans text-sm font-normal leading-normal text-blue-gray-900 antialiased transition-colors duration-300 hover:text-gray-800 opacity-60 hover:opacity-100"
+                                className="flex cursor-pointer items-center font-sans text-sm font-normal leading-normal text-neutral-gray-900 antialiased transition-colors duration-300 hover:text-gray-800 opacity-60 hover:opacity-100"
                             >
                                 <span>Home</span>
                             </Link>
-                            <span className="pointer-events-none mx-2 select-none font-sans text-sm font-normal leading-normal text-blue-gray-500 antialiased"> / </span>
+                            <span className="pointer-events-none mx-2 select-none font-sans text-sm font-normal leading-normal text-neutral-gray-500 antialiased"> / </span>
                         </li>
 
                         {/* Category breadcrumb */}
                         {category && (
-                            <li className="flex items-center font-sans text-sm font-normal leading-normal text-blue-gray-900 antialiased">
+                            <li className="flex items-center font-sans text-sm font-normal leading-normal text-neutral-gray-900 antialiased">
                                 <Link
                                     to={`/product/category/${encodeURIComponent(category)}`}
-                                    className={`flex cursor-pointer items-center font-sans text-sm leading-normal text-blue-gray-900 antialiased transition-colors duration-300 hover:text-gray-800 opacity-60 hover:opacity-100 ${brand ? ' ' : 'font-medium text-blue-gray-900 opacity-100 '}`}
+                                    className={`flex cursor-pointer items-center font-sans text-sm leading-normal text-neutral-gray-900 antialiased transition-colors duration-300 hover:text-gray-800 opacity-60 hover:opacity-100 ${brand ? ' ' : 'font-medium text-neutral-gray-900 opacity-100 '}`}
                                 >
                                     <span>{category}</span>
                                 </Link>
-                                <span className={`pointer-events-none mx-2 select-none font-sans text-sm font-normal leading-normal text-blue-gray-500 antialiased ${brand ? 'block' : 'hidden'}`}>
+                                <span className={`pointer-events-none mx-2 select-none font-sans text-sm font-normal leading-normal text-neutral-gray-500 antialiased ${brand ? 'block' : 'hidden'}`}>
                                     /
                                 </span>
 
@@ -82,10 +106,10 @@ const BreadCrumbs = ({
 
                         {/* Brand breadcrumb */}
                         {brand && (
-                            <li className="flex items-center font-sans text-sm font-normal leading-normal text-blue-gray-900 antialiased">
+                            <li className="flex items-center font-sans text-sm font-normal leading-normal text-neutral-gray-900 antialiased">
                                 <Link
                                     to={`/product/brand/${encodeURIComponent(brand)}`}
-                                    className={`flex cursor-pointer items-center font-sans text-sm leading-normal text-blue-gray-900 antialiased transition-colors duration-300 hover:text-gray-800 opacity-60 hover:opacity-100 font-medium text-blue-gray-900 opacity-100 `}
+                                    className={`flex cursor-pointer items-center font-sans text-sm leading-normal text-neutral-gray-900 antialiased transition-colors duration-300 hover:text-gray-800 opacity-60 hover:opacity-100 font-medium text-neutral-gray-900 opacity-100 `}
                                 >
                                     <span>{brand}</span>
                                 </Link>
@@ -94,17 +118,75 @@ const BreadCrumbs = ({
 
                         {/* Default "Products" breadcrumb if both category and brand are empty */}
                         {showProductBreadcrumb && (
-                            <li className="flex items-center font-sans text-sm font-normal leading-normal text-blue-gray-900 antialiased">
+                            <li className="flex items-center font-sans text-sm font-normal leading-normal text-neutral-gray-900 antialiased">
                                 <Link
                                     to="/product"
-                                    className="font-medium text-blue-gray-900 transition-colors hover:text-gray-800"
+                                    className="font-medium text-neutral-gray-900 transition-colors hover:text-gray-800"
                                 >
                                     <span>Products</span>
                                 </Link>
                             </li>
                         )}
                     </ol>
-                    <button onClick={() => setLeftDrawerOpen(true)} className="md:hidden font-medium text-blue-gray-900 transition-colors hover:text-gray-800" >Filter </button>
+                    <ol className=" w-full flex-wrap items-center rounded-md bg-neutral-gray-50 bg-opacity-60 pb-2 px-4 justify-center">
+
+                        <li className=" items-center font-sans text-sm font-normal leading-normal text-neutral-gray-900 antialiased">
+                            <button onClick={() => setLeftDrawerOpen(true)} className="md:hidden font-medium text-neutral-gray-900 transition-colors hover:text-gray-800 " >
+                                <FontAwesomeIcon icon={faSliders} className='me-1' />
+                                Filter </button>
+                        </li>
+
+                        <li className=" items-center font-sans text-sm font-normal leading-normal text-neutral-gray-900 antialiased block md:hidden">
+
+
+                            <div className="header-search-form-wrapper">
+                                <div className="searchform-wrapper ux-search-box relative is-normal">
+                                    <form
+                                        role="search"
+                                        method="get"
+                                        className="searchform"
+                                        // action="https://crepculture.com/"
+                                        onSubmit={handleSubmit}
+                                    >
+                                        <div className="flex flex-row relative">
+                                            <div className="flex flex-col flex-grow">
+                                                <label
+                                                    className="screen-reader-text sr-only"
+                                                    htmlFor="woocommerce-product-search-field-2"
+                                                >
+                                                    Search for:
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    id="woocommerce-product-search-field-2"
+                                                    className="search-field mb-0 p-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-neutral-500"
+                                                    placeholder="Search…"
+                                                    value={searchQuery}
+                                                    onChange={handleSearchChange}
+                                                    name="s"
+                                                    autoComplete="off"
+                                                />
+
+
+                                                <input type="hidden" name="post_type" value="product" />
+                                            </div>
+                                            <div className="flex flex-col">
+                                                <button
+                                                    type="submit"
+                                                    value="Search"
+                                                    className="ux-search-submit submit-button secondary button icon mb-0 bg-neutral-950  text-white p-2 rounded-lg focus:outline-none hover:bg-neutral-700 ms-2"
+                                                    aria-label="Submit"
+                                                >
+                                                    <FontAwesomeIcon icon={faMagnifyingGlass} />
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+
+                        </li>
+                    </ol>
                 </nav>
             </div>
 

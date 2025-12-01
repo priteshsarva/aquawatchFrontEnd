@@ -1,6 +1,7 @@
 import './App.css'
 import { Routes, Route, Navigate } from 'react-router-dom';
-
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
@@ -12,13 +13,15 @@ import ShippingPolicy from './pages/legal/ShippingPolicy.jsx';
 import ReturnPolicy from './pages/legal/ReturnPolicy.jsx';
 import PrivacyPolices from './pages/legal/PrivacyPolices.jsx';
 import ProductDetailPage from './pages/ProductDetailPage.jsx';
-import OriginalProductDetailPageWithprice from './pages/OriginalProductDetailPageWithprice.jsx';
+// import OriginalProductDetailPageWithprice from './pages/OriginalProductDetailPageWithprice.jsx';
 
 import AllProductPage from './pages/AllProductPage.jsx';
 
 import NavBarWithSubmenu from './components/NavBarWithSubmenu.jsx';
-import Footers from './components/Footers.jsx'
+// import Footers from './components/Footers.jsx'
+import Footers1 from './components/Footers1.jsx'
 import ScrollToTop from './components/ScrollToTop.jsx';
+// import ScrollToHashElement from './components/ScrollToHashElement.jsx';
 import {msterCode } from './data/data.jsx'
 
 
@@ -46,8 +49,8 @@ const App = () => {
 
   return (
     <>
-      {/* <Navbar /> */}
       <NavBarWithSubmenu />
+      {/* <ScrollToHashElement /> */}
       <ScrollToTop />
       <Routes>
         <Route path="/" element={<Home />} />
@@ -57,19 +60,23 @@ const App = () => {
         <Route path="/ShippingPolicy" element={<ShippingPolicy />} />
         <Route path="/TermsOfService" element={<TermsOfService />} />
         <Route path="/productpage/:id" element={<ProductDetailPage />} />
-        <Route path={`/productpage/:id/${msterCode}`} element={<OriginalProductDetailPageWithprice />} />
+        <Route path={`/productpage/:id/${msterCode}`} element={<ProductDetailPage />} />
+        {/* OLD */}
+        {/* <Route path={`/productpage/:id/${msterCode}`} element={<OriginalProductDetailPageWithprice />} /> */}
 
         <Route path="/product" element={<AllProductPage />} />
         <Route path="/product/category/:category" element={<AllProductPage />} />
         <Route path="/product/brand/:brand" element={<AllProductPage />} />
+        <Route path="/search/brand/:brand" element={<AllProductPage />} />
         <Route path="/product/category/:category/brand/:brand" element={<AllProductPage />} />
-
 
         {/* Catch-all route for unmatched URLs */}
         <Route path="*" element={<Navigate to="/" replace />} />
         {/* <Route path="*" element={<NotFound />} /> */}
       </Routes>
-      <Footers />
+      {/* <Footers /> */}
+      <Footers1 />
+
 
     </>
   )
