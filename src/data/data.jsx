@@ -23,6 +23,33 @@ import img16 from '../assets/happcustomer/img16.webp'
 import img17 from '../assets/happcustomer/img17.webp'
 import img18 from '../assets/happcustomer/img18.webp'
 
+import rd1 from '../assets/readyToDispatch/1.jpeg'
+import rd2 from '../assets/readyToDispatch/2.jpeg'
+import rd3 from '../assets/readyToDispatch/3.jpeg'
+import rd4 from '../assets/readyToDispatch/4.jpeg'
+import rd5 from '../assets/readyToDispatch/5.jpeg'
+import rd6 from '../assets/readyToDispatch/6.jpeg'
+import rd7 from '../assets/readyToDispatch/7.jpeg'
+import rd8 from '../assets/readyToDispatch/8.jpeg'
+import rd9 from '../assets/readyToDispatch/9.jpeg'
+import rd10 from '../assets/readyToDispatch/10.jpeg'
+import rd11 from '../assets/readyToDispatch/11.jpeg'
+import rd12 from '../assets/readyToDispatch/12.jpeg'
+import rd13 from '../assets/readyToDispatch/13.jpeg'
+import rd14 from '../assets/readyToDispatch/14.jpeg'
+import rd15 from '../assets/readyToDispatch/15.jpeg'
+import rd16 from '../assets/readyToDispatch/16.jpeg'
+import rd17 from '../assets/readyToDispatch/17.jpeg'
+
+import breguet from '../assets/watch/Breguet.jpg'
+import casio from '../assets/watch/Casio.jpg'
+import jacob from '../assets/watch/Jacob&co.jpg'
+import vacheron from '../assets/watch/Vacheron.jpg'
+import seiko from '../assets/watch/seiko.jpg'
+import michelkors from '../assets/watch/Michelkors.jpg'
+import nike from '../assets/watch/nike.jpg'
+
+
 export const brand = "Aqua Watch"
 export const BrandEmail = "aquawatch@gmail.com"
 export const Brandphone = "+91 95862 35982"
@@ -54,66 +81,26 @@ export const categorymap = {
 
 // Sample data for brands
 export const sidebarDataBrand = [
-  {
-    id: "brandRolex",
-    title: "Rolex",
-    items: [],
-  },
-  // {
-  //     id: "brandFossil",
-  //     title: "Fossil",
-  //     items: ["Chronograph", "Neutra"],
-  // },
-  // {
-  //     id: "brandEmpty",
-  //     title: "Unbranded",
-  //     items: [],
-  // },
-  {
-    id: "brandOmega",
-    title: "Omega",
-    items: [],
-  },
-  {
-    id: "brandPatekPhilippe",
-    title: "Patek Philippe",
-    items: [],
-  },
-  {
-    id: "brandCartier",
-    title: "Cartier",
-    items: [],
-  },
-  {
-    id: "brandAudemarsPiguet",
-    title: "Audemars Piguet",
-    items: [],
-  },
-  {
-    id: "brandBreitling",
-    title: "Breitling",
-    items: [],
-  },
-  {
-    id: "brandTAGHeuer",
-    title: "TAG Heuer",
-    items: [],
-  },
-  {
-    id: "brandTissot",
-    title: "Tissot",
-    items: [],
-  },
-  {
-    id: "brandSeiko",
-    title: "Seiko",
-    items: [],
-  },
-  {
-    id: "brandCitizen",
-    title: "Citizen",
-    items: [],
-  },
+  { id: "brandRolex", title: "Rolex", items: [] },
+  { id: "brandOmega", title: "Omega", items: [] },
+  { id: "brandAudemarsPiguet", title: "Audemars Piguet", items: [] },
+  { id: "brandGshock", title: "G-shock", items: [] },
+  { id: "brandArmani", title: "Armani", items: [] },
+  { id: "brandFossil", title: "Fossil", items: [] },
+  { id: "brandTissot", title: "Tissot", items: [] },
+  { id: "brandRado", title: "Rado", items: [] },
+  { id: "brandMaserati", title: "Maserati", items: [] },
+  { id: "brandPatekPhillipe", title: "Patek Phillipe", items: [] },
+  { id: "brandCartier", title: "Cartier", items: [] },
+  { id: "brandHublot", title: "Hublot", items: [] },
+  { id: "brandEdifice", title: "Edifice", items: [] },
+  { id: "brandCasio", title: "Casio", items: [] },
+  { id: "brandJacobAndCo", title: "Jacob & Co", items: [] },
+  { id: "brandVacheron", title: "Vacheron", items: [] },
+  { id: "brandSeiko", title: "Seiko", items: [] },
+  { id: "brandMichaelKors", title: "Michael Kors", items: [] },
+  { id: "brandBreguet", title: "Breguet", items: [] },
+  { id: "brandNike", title: "Nike", items: [] },
 ];
 
 export const brandMap = {
@@ -143,6 +130,26 @@ export const box = [
     "sizeName": "[\"\"]",
     "catName": "Mens Watch"
   },]
+
+export const boxOptions = [
+  { id: "1", image: rd1, name: "CHANEL", price: 500 },
+  { id: "2", image: rd2, name: "Audemars Piguet", price: 800 },
+  { id: "3", image: rd3, name: "CARTIER", price: 800 },
+  { id: "4", image: rd4, name: "CASIO", price: 500 },
+  { id: "5", image: rd5, name: "DIESEL", price: 500 },
+  { id: "6", image: rd6, name: "LONGINES", price: 500 },
+  { id: "7", image: rd7, name: "SEIKO", price: 800 },
+  { id: "8", image: rd8, name: "MONTBLANC", price: 500 },
+  { id: "9", image: rd9, name: "SWAROVSKI", price: 500 },
+  { id: "10", image: rd10, name: "MONTBLANC", price: 500 },
+  { id: "11", image: rd11, name: "LONGINES", price: 500 },
+  { id: "12", image: rd12, name: "TOMFORD", price: 500 },
+  { id: "13", image: rd13, name: "DIOR", price: 500 },
+  { id: "14", image: rd14, name: "MONTBLANC", price: 500 },
+  { id: "15", image: rd15, name: "CASIO VINTAGE SERIES", price: 500 },
+  { id: "16", image: rd16, name: "DIOR", price: 500 },
+  { id: "17", image: rd17, name: "COACH", price: 500 }
+];
 
 
 export const products = [
@@ -6402,7 +6409,49 @@ export const watchBrand = [
     url: "/product/brand/edifice/",
     image: "https://crepculture.com/wp-content/uploads/2024/10/efr-552d-1avuef2-1.webp",
     count: 12
-  }
+  },
+  {
+    name: "Casio",
+    url: "/product/brand/casi/",
+    image: casio,
+    count: 12
+  },
+  {
+    name: "Jacob & Co",
+    url: "/product/brand/JACOB/",
+    image: jacob,
+    count: 12
+  },
+  {
+    name: "Vacheron",
+    url: "/product/brand/Vacheron/",
+    image: vacheron,
+    count: 12
+  },
+  {
+    name: "Seiko",
+    url: "/product/brand/Seiko/",
+    image: seiko,
+    count: 12
+  },
+  {
+    name: "Michael Kors",
+    url: "/product/brand/Michael/",
+    image: michelkors,
+    count: 12
+  },
+  {
+    name: "Breguet",
+    url: "/product/brand/Breguet/",
+    image: breguet,
+    count: 12
+  },
+  {
+    name: "Nike",
+    url: "/product/brand/Nike/",
+    image: nike,
+    count: 12
+  },
 ];
 
 
@@ -6454,7 +6503,7 @@ export function calculateDiscountedPrice(price) {
 export function calculateAddedPrice(price) {
   const basePrice = price * 1.5;
 
-   if (price > 0 && price <= 500) {
+  if (price > 0 && price <= 500) {
     return (basePrice + 750).toFixed(2); // Add 750 if price > 0 and <= 500
   }
   else if (price > 500 && price <= 4500) {

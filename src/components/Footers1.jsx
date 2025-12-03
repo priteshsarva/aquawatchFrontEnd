@@ -8,10 +8,14 @@ import { FaInstagram, FaFacebookSquare, FaWhatsapp } from 'react-icons/fa';
 import './Footer1.css'
 import { Link } from 'react-router-dom';
 import { brand, BrandEmail, brandlogo, Brandphone } from '../data/data';
+import ReadyToDispatch from './ReadyToDispatch';
+
 
 const Footers1 = () => {
   return (
     <>
+    <ReadyToDispatch />
+    
       {/* ========== FOOTER ========== */}
 
       <div className="features-section">
