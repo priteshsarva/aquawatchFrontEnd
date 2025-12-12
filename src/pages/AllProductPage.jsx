@@ -17,7 +17,7 @@ const AllProductPage = () => {
     const { category, brand } = useParams();
     const navigate = useNavigate();
     const location = useLocation();
-    console.log(location.pathname);
+    // console.log(location.pathname);
 
 
     const [selectedFilters, setSelectedFilters] = useState({
@@ -100,7 +100,7 @@ const AllProductPage = () => {
                     }
                 }
             } catch (error) {
-                console.error("Error fetching products:", error);
+                // console.error("Error fetching products:", error);
             }
         } else if (location.pathname === '/product') {
             apiUrl = buildUrl(selectedFilters, currentPage);
@@ -125,7 +125,7 @@ const AllProductPage = () => {
                     }
                 }
             } catch (error) {
-                console.error("Error fetching products:", error);
+                // console.error("Error fetching products:", error);
             }
         }
 

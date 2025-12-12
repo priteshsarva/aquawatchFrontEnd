@@ -174,7 +174,7 @@ const ProductDetailPage = () => {
 
 
     useEffect(() => {
-        console.log(baseUrl);
+        // console.log(baseUrl);
         sethash(window.location.hash);
 
         // Fetch product details
@@ -187,9 +187,9 @@ const ProductDetailPage = () => {
                 setSelectedImage(Array.isArray(data.results[0].image) ? data.results.image[0] : data.results[0].featuredimg);
                 setimageUrlArray(JSON.parse(data.results[0].imageUrl));
                 // setsizes(JSON.parse(data.results[0].sizeName));
-                console.log("data", data);
+                // console.log("data", data);
             })
-            .catch(error => console.error('Error:', error));
+            // .catch(error => console.error('Error:', error));
 
     }, [id]); // Add id as dependency
 
@@ -202,9 +202,9 @@ const ProductDetailPage = () => {
                 .then(response => response.json())
                 .then(data => {
                     setsimillarproducts(data.results);
-                    console.log(data.results);
+                    // console.log(data.results);
                 })
-                .catch(error => console.error('Error in Similar:', error));
+                // .catch(error => console.error('Error in Similar:', error));
         }
     }, [product]); // This remains unchanged
 
@@ -660,7 +660,7 @@ const ProductDetailPage = () => {
                                     <div className="mt-6 w-full">
                                         <button
                                             onClick={() => {
-                                                console.log(`User is interested in ${product.productName}`);
+                                                // console.log(`User is interested in ${product.productName}`);
 
                                                 const whatsappUrl = `https://api.whatsapp.com/send?phone=${Brandphone}&text=${encodeURIComponent(
                                                     `👋 Hello,\n\nI'm interested in moving forward through the *Step by Step* process on your site.\n\n🛍️ *Product*: ${product.productName}\n💰 *Price*: ~₹${parseInt(

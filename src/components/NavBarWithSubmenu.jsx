@@ -42,7 +42,7 @@ export default function NavBarWithSubmenu() {
     const term = e.target.value.toLowerCase();
     setSearchTerm(term);
 
-    console.log(term);
+    // console.log(term);
 
     if (term.trim().length >= 3) {
       let urls = `${baseUrl}/product/search?q=${term}`;
@@ -51,10 +51,10 @@ export default function NavBarWithSubmenu() {
       })
         .then(response => response.json())
         .then(data => {
-          console.log(data.results);
+          // console.log(data.results);
           setSearchResults(data.results);
         })
-        .catch(error => console.error('Error:', error));
+        // .catch(error => console.error('Error:', error));
     }
 
 
