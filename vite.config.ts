@@ -5,5 +5,7 @@ import flowbiteReact from "flowbite-react/plugin/vite";
 
 // https://vite.dev/config/
 export default defineConfig({
+  //hide base vercel or netlify
+  base: '/aquawatchFrontEnd/',
   plugins: [react(), tailwindcss(), flowbiteReact()],
 })

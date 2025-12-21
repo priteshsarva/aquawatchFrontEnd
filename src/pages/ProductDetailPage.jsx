@@ -87,7 +87,7 @@ const ProductDetailPage = () => {
             answer: (
                 <div className="space-y-3 text-gray-700 text-base leading-relaxed">
                     <p><strong>Exchange & Store Credit Policy</strong></p>
-                    <p>At <em>Timekeepers</em>, we do not offer cash refunds. Instead, we provide easy exchange and store credit options to ensure customer satisfaction.</p>
+                    <p>At <em>AquaWatch</em>, we do not offer cash refunds. Instead, we provide easy exchange and store credit options to ensure customer satisfaction.</p>
                     <p>
                         <strong>Exchange Window:</strong> You may request an exchange within <strong>48 hours of delivery</strong> by contacting our support team.
                     </p>
@@ -104,7 +104,7 @@ const ProductDetailPage = () => {
                     <p>
                         <strong>Damaged / Defective Items:</strong> If the product is delivered damaged or defective, we will provide a free replacement of the same model (subject to availability), subject to unboxing video proof.
                     </p>
-                    <p>Your trust matters to us — with store credit, your money always stays safe with Timekeepers.</p>
+                    <p>Your trust matters to us — with store credit, your money always stays safe with AquaWatch.</p>
                 </div>
             ),
         }

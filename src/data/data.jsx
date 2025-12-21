@@ -55,11 +55,11 @@ export const BrandEmail = "aquawatch@gmail.com"
 export const Brandphone = "+91 95862 35982"
 export const BrandUrl = "aquawatch.com"
 export const msterCode = "vikash"
-export const joinUsOnWhatsapp = 'https://wa.me/919586235982'
+export const joinUsOnWhatsapp = 'https://chat.whatsapp.com/DA4fhLpERDSDUBzcguRmjK'
 export const brandlogo = logo2
-export const instagramHandel = 'https://www.instagram.com/times.keepers.in'
-export const facebookHandel = 'https://www.facebook.com'
-export const directWhatsapp = 'https://wa.me/916351955509'
+export const instagramHandel = 'https://www.instagram.com/theaqua_watch01/'
+export const facebookHandel = 'https://www.instagram.com/theaqua_watch01/'
+export const directWhatsapp = 'https://wa.me/919586235982'
 
 
 export const sidebarDataCategory = [
@@ -132,23 +132,23 @@ export const box = [
   },]
 
 export const boxOptions = [
-  { id: "1", image: rd1, name: "CHANEL", price: 500 },
+  { id: "1", image: rd1, name: "CHANEL", price: 800 },
   { id: "2", image: rd2, name: "Audemars Piguet", price: 800 },
   { id: "3", image: rd3, name: "CARTIER", price: 800 },
-  { id: "4", image: rd4, name: "CASIO", price: 500 },
-  { id: "5", image: rd5, name: "DIESEL", price: 500 },
-  { id: "6", image: rd6, name: "LONGINES", price: 500 },
+  { id: "4", image: rd4, name: "CASIO", price: 350 },
+  { id: "5", image: rd5, name: "DIESEL", price: 600 },
+  { id: "6", image: rd6, name: "LONGINES", price: 800 },
   { id: "7", image: rd7, name: "SEIKO", price: 800 },
-  { id: "8", image: rd8, name: "MONTBLANC", price: 500 },
-  { id: "9", image: rd9, name: "SWAROVSKI", price: 500 },
-  { id: "10", image: rd10, name: "MONTBLANC", price: 500 },
-  { id: "11", image: rd11, name: "LONGINES", price: 500 },
-  { id: "12", image: rd12, name: "TOMFORD", price: 500 },
-  { id: "13", image: rd13, name: "DIOR", price: 500 },
-  { id: "14", image: rd14, name: "MONTBLANC", price: 500 },
-  { id: "15", image: rd15, name: "CASIO VINTAGE SERIES", price: 500 },
-  { id: "16", image: rd16, name: "DIOR", price: 500 },
-  { id: "17", image: rd17, name: "COACH", price: 500 }
+  { id: "8", image: rd8, name: "MONTBLANC", price: 700 },
+  { id: "9", image: rd9, name: "SWAROVSKI", price: 800 },
+  // { id: "10", image: rd10, name: "MONTBLANC", price: 700 },
+  { id: "11", image: rd11, name: "LONGINES", price: 800 },
+  // { id: "12", image: rd12, name: "TOMFORD", price: 500 },
+  { id: "13", image: rd13, name: "DIOR", price: 800 },
+  // { id: "14", image: rd14, name: "MONTBLANC", price: 500 },
+  { id: "15", image: rd15, name: "CASIO VINTAGE SERIES", price: 350 },
+  // { id: "16", image: rd16, name: "DIOR", price: 500 },
+  { id: "17", image: rd17, name: "COACH", price: 800 }
 ];
 
 
@@ -6315,17 +6315,17 @@ export const category = [
   {
     title: "Men's Watches",
     img: manWearingWatch,
-    link: "/product/category/mens-watch/",
+    link: "/product/category/mens watch/",
   },
   {
     title: "Womens Watches",
     img: womenholdingwatch1,
-    link: "/product/category/womens-watch/",
+    link: "/product/category/womens watch/",
   },
   {
     title: "Luxury Watches",
     img: luxurywatches,
-    link: "/product/category/Luxury/",
+    link: "/product/category/Luxury Watch/",
   },
 
 ];
