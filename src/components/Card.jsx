@@ -7,7 +7,7 @@ const Card = ({ title, price, coverImg, id, key, calculateAddedPriceHidden, catN
     return (
         <div>
             {/* <div className="w-full h-screen flex justify-center items-center"  key={id}> */}
-            <Link to={`/productpage/${id}`} key={key} className=''>
+            <Link to={`/productpage/${id}`} key={key} className='' target='_blank'>
 
                 <div className="transition duration-300 ease-in-out xl:mb-0 lg:mb-0 md:mb-0 mb-6 cursor-pointer group">
                     <div className="overflow-hidden relative">

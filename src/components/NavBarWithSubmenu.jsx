@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FaSearch, FaBars } from 'react-icons/fa';
 import logo1 from '../assets/logo_1.png'
 import { Link } from 'react-router-dom';
@@ -54,7 +54,7 @@ export default function NavBarWithSubmenu() {
           // console.log(data.results);
           setSearchResults(data.results);
         })
-        // .catch(error => console.error('Error:', error));
+      // .catch(error => console.error('Error:', error));
     }
 
 
@@ -66,12 +66,33 @@ export default function NavBarWithSubmenu() {
     setSearchResults([]);
   };
 
+  
+  useEffect(() => {
+    // Disable scrolling on the body
+  
+
+    if (searchDrawerOpen) {
+        document.body.style.overflow = 'hidden';
+    }else{
+      document.body.style.overflow = 'unset';
+
+    }
+
+   
+  }, [searchDrawerOpen]);
 
   return (
     <>
       {/* 🔍 Top Search Drawer */}
-      {searchDrawerOpen && (
+      {searchDrawerOpen && <>
+        <div
+          className="absolute inset-0 bg-black bg-opacity-50 transition-opacity fixed z-50" style={{ opacity: "0.8" }}
+          onClick={handleCloseSearch} // Closes search when clicking outside
+        ></div>
+
         <div className="fixed top-0 left-0 right-0 z-50 w-full p-4 bg-white shadow-md transition-transform animate-slide-down">
+
+
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-gray-700 text-lg font-semibold">Search</h2>
             <button onClick={handleCloseSearch} className="text-gray-500">
@@ -106,7 +127,7 @@ export default function NavBarWithSubmenu() {
               <>
                 {searchResults.length > 0 ? (
                   <>
-                    <div className="max-h-90 overflow-y-auto pr-2">
+                    <div className="max-h-100 overflow-y-auto pr-2">
                       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
                         {searchResults.slice(0, 6).map((product) => (
                           <Card
@@ -114,14 +135,14 @@ export default function NavBarWithSubmenu() {
                             title={product.productName}
                             price={product.productOriginalPrice}
                             coverImg={product.featuredimg}
-                            id={product.productId} 
+                            id={product.productId}
                             catName={product.catName}
                           />
                         ))}
                       </div>
                     </div>
                     <Link
-                      to={`/search/brand/${searchTerm}`} 
+                      to={`/search/brand/${searchTerm}`}
                       onClick={handleCloseSearch}
                       className="w-full flex justify-center mt-4 btn fw-semibold px-4 rounded-none text-dark"
                     >
@@ -154,7 +175,7 @@ export default function NavBarWithSubmenu() {
             )}
           </div>
         </div>
-      )}
+      </>}
 
       {/* 🍔 Left Drawer (Mobile Menu) */}
       {leftDrawerOpen && (
