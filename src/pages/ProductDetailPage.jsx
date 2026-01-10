@@ -306,7 +306,7 @@ const ProductDetailPage = () => {
                                 <div className="p-4 bg-white rounded-xl shadow-md w-full max-w-lg space-y-4">
                                     {/* YES / NO TOGGLE */}
                                     <div className="flex items-center gap-4">
-                                        <span className="font-semibold text-gray-800">Box Available?</span>
+                                        <span className="font-semibold text-gray-800">Buy with Box</span>
 
                                         <label className="flex items-center gap-2 cursor-pointer">
                                             <input
