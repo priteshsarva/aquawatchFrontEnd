@@ -48,7 +48,19 @@ import vacheron from '../assets/watch/Vacheron.jpg'
 import seiko from '../assets/watch/seiko.jpg'
 import michelkors from '../assets/watch/Michelkors.jpg'
 import nike from '../assets/watch/nike.jpg'
-
+import rolex from '../assets/watch/Rolex.webp'
+import omega from '../assets/watch/Omega.webp'
+import AudemarsPiguet from '../assets/watch/Audemars-Piguet.webp'
+import Gshock from '../assets/watch/G-shock.webp'
+import armani from '../assets/watch/Armani.webp'
+import fossil from '../assets/watch/Fossil.webp'
+import tissot from '../assets/watch/Tissot.webp'
+import rado from '../assets/watch/Rado.webp'
+import maserati from '../assets/watch/Maserati.avif'
+import PatekPhillipe from '../assets/watch/Patek-Phillipe.webp'
+import cartier from '../assets/watch/Cartier.webp'
+import hublot from '../assets/watch/Hublot.webp'
+import edifice from '../assets/watch/Edifice.webp'
 
 export const brand = "Aqua Watch"
 export const BrandEmail = "aquawatch@gmail.com"
@@ -6335,79 +6347,79 @@ export const watchBrand = [
   {
     name: "Rolex",
     url: "/product/brand/rolex  ",
-    image: "https://crepculture.com/wp-content/uploads/2024/10/m126718grnr-0001_drp-upright-bba-with-shadow-1.webp",
+    image: rolex,
     count: 95
   },
   {
     name: "Omega",
     url: "/product/brand/omega/",
-    image: "https://crepculture.com/wp-content/uploads/2024/10/omega-speedmaster-moonwatch-professional-co-axial-master-chronometer-chronograph-42-mm-31030425004001-5bcb6e_7273227b-f967-4d05-9aad-a038e56804e8-1.webp",
+    image: omega,
     count: 16
   },
   {
     name: "Audemars Piguet",
     url: "/product/brand/audemars-piguet/",
-    image: "https://crepculture.com/wp-content/uploads/2024/10/IMG-20240730-WA0453-1.webp",
+    image: AudemarsPiguet,
     count: 17
   },
   {
     name: "G-shock",
     url: "/product/brand/g-shock/",
-    image: "https://crepculture.com/wp-content/uploads/2024/10/g1277.webp",
+    image: Gshock,
     count: 32
   },
   {
     name: "Armani",
     url: "/product/brand/armani/",
-    image: "https://crepculture.com/wp-content/uploads/2024/10/emporio-armani-ar1452-black-men-wrist-watch.webp",
+    image: armani,
     count: 9
   },
   {
     name: "Fossil",
     url: "/product/brand/fossil/",
-    image: "https://crepculture.com/wp-content/uploads/2024/10/freepik-untitled-project-20241005161640vQik.webp",
+    image: fossil,
     count: 23
   },
   {
     name: "Tissot",
     url: "/product/brand/tissot-watches/",
-    image: "https://crepculture.com/wp-content/uploads/2024/10/tissot-prx-powermatic-80-p1666-4720_medium-1.webp",
+    image: tissot,
     count: 135
   },
   {
     name: "Rado",
     url: "/product/brand/rado/",
-    image: "https://crepculture.com/wp-content/uploads/2024/10/rgb_cat_original_763_0637_3_016_3-1.webp",
+    image: rado,
     count: 20
   },
   {
     name: "Maserati",
     url: "/product/brand/maserati/",
-    image: "https://crepculture.com/wp-content/uploads/2024/10/1117Wx1400H-463985463-blue-MODEL.avif",
+    image: maserati,
     count: 3
   },
   {
     name: "Patek Phillipe",
     url: "/product/brand/patek-phillipe/",
-    image: "https://crepculture.com/wp-content/uploads/2024/10/patek-philippe-nautilus-5711A1-018-luxury-souq.jpg-1.webp",
+    image: PatekPhillipe,
     count: 23
   },
   {
     name: "Cartier",
     url: "/product/brand/cartier-watches/",
-    image: "https://crepculture.com/wp-content/uploads/2024/10/freepik-untitled-project-20241005161241ICqB-1.webp",
+    image: cartier,
     count: 6
   },
   {
     name: "Hublot",
     url: "/product/brand/hublot/",
-    image: "https://crepculture.com/wp-content/uploads/2024/10/CLASSIC-FUSION-CHRONOGRAPH-TITANIUM-BLUE-ON-RUBBER-45-MM.webp",
+    image: hublot,
     count: 18
   },
   {
     name: "Edifice",
     url: "/product/brand/edifice/",
-    image: "https://crepculture.com/wp-content/uploads/2024/10/efr-552d-1avuef2-1.webp",
+    image: edifice,
     count: 12
   },
   {
