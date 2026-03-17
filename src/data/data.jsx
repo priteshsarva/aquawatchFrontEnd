@@ -6498,7 +6498,7 @@ export function calculateDiscountedPrice(price) {
 
 
   if (price > 0 && price <= 500) {
-    return (basePrice + 750).toFixed(2); // Add 750 if price > 0 and <= 500
+    return (basePrice + 1000).toFixed(2); // Add 750 if price > 0 and <= 500
   }
   else if (price > 500 && price <= 4500) {
     return (basePrice + 1000).toFixed(2); // Add 1000 if price > 500 and <= 4500
