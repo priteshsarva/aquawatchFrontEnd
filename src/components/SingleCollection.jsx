@@ -3,11 +3,31 @@ import ProductGride from './ProductGride'
 import { Link } from 'react-router-dom'
 
 
-const SingleCollection = (products) => {
+const SingleCollection = ({ productss, primaryCat }) => {
 
+    const shuffleArray = (array) => {
+        const arr = [...array]; // copy (important)
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+    };
 
-    const [filteredProducts, setFilteredProducts] = useState(products.products.slice(0, 12));
-
+    let products = [];
+    if (productss && productss.length > 0) {
+        if (primaryCat !== undefined) {
+            const category = productss.find(cat => cat.primarycat === primaryCat);
+            if (category) {
+                products = category.products;
+            }
+        } else {
+            products = shuffleArray(
+                productss.flatMap(cat => cat.products)
+            );
+        }
+    }
+    const [filteredProducts, setFilteredProducts] = useState(products.slice(0, 12));
 
     const filterBySize = (product, size) => {
 
@@ -32,6 +52,7 @@ const SingleCollection = (products) => {
             return false;
         }
     };
+
     return (
         <>
             {/* Products with Filters */} ̰
@@ -41,7 +62,7 @@ const SingleCollection = (products) => {
                     <h4 className=" section-title section-title-center mb-5">
                         <b></b>
                         <span className="text-xl  text-black tracking-wide uppercase">
-                          New Arrivals
+                            New Arrivals {primaryCat ? primaryCat.charAt(0).toUpperCase() + primaryCat.slice(1) : ""}
                         </span>
                         <b></b>
                     </h4>

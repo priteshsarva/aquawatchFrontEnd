@@ -29,7 +29,25 @@ const Home = () => {
             })
                 .then(response => response.json())
                 .then(data => {
-                    setproduct(data.results);
+
+                    const grouped = Object.values(
+                        data.results.reduce((acc, item) => {
+                            if (!acc[item.primarycat]) {
+                                acc[item.primarycat] = {
+                                    primarycat: item.primarycat,
+                                    products: []
+                                };
+                            }
+
+                            acc[item.primarycat].products.push(item);
+                            return acc;
+                        }, {})
+                    );
+
+
+
+                    setproduct(grouped);
+                    // setproduct(data.results);
                     // setSearchResults(data.results);
                 })
                 .catch(error => console.error('Error:', error));
@@ -63,12 +81,10 @@ const Home = () => {
                             </Link>
                         </div>
                     </div> */}
-                    <ShopbyBrand /> 
+                    <ShopbyBrand />
                     <ProductCategory />
-                    <ShoeCarousel productss={product} />
-
-                    <SingleCollection products={product} />
-                    {/* <ReadyToDispatch /> */}
+                    <ShoeCarousel productss={product}  />
+                    <SingleCollection productss={product}  primaryCat="watches"/>
                     {/* <Testimonials /> */}
                 </>}
         </>

@@ -18,6 +18,7 @@ const ProductGride = ({ products }) => {
                                 coverImg={product.featuredimg}
                                 id={product.productId}
                                 catName={product.catName}
+                                sizeName={product.sizeName || "[]"}
                             />
 
                         ))
