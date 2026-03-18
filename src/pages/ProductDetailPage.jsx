@@ -1,8 +1,6 @@
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import Slider from 'react-slick';
-// import "slick-carousel/slick/slick.css";
-// import "slick-carousel/slick/slick-theme.css";
 import { box, brand, Brandphone, calculateAddedPrice, calculateDiscountedPrice, calculateSavingsPercentage } from '../data/data'
 import Card from '../components/Card';
 import VideoModal from '../components/VideoModal';
@@ -25,36 +23,100 @@ const baseUrl = import.meta.env.VITE_BASE_URL;
 
 const ProductDetailPage = () => {
     const { id } = useParams();
-    const [product, setproduct] = useState('')
-    const [hash, sethash] = useState(window.location.hash)
-    const [simillarproducts, setsimillarproducts] = useState("")
-    const [selectedImage, setSelectedImage] = useState(""); // Default to the first image
-    const [imageUrlArray, setimageUrlArray] = useState("")
-    const [showModal, setShowModal] = useState(false);
+    const [searchParams] = useSearchParams();
+    const catmasster = searchParams.get("cat");
 
-    const openModal = () => setShowModal(true);
-    const closeModal = () => setShowModal(false);
-    const videoUrl = "https://www.w3schools.com/html/mov_bbb.mp4"; // Replace with your video URL
+// Get left side (category)
+let category = null;
+if (catmasster) {
+  category = catmasster.split("/")[0]; // left side
+}
+
+    console.log(id);
+    let mastercode = null;
+if (catmasster && catmasster.includes("/")) {
+  const parts = cat.split("/");
+  mastercode = parts[1]; // right side
+}
+
+console.log(mastercode); // -> "viaksh" for "watches/viaksh"
+
+    const [product, setproduct] = useState('');
+    const [hash, sethash] = useState(window.location.hash);
+    const [simillarproducts, setsimillarproducts] = useState('');
+    const [selectedImage, setSelectedImage] = useState('');
+    const [imageUrlArray, setimageUrlArray] = useState('');
+    const [showModal, setShowModal] = useState(false);
     const [quantity, setQuantity] = useState(1);
     const [openIndex, setOpenIndex] = useState(null);
     const location = useLocation();
 
-
-
-    const [wantsBox, setWantsBox] = useState(null); // "yes" | "no"
-    const [selectedBox, setSelectedBox] = useState("");
-    // Find the selected box data based on the selectedBox ID
+    // ─── Box selector (watches only) ────────────────────────────────────────────
+    const [wantsBox, setWantsBox] = useState(null);
+    const [selectedBox, setSelectedBox] = useState('');
     const selectedBoxData = boxOptions.find((o) => o.id === selectedBox) || null;
 
+    // ─── Shoes: size selector ───────────────────────────────────────────────────
+    const [sizes, setsizes] = useState([]);
+    const [selectedSize, setSelectedSize] = useState('');
+    const [sizeError, setSizeError] = useState('');
 
-    const toggle = (index) => {
-        setOpenIndex(openIndex === index ? null : index);
+    // ─── Shoes: "Request for size" modal ────────────────────────────────────────
+    const [showRequestModal, setShowRequestModal] = useState(false);
+    const [formData, setFormData] = useState({ name: '', contact: '', email: '', size: '' });
+    const [formErrors, setFormErrors] = useState({});
+
+    // ─── Video modal ─────────────────────────────────────────────────────────────
+    const openVideoModal = () => setShowModal(true);
+    const closeVideoModal = () => setShowModal(false);
+
+    // ─── Size normalisation map ──────────────────────────────────────────────────
+    const sizeMap = {
+        "35": ["35", "35-3", "35 UK-5", "UK-5", "Size 35"],
+        "36": ["36", "36-3.5", "36-3", "36/3.5", "36/3", "UK-3.5", "U.K-3.5 Euro-36", "EURO 36", "Euro 36", "Size 36", "36-UK4", "36 UK 4", "UK 4"],
+        "37": ["37", "37/4", "37/4.5", "37-4", "37-4.5", "UK-4", "U.K-4 Euro-37", "EURO 37", "Euro 37", "M-4", "m-4", "M4", "Size 37", "37 UK-4"],
+        "38": ["38", "38/4.5", "38/5", "38-4.5", "38-5", "UK-5", "U.K-5 Euro-38", "EURO 38", "Euro 38", "M-5", "m-5", "M5", "Size 38"],
+        "39": ["39", "39/5.5", "39/6", "39-5.5", "39-6", "UK-5.5", "U.K-5.5 Euro-39", "EURO 39", "Euro 39", "M-6", "m-6", "Size 39"],
+        "40": ["40", "40/6", "40/6.5", "40/7", "40-6", "40-6.5", "40-7", "40-uk 6.5", "40-uk6", "UK 6", "UK6", "UK-6", "UK 6 / EURO 40", "UK 6|Euro 40", "UK-6 EUR-40", "UK-6 EURO-40", "EURO 40", "Euro 40", "M-6", "m-6", "M6", "Size 40", "6", "6.5", "uk6-m6", "40/uk6/m6", "40 UK 6", "40-UK 6", "40-UK6", "UK 6/EURO 40", "UK 6.5|EURO 40", "UK 6.5/EURO 40"],
+        "41": ["41", "41/7", "41/7.5", "41-7", "41-7.5", "41-m7", "UK 7", "UK7", "UK-7", "UK 7 / EURO 41", "UK 7|EURO 41", "UK 7.5|EURO 41", "UK-7 EUR-41", "EURO 41", "Euro 41", "M-7", "m-7", "M7", "Size 41", "7", "7.5", "UK 7/EURO 41", "UK 7.5/EURO 41", "UK7.5/EURO 41", "41/uk7/m7", "41 UK 7", "41-UK 7", "41-UK7", "Euro-41. UK-7", "M7-41"],
+        "42": ["42", "42/7.5", "42/8", "42-7.5", "42-8", "42-m8", "UK 8", "UK8", "UK-8", "UK 8 / EURO 42", "UK 8|EURO 42", "UK-8 EUR-42", "EURO 42", "Euro 42", "M-8", "m-8", "M8", "Size 42", "8", "8.5", "UK 8/EURO 42", "42/uk8/m8", "42 UK 8", "42-UK 8", "42-UK8", "Euro-42. UK-7.5", "Euro-42.5 UK-8", "42 UK 7.5"],
+        "43": ["43", "43/8.5", "43/9", "43-8.5", "43-9", "43-m9", "UK 9", "UK9", "UK-9", "UK 9 / EURO 43", "UK 9|EURO 43", "UK-9 EUR-43", "EURO 43", "Euro 43", "M-9", "m-9", "M9", "Size 43", "9", "UK 9/EURO 43", "43/uk9/m9", "43 UK 9", "43-UK 9", "43-UK9", "Euro-43. Uk-8.5", "M9-43"],
+        "44": ["44", "44/9", "44/9.5", "44/10", "44-9", "44-9.5", "44-10", "44-m10", "UK 10", "UK10", "UK-10", "UK 10 / EURO 44", "UK 10|EURO 44", "UK-10 EUR-44", "EURO 44", "Euro 44", "M-10", "m-10", "M10", "Size 44", "10", "9.5", "UK 10/EURO 44", "44/uk10/m10", "44 UK 10", "44-UK 10", "44-UK10", "Euro-44. Uk-9", "M10-44"],
+        "45": ["45", "45/10", "45/10.5", "45/11", "45-10", "45-10.5", "45-11", "45-m11", "UK 11", "UK11", "UK-11", "UK 11 / EURO 45", "UK 11|EURO 45", "UK-11 EUR-45", "EURO 45", "Euro 45", "M-11", "m-11", "M11", "Size 45", "11", "10.5", "UK 11/EURO 45", "45/uk11/m11", "45 UK 11", "45-UK 11", "45-UK11", "Euro-45. Uk-10", "M11-45"],
+        "46": ["46", "46/11", "46-11", "46-m12", "UK 12", "UK12", "UK-12", "UK 12 / EURO 47", "EURO 46", "Euro 46", "Size 46", "UK-11 EUR-46"],
+        "47": ["47", "47/12", "UK 12 / EURO 47", "Size 47"]
     };
-    const increaseQty = () => {
-        if (quantity < 9) {
-            setQuantity(prev => prev + 1);
+
+    const normalizeSize = (inputSize) => {
+        for (const [baseSize, variants] of Object.entries(sizeMap)) {
+            if (variants.includes(inputSize)) return baseSize;
         }
+        return inputSize;
     };
+
+    // ─── Form validation ─────────────────────────────────────────────────────────
+    const validateForm = () => {
+        const errors = {};
+        if (!formData.name.trim()) errors.name = 'Name is required';
+        if (!formData.contact.trim()) {
+            errors.contact = 'Contact number is required';
+        } else if (!/^\d{10}$/.test(formData.contact.trim())) {
+            errors.contact = 'Contact must be a valid 10-digit number';
+        }
+        if (!formData.email.trim()) {
+            errors.email = 'Email is required';
+        } else if (!/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(formData.email.trim())) {
+            errors.email = 'Enter a valid email';
+        }
+        if (!formData.size.trim()) errors.size = 'Size is required';
+        setFormErrors(errors);
+        return Object.keys(errors).length === 0;
+    };
+
+    const isShoes = cat === 'shoes';
+
+    // ─── Accordion ───────────────────────────────────────────────────────────────
+    const toggle = (index) => setOpenIndex(openIndex === index ? null : index);
 
     const accordions = [
         {
@@ -62,7 +124,7 @@ const ProductDetailPage = () => {
             answer: (
                 <div className="space-y-2 text-gray-700 text-base leading-relaxed">
                     <p>This Product is the <span className="font-semibold">Same as Original Quality Master Copy</span> with <span className="font-semibold">3 month Machine Replacement Warranty</span>.</p>
-                    <p><span className=" font-bold">If you want the original box kit, extra charges apply!</span></p>
+                    <p><span className="font-bold">If you want the original box kit, extra charges apply!</span></p>
                     <p>Cash on Delivery available all over India.</p>
                     <p>All Chrono working.</p>
                     <p>Approximate delivery time: <span className="italic">4-6 days</span>.</p>
@@ -73,12 +135,8 @@ const ProductDetailPage = () => {
             question: "BOX POLICY",
             answer: (
                 <div className="space-y-3 text-gray-700 text-base leading-relaxed">
-                    <p>
-                        <strong>Standard packaging:</strong> Every watch is shipped in a secure, high-quality protective box suitable for safe delivery. This is included with every order at <span className="font-semibold">no extra cost</span>.
-                    </p>
-                    <p>
-                        <strong>Original / Brand box:</strong> Extra charges apply if an original or brand box is available for your selected watch. The extra fee will be shown at checkout. If the charge can't be displayed automatically, our team will confirm the box option and additional charges before shipping.
-                    </p>
+                    <p><strong>Standard packaging:</strong> Every watch is shipped in a secure, high-quality protective box suitable for safe delivery. This is included with every order at <span className="font-semibold">no extra cost</span>.</p>
+                    <p><strong>Original / Brand box:</strong> Extra charges apply if an original or brand box is available for your selected watch.</p>
                 </div>
             ),
         },
@@ -87,35 +145,20 @@ const ProductDetailPage = () => {
             answer: (
                 <div className="space-y-3 text-gray-700 text-base leading-relaxed">
                     <p><strong>Exchange & Store Credit Policy</strong></p>
-                    <p>At <em>AquaWatch</em>, we do not offer cash refunds. Instead, we provide easy exchange and store credit options to ensure customer satisfaction.</p>
-                    <p>
-                        <strong>Exchange Window:</strong> You may request an exchange within <strong>48 hours of delivery</strong> by contacting our support team.
-                    </p>
-                    <p><strong>Conditions:</strong></p>
+                    <p>At <em>AquaWatch</em>, we do not offer cash refunds. Instead, we provide easy exchange and store credit options.</p>
+                    <p><strong>Exchange Window:</strong> You may request an exchange within <strong>48 hours of delivery</strong>.</p>
                     <ol className="list-decimal list-inside ml-4 text-gray-600">
                         <li>Item must be unused and in original packaging.</li>
                         <li>All original tags, accessories, and documentation must be included.</li>
                         <li>The protective <em>polythene/film on the watch must be intact</em>.</li>
-                        <li>A <em>clear unboxing video (from start to finish)</em> is required for any exchange or damage claim.</li>
+                        <li>A <em>clear unboxing video (from start to finish)</em> is required.</li>
                     </ol>
-                    <p>
-                        <strong>Store Credit:</strong> If you don’t wish to exchange immediately, the product value will be credited to your account as <em>store credit</em>, which can be used on any future purchase.
-                    </p>
-                    <p>
-                        <strong>Damaged / Defective Items:</strong> If the product is delivered damaged or defective, we will provide a free replacement of the same model (subject to availability), subject to unboxing video proof.
-                    </p>
-                    <p>Your trust matters to us — with store credit, your money always stays safe with AquaWatch.</p>
+                    <p><strong>Store Credit:</strong> If you don't wish to exchange immediately, the product value will be credited as <em>store credit</em>.</p>
+                    <p><strong>Damaged / Defective Items:</strong> Free replacement subject to unboxing video proof.</p>
                 </div>
             ),
         }
-
     ];
-
-    const decreaseQty = () => {
-        if (quantity > 1) {
-            setQuantity(prev => prev - 1);
-        }
-    };
 
     const steps = [
         { title: "ORDER NOW", Icon: ComputerDesktopIcon },
@@ -123,7 +166,6 @@ const ProductDetailPage = () => {
         { title: "VIDEO CALL FACILITY", Icon: VideoCameraIcon },
         { title: "DELIVERY", Icon: CubeIcon },
     ];
-
 
     const settings = {
         dots: false,
@@ -133,137 +175,87 @@ const ProductDetailPage = () => {
         slidesToScroll: 1,
         arrows: true,
         swipeToSlide: true,
-
-        // lazyLoad: true,
         className: "slider variable-width",
         variableWidth: true,
         centerMode: true,
-        // Disable swiping globally (optional)
-        // swipe: false,
-        // touchMove: false,
-
         responsive: [
-            {
-                breakpoint: 1024,
-                settings: {
-                    slidesToShow: 4,
-                    slidesToScroll: 3
-                }
-            },
-            {
-                breakpoint: 768,
-                settings: {
-                    slidesToShow: 3,
-                    slidesToScroll: 2
-                }
-            },
-            {
-                breakpoint: 480,
-                settings: {
-                    // slidesToShow: 2,
-                    // slidesToScroll: 1,
-                    arrows: false,
-                    // 👇 Disable swipe specifically for mobile
-                    // swipe: false,
-                    // touchMove: false,
-                    // swipeToSlide: false
-                }
-            }
+            { breakpoint: 1024, settings: { slidesToShow: 4, slidesToScroll: 3 } },
+            { breakpoint: 768, settings: { slidesToShow: 3, slidesToScroll: 2 } },
+            { breakpoint: 480, settings: { arrows: false } }
         ]
     };
 
-
+    // ─── Fetch product ────────────────────────────────────────────────────────────
     useEffect(() => {
-        // console.log(baseUrl);
+        if (!id || !cat || cat === 'undefined') {
+            window.location.href = '/';
+            return;
+        }
         sethash(window.location.hash);
 
-        // Fetch product details
-        fetch(`${baseUrl}/product/${id}`, {
-            method: 'GET',
-        })
-            .then(response => response.json())
+        fetch(`${baseUrl}/product/${id}?cat=${cat}`, { method: 'GET' })
+            .then(res => res.json())
             .then(data => {
-                setproduct(data.results[0]);
-                setSelectedImage(Array.isArray(data.results[0].image) ? data.results.image[0] : data.results[0].featuredimg);
-                setimageUrlArray(JSON.parse(data.results[0].imageUrl));
-                // setsizes(JSON.parse(data.results[0].sizeName));
-                // console.log("data", data);
+                if (data.results && data.results.length > 0) {
+                    const p = data.results[0];
+                    setproduct(p);
+                    setSelectedImage(Array.isArray(p.image) ? p.image[0] : p.featuredimg);
+                    setimageUrlArray(JSON.parse(p.imageUrl));
+
+                    // Parse sizes only for shoes
+                    if (cat === 'shoes') {
+                        const parsedSizes = JSON.parse(p.sizeName);
+                        setsizes(parsedSizes);
+                    }
+                }
             })
-            // .catch(error => console.error('Error:', error));
+            .catch(error => console.error('Error:', error));
+    }, [id, cat]);
 
-    }, [id]); // Add id as dependency
-
+    // ─── Fetch similar products ───────────────────────────────────────────────────
     useEffect(() => {
-        // Fetch similar products only when product is available
         if (product) {
-            fetch(`${baseUrl}/product/search?q=${product.productName.slice(0, 3)}&category=${product.catName}&result=30&page=1`, {
-                method: 'GET',
-            })
-                .then(response => response.json())
-                .then(data => {
-                    setsimillarproducts(data.results);
-                    // console.log(data.results);
-                })
-                // .catch(error => console.error('Error in Similar:', error));
+            fetch(`${baseUrl}/product/search?q=${product.productName.slice(0, 3)}&category=${product.catName}&result=30&page=1`, { method: 'GET' })
+                .then(res => res.json())
+                .then(data => setsimillarproducts(data.results))
+                .catch(error => console.error('Error in Similar:', error));
         }
-    }, [product]); // This remains unchanged
+    }, [product]);
 
     return (
         <>
-
-            {product === '' ? <Loader /> : <>
+            {product === '' ? <Loader /> : (
                 <div className="">
-
-
-                    <div className=" max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
                         <div className="flex flex-col md:flex-row -mx-4">
+
+                            {/* ── Left: Images ── */}
                             <div className="md:flex-1 px-4 grid-cols-4">
-                                {/* Main Display Area */}
                                 <div className="aspect-square rounded-lg bg-gray-100 mb-4 flex items-center justify-center">
-                                    {/* <span className="text-5xl">{selectedImage}</span> */}
                                     <img
                                         src={selectedImage}
                                         alt={product.productName}
                                         className="img-fluid rounded"
-                                        style={{
-                                            // height: '500px',
-                                            objectFit: 'cover', width: '100%',
-                                            aspectRatio: "1/1"
-                                        }}
+                                        style={{ objectFit: 'cover', width: '100%', aspectRatio: '1/1' }}
                                     />
                                 </div>
 
-                                {/* Buttons */}
                                 <div className="flex -mx-2 mb-4">
-                                    {
-                                        Array.isArray(imageUrlArray) ? imageUrlArray.map((image, index) => (
-                                            <div key={index} className="w-1/4 p-2">
-                                                <img
-                                                    src={image}
-                                                    alt={`${product.productName} thumbnail ${index + 1}`}
-                                                    className={`w-full h-[100px] object-cover rounded cursor-pointer border ${selectedImage === image ? 'border-black' : 'border-gray-300'}`}
-                                                    style={{ aspectRatio: "1 / 1" }}
-                                                    onClick={() => setSelectedImage(image)}
-                                                />
-                                            </div>
-                                        )) : null
-                                    }
-
-
-                                    {/* {buttons.map((i) => (
-                                    <div key={i} className="flex-1 px-2">
-                                        <button
-                                            onClick={() => setSelectedImage(i)}
-                                            className={`focus:outline-none w-full rounded-lg h-24 md:h-32 bg-gray-100 flex items-center justify-center ${selectedImage === i ? 'ring-2 ring-indigo-300 ring-inset' : ''
-                                                }`}
-                                        >
-                                            <span className="text-2xl">{i}</span>
-                                        </button>
-                                    </div>
-                                ))} */}
+                                    {Array.isArray(imageUrlArray) ? imageUrlArray.map((image, index) => (
+                                        <div key={index} className="w-1/4 p-2">
+                                            <img
+                                                src={image}
+                                                alt={`${product.productName} thumbnail ${index + 1}`}
+                                                className={`w-full h-[100px] object-cover rounded cursor-pointer border ${selectedImage === image ? 'border-black' : 'border-gray-300'}`}
+                                                style={{ aspectRatio: '1 / 1' }}
+                                                onClick={() => setSelectedImage(image)}
+                                            />
+                                        </div>
+                                    )) : null}
                                 </div>
                             </div>
 
+                            {/* ── Right: Details ── */}
                             <div className="md:flex-1 px-4">
                                 <h2 className="mb-2 leading-tight tracking-tight font-bold text-black text-2xl md:text-3xl">
                                     {product.productName}
@@ -276,306 +268,245 @@ const ProductDetailPage = () => {
                                 </p>
 
 
-                                {/* {product.catName !== "Luxury Watch" && ""} */}
-                                <div className="flex items-center space-x-4 my-4">
-                                    <div>
-                                        <div className="flex py-2 pe-3">
-                                            <span className="text-gray-300 mr-1 mt-1">₹</span>
-                                            <span className="font-semibold text-gray-300 text-3xl line-through pe-3">
-                                                {parseInt(calculateAddedPrice(product.productOriginalPrice))}
-                                            </span>
+                                {mastercode && (
+                                    <div className="mt-4 space-y-2">
+                                        <p className="text-2xl font-semibold text-gray-900">
+                                            ${product.productOriginalPrice}
+                                        </p>
 
-                                            <span className="text-black mr-1 mt-1">₹</span>
-                                            <span className="font-semibold text-black text-4xl">
-                                                {parseInt(calculateDiscountedPrice(product.productOriginalPrice))}
-                                            </span>
-                                        </div>
+                                        <a
+                                            href={product.productUrl}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="block text-lg font-medium text-blue-600 hover:text-blue-800 underline"
+                                        >
+                                            {product.productFetchedFrom}
+                                        </a>
                                     </div>
+                                )}
 
-                                    {/* <div className="flex-1">
-                                        <p className="text-green-500 text-xl font-semibold">
-                                            <span className="mr-2 text-sm text-gray-300 line-through">₹{calculateAddedPrice(product.productOriginalPrice)}</span> {calculateSavingsPercentage(product.productOriginalPrice)}%</p>
-                                        <p className="text-gray-400 text-sm">Inclusive of all Taxes.</p>
-                                    </div> */}
+                                {/* Price (watches only) */}
 
+                                <div className="flex items-center space-x-4 my-4">
+                                    <div className="flex py-2 pe-3">
+                                        <span className="text-gray-300 mr-1 mt-1">₹</span>
+                                        <span className="font-semibold text-gray-300 text-3xl line-through pe-3">
+                                            {parseInt(calculateAddedPrice(product.productOriginalPrice))}
+                                        </span>
+                                        <span className="text-black mr-1 mt-1">₹</span>
+                                        <span className="font-semibold text-black text-4xl">
+                                            {parseInt(calculateDiscountedPrice(product.productOriginalPrice))}
+                                        </span>
+                                    </div>
                                 </div>
 
-                                {/* <BoxSelector options={boxOptions} productPrice={parseInt(calculateDiscountedPrice(product.productOriginalPrice))} /> */}
 
-                                {/* ADD BOX start */}
-                                <div className="p-4 bg-white rounded-xl shadow-md w-full max-w-lg space-y-4">
-                                    {/* YES / NO TOGGLE */}
-                                    <div className="flex items-center gap-4">
-                                        <span className="font-semibold text-gray-800">Buy with Box</span>
-
-                                        <label className="flex items-center gap-2 cursor-pointer">
-                                            <input
-                                                type="radio"
-                                                name="boxAvailable"
-                                                value="yes"
-                                                checked={wantsBox === "yes"}
-                                                onChange={() => setWantsBox("yes")}
-                                            />
-                                            Yes
-                                        </label>
-
-                                        <label className="flex items-center gap-2 cursor-pointer">
-                                            <input
-                                                type="radio"
-                                                name="boxAvailable"
-                                                value="no"
-                                                checked={wantsBox === "no"}
-                                                onChange={() => {
-                                                    setWantsBox("no");
-                                                    setSelectedBox("");
-                                                }}
-                                            />
-                                            No
-                                        </label>
-                                    </div>
-
-                                    {/* DROPDOWN WHEN YES */}
-                                    {wantsBox === "yes" && (
-                                        <div className="flex flex-col gap-2">
-                                            <span className="text-gray-700 font-medium">Select Box</span>
-
-                                            <select
-                                                value={selectedBox}
-                                                onChange={(e) => setSelectedBox(e.target.value)}
-                                                className="border border-gray-300 rounded-lg p-2 outline-none focus:ring-2 focus:ring-black"
-                                            >
-                                                <option value="">Choose a Box</option>
-
-                                                {boxOptions.map((opt) => (
-                                                    <option key={opt.id} value={opt.id}>
-                                                        {opt.name} (+₹{opt.price})
-                                                    </option>
-                                                ))}
-                                            </select>
+                                {/* ── Box selector: watches only ── */}
+                                {!isShoes && product.primarycat === 'watches' && (
+                                    <div className="p-4 bg-white rounded-xl shadow-md w-full max-w-lg space-y-4">
+                                        <div className="flex items-center gap-4">
+                                            <span className="font-semibold text-gray-800">Buy with Box</span>
+                                            <label className="flex items-center gap-2 cursor-pointer">
+                                                <input type="radio" name="boxAvailable" value="yes" checked={wantsBox === 'yes'} onChange={() => setWantsBox('yes')} />
+                                                Yes
+                                            </label>
+                                            <label className="flex items-center gap-2 cursor-pointer">
+                                                <input type="radio" name="boxAvailable" value="no" checked={wantsBox === 'no'} onChange={() => { setWantsBox('no'); setSelectedBox(''); }} />
+                                                No
+                                            </label>
                                         </div>
-                                    )}
 
-                                    {/* When a box is selected, display its details */}
-                                    {selectedBox !== "" && selectedBoxData && <>
-                                        <div className="w-full bg-white rounded-lg shadow-md p-4 flex gap-4 ">
-                                            {/* Left side: Image */}
-                                            <div className="w-32 h-32 flex-shrink-0 overflow-hidden rounded-md bg-gray-100">
-                                                {selectedBoxData.image ? (
-                                                    <img
-                                                        src={selectedBoxData.image}
-                                                        alt={selectedBoxData.name || "Box Image"}
-                                                        className="w-full h-full object-cover"
-                                                    />
-                                                ) : (
-                                                    <div className="w-full h-full flex items-center justify-center text-xs text-gray-400">
-                                                        No Image
-                                                    </div>
-                                                )}
+                                        {wantsBox === 'yes' && (
+                                            <div className="flex flex-col gap-2">
+                                                <span className="text-gray-700 font-medium">Select Box</span>
+                                                <select
+                                                    value={selectedBox}
+                                                    onChange={(e) => setSelectedBox(e.target.value)}
+                                                    className="border border-gray-300 rounded-lg p-2 outline-none focus:ring-2 focus:ring-black"
+                                                >
+                                                    <option value="">Choose a Box</option>
+                                                    {boxOptions.map((opt) => (
+                                                        <option key={opt.id} value={opt.id}>
+                                                            {opt.name} (+₹{opt.price})
+                                                        </option>
+                                                    ))}
+                                                </select>
                                             </div>
+                                        )}
 
-                                            {/* Right side: Details */}
-                                            <div className="flex flex-col justify-between flex-1">
-                                                <div>
-                                                    <h4 className="text-lg font-semibold">
-                                                        {selectedBoxData.name || "No Box Selected"}
-                                                    </h4>
-
-                                                    {/* Price */}
-                                                    {selectedBoxData.price && (
-                                                        <div className="flex py-2 pe-3">
-                                                            <span className="text-gray-300 mr-1 mt-1 text-sm">₹</span>
-                                                            <span className="font-semibold text-black text-2xl">
-                                                                {selectedBoxData.price}
-                                                            </span>
+                                        {selectedBox !== '' && selectedBoxData && (
+                                            <>
+                                                <div className="w-full bg-white rounded-lg shadow-md p-4 flex gap-4">
+                                                    <div className="w-32 h-32 flex-shrink-0 overflow-hidden rounded-md bg-gray-100">
+                                                        {selectedBoxData.image ? (
+                                                            <img src={selectedBoxData.image} alt={selectedBoxData.name} className="w-full h-full object-cover" />
+                                                        ) : (
+                                                            <div className="w-full h-full flex items-center justify-center text-xs text-gray-400">No Image</div>
+                                                        )}
+                                                    </div>
+                                                    <div className="flex flex-col justify-between flex-1">
+                                                        <div>
+                                                            <h4 className="text-lg font-semibold">{selectedBoxData.name}</h4>
+                                                            {selectedBoxData.price && (
+                                                                <div className="flex py-2 pe-3">
+                                                                    <span className="text-gray-300 mr-1 mt-1 text-sm">₹</span>
+                                                                    <span className="font-semibold text-black text-2xl">{selectedBoxData.price}</span>
+                                                                </div>
+                                                            )}
+                                                            {selectedBoxData.link && (
+                                                                <a href={selectedBoxData.link} target="_blank" className="text-blue-600 underline text-sm mt-1 inline-block">
+                                                                    View product
+                                                                </a>
+                                                            )}
                                                         </div>
-                                                    )}
-
-                                                    {/* Link */}
-                                                    {selectedBoxData.link && (
-                                                        <a
-                                                            href={selectedBoxData.link}
-                                                            target="_blank"
-                                                            className="text-blue-600 underline text-sm mt-1 inline-block"
-                                                        >
-                                                            View product
-                                                        </a>
-                                                    )}
+                                                    </div>
                                                 </div>
 
-                                                {/* Quantity selector (if needed) */}
-                                                {selectedBoxData.link && (
-                                                    <div className="mt-3 flex items-center gap-2">
-                                                        <label className="text-sm">Qty:</label>
-                                                        <input
-                                                            type="number"
-                                                            min="1"
-                                                            value={selectedBoxData.qty || 1}
-                                                            onChange={(e) =>
-                                                                setSelectedBox({
-                                                                    ...selectedBoxData,
-                                                                    qty: Number(e.target.value),
-                                                                })
-                                                            }
-                                                            className="w-16 border rounded px-2 py-1 text-sm"
-                                                        />
+                                                <div className="w-full max-w-sm bg-white rounded-xl p-4 space-y-3">
+                                                    <div className="flex justify-between text-sm">
+                                                        <span className="font-medium text-gray-700">Options Amount</span>
+                                                        <span className="font-semibold text-gray-900">₹{selectedBoxData.price}</span>
                                                     </div>
-                                                )}
-                                            </div>
-                                        </div>
+                                                    <div className="border-t"></div>
+                                                    <div className="flex justify-between text-base">
+                                                        <span className="font-semibold text-gray-800">Final Total</span>
+                                                        <span className="font-bold text-black">₹{parseInt(calculateDiscountedPrice(product.productOriginalPrice)) + selectedBoxData.price}</span>
+                                                    </div>
+                                                </div>
+                                            </>
+                                        )}
+                                    </div>
+                                )}
 
-                                        <div className="w-full max-w-sm bg-white rounded-xl  p-4 space-y-3">
-                                            {/* Options Amount */}
-                                            <div className="flex justify-between text-sm">
-                                                <span className="font-medium text-gray-700">Options Amount</span>
-                                                <span className="font-semibold text-gray-900">₹{selectedBoxData.price}</span>
-                                            </div>
+                                {/* ── Size selector: shoes only ── */}
+                                {isShoes && (
+                                    <div className="my-5">
+                                        {sizes.length === 0 || JSON.stringify(sizes) === '[]' ? (
+                                            <button className="w-full py-3 bg-red-500 text-white font-semibold rounded-xl cursor-not-allowed" disabled>
+                                                Out of Stock
+                                            </button>
+                                        ) : (
+                                            <>
+                                                <h5 className="font-semibold text-gray-800 mb-3">Select Size</h5>
+                                                <div className="flex flex-wrap gap-2 mb-4">
+                                                    {sizes.map((size) => {
+                                                        const normalized = normalizeSize(size);
+                                                        return (
+                                                            <button
+                                                                key={size}
+                                                                onClick={() => { setSelectedSize(size); setSizeError(''); }}
+                                                                className={`px-4 py-2 border rounded-lg font-medium text-sm transition-colors ${selectedSize === size
+                                                                    ? 'bg-black text-white border-black'
+                                                                    : 'bg-white text-black border-gray-300 hover:border-black'
+                                                                    }`}
+                                                            >
+                                                                {normalized}
+                                                            </button>
+                                                        );
+                                                    })}
+                                                </div>
+                                                {sizeError && <p className="text-red-500 text-sm mb-3">{sizeError}</p>}
 
-                                            {/* Divider */}
-                                            <div className="border-t"></div>
+                                                {/* Request for Size button */}
+                                                <button
+                                                    onClick={() => setShowRequestModal(true)}
+                                                    className="w-full py-3 border-2 border-black text-black font-semibold rounded-xl hover:bg-black hover:text-white transition-colors mb-3"
+                                                >
+                                                    Request for size
+                                                </button>
+                                            </>
+                                        )}
+                                    </div>
+                                )}
 
-                                            {/* Final Total */}
-                                            <div className="flex justify-between text-base">
-                                                <span className="font-semibold text-gray-800">Final Total</span>
-                                                <span className="font-bold text-black">₹{parseInt(calculateDiscountedPrice(product.productOriginalPrice)) + selectedBoxData.price}</span>
-                                            </div>
-                                        </div>
-                                    </>}
-
-                                </div>
-
-                                {/* ADD BOX END */}
-
-
-
+                                {/* ── Action buttons ── */}
                                 <div className="flex items-center space-x-4 py-4">
-
-                                    {/* Add to Cart Button */}
                                     {product.videoUrl && (
                                         <>
                                             <button
-                                                onClick={openModal}
+                                                onClick={openVideoModal}
                                                 className="h-14 px-6 py-2 font-semibold rounded-xl bg-black hover:bg-neutral-800 text-white transition-colors"
                                             >
                                                 Live Video
                                             </button>
-
                                             <VideoModal
                                                 isOpen={showModal}
-                                                onClose={closeModal}
+                                                onClose={closeVideoModal}
                                                 videoUrl={product.videoUrl}
                                                 name={product.productName}
                                             />
                                         </>
                                     )}
 
-                                    {/* OLD WHATSAPP BUTTON */}
-                                    {/* <button
-                                        onClick={() => {
-
-                                            const priceText =
-                                                product.catName !== "Luxury Watch"
-                                                    ? `💰 *Price*: ~₹${parseInt(
-                                                        calculateAddedPrice(product.productOriginalPrice)
-                                                    )}~ → *₹${parseInt(
-                                                        calculateDiscountedPrice(product.productOriginalPrice)
-                                                    )}\n`
-                                                    : "";
-
-                                            const whatsappUrl = `https://api.whatsapp.com/send?phone=${Brandphone}&text=${encodeURIComponent(
-                                                `📦 *Product Details*\n\n` +
-                                                `🛍️ *Product*: ${product.productName}\n` +
-                                                priceText + // include only if condition passes
-                                                `🔗 *URL*: ${window.location.href}`
-                                            )}`;
-
-                                            window.open(whatsappUrl, "_blank", "noopener,noreferrer");
-                                        }}
-                                        className="h-14 px-6 py-2 font-semibold rounded-xl bg-black hover:bg-neutral-800 text-white transition-colors text-center"
-                                    >
-                                        Buy via WhatsApp
-                                    </button> */}
-
-
                                     <button
                                         onClick={() => {
-
-                                            // BLOCK if wantsBox = "yes" but box is NOT selected
-                                            if (wantsBox === "yes" && (!selectedBox || !selectedBoxData)) {
-                                                alert("Please select a box before proceeding.");
-                                                return; // STOP the WhatsApp message
+                                            // For shoes: require a size selection
+                                            if (isShoes && !selectedSize) {
+                                                setSizeError('Please select a size before continuing.');
+                                                return;
                                             }
 
-                                            const productDiscounted = parseInt(
-                                                calculateDiscountedPrice(product.productOriginalPrice)
-                                            );
+                                            // For watches: require box selection if wantsBox = yes
+                                            if (!isShoes && wantsBox === 'yes' && (!selectedBox || !selectedBoxData)) {
+                                                alert('Please select a box before proceeding.');
+                                                return;
+                                            }
 
-                                            const productAddedPrice = parseInt(
-                                                calculateAddedPrice(product.productOriginalPrice)
-                                            );
+                                            const productDiscounted = parseInt(calculateDiscountedPrice(product.productOriginalPrice));
+                                            const productAddedPrice = parseInt(calculateAddedPrice(product.productOriginalPrice));
 
-                                            // BOX CONDITIONS
-                                            const includeBox =
-                                                wantsBox === "yes" && selectedBox !== "" && selectedBoxData;
-
-                                            // BOX MESSAGE
+                                            const includeBox = !isShoes && wantsBox === 'yes' && selectedBox !== '' && selectedBoxData;
                                             const boxText = includeBox
-                                                ? `🎁 *Selected Box*: ${selectedBoxData.name}\n` +
-                                                `💵 *Box Price*: ₹${selectedBoxData.price}\n` +
-                                                `-----------------------------------\n` +
-                                                `🧮 *Total Price*: ₹${productDiscounted + selectedBoxData.price}\n\n`
-                                                : "";
+                                                ? `🎁 *Selected Box*: ${selectedBoxData.name}\n💵 *Box Price*: ₹${selectedBoxData.price}\n-----------------------------------\n🧮 *Total Price*: ₹${productDiscounted + selectedBoxData.price}\n\n`
+                                                : '';
 
-                                            // PRICE MESSAGE
-                                            const priceText =
-                                                product.catName !== "Luxury Watch"
-                                                    ? `💰 *Price*: ~₹${productAddedPrice}~ → *₹${productDiscounted}*\n\n`
-                                                    : "";
+                                            const priceText = !isShoes && product.catName !== 'Luxury Watch'
+                                                ? `💰 *Price*: ~₹${productAddedPrice}~ → *₹${productDiscounted}*\n\n`
+                                                : '';
 
-                                            // FINAL MESSAGE
+                                            const sizeText = isShoes && selectedSize
+                                                ? `👟 *Size*: ${selectedSize}\n`
+                                                : '';
+
                                             const whatsappUrl = `https://api.whatsapp.com/send?phone=${Brandphone}&text=${encodeURIComponent(
                                                 `📦 *Product Details*\n\n` +
                                                 `🛍️ *Product*: ${product.productName}\n` +
+                                                sizeText +
                                                 priceText +
                                                 boxText +
                                                 `🔗 *URL*: ${window.location.href}`
                                             )}`;
 
-                                            window.open(whatsappUrl, "_blank", "noopener,noreferrer");
+                                            window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
                                         }}
                                         className="h-14 px-6 py-2 font-semibold rounded-xl bg-black hover:bg-neutral-800 text-white transition-colors text-center"
                                     >
                                         Buy via WhatsApp
                                     </button>
-
-
                                 </div>
-                                {location.pathname.includes(msterCode) && <>
-                                    <p className="text-red-500 text-xl font-semibold">{product.productOriginalPrice}</p>
-                                    <a href={product.productUrl} target="_blank" rel="noopener noreferrer" className="text-blue-500 ">{product.productUrl}</a>
-                                </>}
 
-                                <section className="py-4 ">
+                                {location.pathname.includes(msterCode) && (
+                                    <>
+                                        <p className="text-red-500 text-xl font-semibold">{product.productOriginalPrice}</p>
+                                        <a href={product.productUrl} target="_blank" rel="noopener noreferrer" className="text-blue-500">{product.productUrl}</a>
+                                    </>
+                                )}
+
+                                {/* Shipping info */}
+                                <section className="py-4">
                                     <div className="container mx-auto px-4 text-center">
-                                        {/* Shipping Days Info */}
                                         <p className="font-semibold mb-8 text-left">
                                             SHIPPING DAYS: <span className="font-normal">4 TO 7 DAYS</span>
                                         </p>
-
-                                        {/* Icons Section */}
-                                        <div className="grid grid-cols-3 md:grid-cols-3 gap-8">
-                                            {/* Free Delivery */}
+                                        <div className="grid grid-cols-3 gap-8">
                                             <div className="flex flex-col items-center">
                                                 <Truck className="w-10 h-10 mb-3 text-black" />
                                                 <p className="text-sm font-medium">Free Delivery</p>
                                             </div>
-
-                                            {/* 48 Hours Returnable */}
                                             <div className="flex flex-col items-center">
                                                 <Recycle className="w-10 h-10 mb-3 text-black" />
                                                 <p className="text-sm font-medium">48 Hours Returnable</p>
                                             </div>
-
-                                            {/* Cash on Delivery */}
                                             <div className="flex flex-col items-center">
                                                 <Tag className="w-10 h-10 mb-3 text-black" />
                                                 <p className="text-sm font-medium">Cash On Delivery</p>
@@ -584,186 +515,64 @@ const ProductDetailPage = () => {
                                     </div>
                                 </section>
 
-
-                                {/* <div className="flex items-center space-x-4 my-4 gap-2">
-                                    <div className="feature-card">
-                                        <FontAwesomeIcon icon={faHeadset} className='mb-2 feature-icon' />
-                                        <div className="font-bold text-neutral-950">Brand Support</div>
-                                    </div>
-
-                                    <div className="feature-card">
-                                        <FontAwesomeIcon icon={faUndo} className='mb-2 feature-icon' />
-                                        <div className="font-bold text-neutral-950">7-Day Return</div>
-                                    </div>
-
-                                    <div className="feature-card">
-                                        <FontAwesomeIcon icon={faMoneyBillWave} className='mb-2 feature-icon' />
-                                        <div className="font-bold text-neutral-950 ">Cash on Delivery</div>
-                                    </div>
-
-                                    <div className="feature-card">
-                                        <FontAwesomeIcon icon={faCheckCircle} className='mb-2 feature-icon' />
-                                        <div className="font-bold text-neutral-950">Assured Quality</div>
-                                    </div>
-                                </div> */}
-
+                                {/* Accordion */}
                                 <div className="w-full max-w-2xl mx-auto my-6">
                                     {accordions.map((accordion, index) => (
-                                        <div
-                                            key={index}
-                                            className="border border-neutral-300 border-s-0  border-e-0 overflow-hidden "
-                                        >
-                                            {/* Question */}
+                                        <div key={index} className="border border-neutral-300 border-s-0 border-e-0 overflow-hidden">
                                             <button
                                                 onClick={() => toggle(index)}
                                                 className="w-full flex justify-between items-center px-6 py-4 text-left font-semibold bg-white hover:bg-gray-50"
                                             >
-                                                {/* Section Title */}
                                                 <span className="text-base tracking-wide">{accordion.question}</span>
-                                                <span
-                                                    className={`transform transition-transform duration-300 ${openIndex === index ? "rotate-90" : "rotate-0"
-                                                        } text-lg`}
-                                                >
+                                                <span className={`transform transition-transform duration-300 ${openIndex === index ? 'rotate-90' : 'rotate-0'} text-lg`}>
                                                     &gt;
                                                 </span>
                                             </button>
-
-                                            {/* Answer */}
-                                            <div
-                                                className={`transition-all duration-300 overflow-hidden bg-gray-50 px-6 ${openIndex === index ? "py-4" : "max-h-0 py-0"
-                                                    } text-sm text-gray-700`}
-                                            >
+                                            <div className={`transition-all duration-300 overflow-hidden bg-gray-50 px-6 ${openIndex === index ? 'py-4' : 'max-h-0 py-0'} text-sm text-gray-700`}>
                                                 {accordion.answer}
                                             </div>
                                         </div>
                                     ))}
                                 </div>
 
-
+                                {/* Step by step */}
                                 <div className="flex flex-col items-center p-6 bg-purple-100 rounded-xl max-w-3xl mx-auto">
                                     <h2 className="text-xl font-bold text-purple-900 mb-6">STEP BY STEP</h2>
-
                                     <div className="flex flex-col md:flex-row items-center md:justify-between w-full gap-6">
                                         {steps.map((step, idx) => (
                                             <div key={idx} className="flex flex-col items-center text-center relative">
                                                 <step.Icon className="w-14 h-14 text-purple-700 mb-2" />
                                                 <p className="text-sm font-semibold text-purple-800">{step.title}</p>
                                                 {idx !== steps.length - 1 && (
-                                                    <span className="hidden md:block absolute right-[-32px] top-6 text-purple-600 text-2xl">
-                                                        →
-                                                    </span>
+                                                    <span className="hidden md:block absolute right-[-32px] top-6 text-purple-600 text-2xl">→</span>
                                                 )}
                                             </div>
                                         ))}
                                     </div>
-
                                     <div className="mt-6 w-full">
                                         <button
                                             onClick={() => {
-                                                // console.log(`User is interested in ${product.productName}`);
-
                                                 const whatsappUrl = `https://api.whatsapp.com/send?phone=${Brandphone}&text=${encodeURIComponent(
-                                                    `👋 Hello,\n\nI'm interested in moving forward through the *Step by Step* process on your site.\n\n🛍️ *Product*: ${product.productName}\n💰 *Price*: ~₹${parseInt(
-                                                        calculateAddedPrice(product.productOriginalPrice)
-                                                    )}~ → *₹${parseInt(
-                                                        calculateDiscountedPrice(product.productOriginalPrice)
-                                                    )}*\n🔗 *Product Link*: ${window.location.href}\n\nCan you please guide me with the next steps?`
+                                                    `👋 Hello,\n\nI'm interested in moving forward through the *Step by Step* process on your site.\n\n🛍️ *Product*: ${product.productName}\n💰 *Price*: ~₹${parseInt(calculateAddedPrice(product.productOriginalPrice))}~ → *₹${parseInt(calculateDiscountedPrice(product.productOriginalPrice))}*\n🔗 *Product Link*: ${window.location.href}\n\nCan you please guide me with the next steps?`
                                                 )}`;
-
                                                 window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
                                             }}
                                             className="bg-purple-400 text-white rounded-full py-3 px-6 text-center font-medium shadow-md cursor-pointer w-full"
                                         >
                                             💬 Chat with Support: {Brandphone}
                                         </button>
-
-
                                     </div>
                                 </div>
-
-                                {/* Buy with box option */}
-                                {/*    <div className=" items-center space-x-4 py-4 border-2 rounded-lg">
-                                    <h2 className='text-center text-2xl font-semibold mb-4 text-black'>Buy with Box</h2>
-                                    <div className="flex flex-wrap sm:flex-nowrap mx-2 mb-4 justify-center sm:justify-between items-center">
-                                        <div className="sm:w-1/4 w-1/3 p-2">
-                                            <Card
-                                                key={box[0].productId}
-                                                title={box[0].productName}
-                                                price={box[0].productOriginalPrice}
-                                                coverImg={box[0].featuredimg}
-                                                id={box[0].productId}
-                                                calculateAddedPriceHidden="true"
-                                            />
-                                        </div>
-                                        <h2 className='text-center font-semibold text-3xl mt-[-36px]  sm:mt-0'>+</h2>
-                                        <div className="sm:w-1/4 w-1/3 p-2 ">
-                                            <Card
-                                                key={box[0].productId}
-                                                title={box[0].productName}
-                                                price={box[0].productOriginalPrice}
-                                                coverImg={box[0].featuredimg}
-                                                id={box[0].productId}
-                                                calculateAddedPriceHidden="true"
-                                            />
-                                        </div>
-                                        <h2 className='text-center font-semibold text-3xl hidden sm:block mt-[-36px]  sm:mt-0'>=</h2>
-                                        <div className="p-2">
-                                            <div className="rounded-lg bg-gray-100 flex py-2 px-3">
-                                                <span className="text-black mr-1 mt-1">₹</span>
-                                                <span className="font-bold text-black text-2xl">
-                                                    {calculateDiscountedPrice(product.productOriginalPrice)}
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div> */}
-
-
-                                {/* Why Choose Us Section */}
-                                {/* <div className="mt-10">
-                                    <h2 className="text-2xl font-semibold mb-4 text-black">
-                                        Why Choose Us?
-                                    </h2>
-
-                                    <ul className="list-disc list-inside space-y-2 text-black">
-                                        <li>Authentic Timepieces Only – No Replicas or Fakes</li>
-                                        <li>Comes with Original Branded Watch Box</li>
-                                        <li>Sourced Directly from Trusted Distributors</li>
-                                        <li>10,000+ Satisfied Customers & Counting</li>
-                                        <li>Live Product Videos Available Before Dispatch</li>
-                                        <li>Fast & Secure Shipping Across India</li>
-                                    </ul>
-
-                                    <div className="mt-6 text-black">
-                                        <p className="font-bold">Trust the Name – {brand}</p>
-                                        <p>- Where precision meets prestige</p>
-                                        <p>
-                                            - We deliver premium watches at the best price without compromising on
-                                            authenticity or style.
-                                        </p>
-                                    </div>
-
-                                    <div className="mt-4 text-black">
-                                        <p>- Want to see it before you buy?</p>
-                                        <p>
-                                            - Live videos available on <span className="font-medium">WhatsApp</span>.
-                                            Just message us!
-                                        </p>
-                                    </div>
-                                </div> */}
                             </div>
-
                         </div>
                     </div>
 
                     {/* Similar Products */}
                     <div className="mt-5 max-w-7xl mx-auto pt-10 px-4">
                         <h2 className="text-2xl font-semibold mb-4 text-black">Similar Products</h2>
-
                         {simillarproducts && simillarproducts.length > 0 ? (
                             <Slider {...settings}>
                                 {simillarproducts.map(similarProduct => (
-
                                     <div key={similarProduct.productId}>
                                         <div className="w-50 mx-3">
                                             <Card
@@ -772,7 +581,8 @@ const ProductDetailPage = () => {
                                                 price={similarProduct.productOriginalPrice}
                                                 coverImg={similarProduct.featuredimg}
                                                 id={similarProduct.productId}
-                                                catName={product.catName}
+                                                catName={similarProduct.catName}
+                                                primarycat={similarProduct.primarycat}
                                             />
                                         </div>
                                     </div>
@@ -782,12 +592,105 @@ const ProductDetailPage = () => {
                             <p className="text-gray-500">No results found</p>
                         )}
                     </div>
+
+                    {/* ── Request for Size Modal (shoes only) ── */}
+                    {showRequestModal && (
+                        <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
+                            <div className="bg-white rounded-2xl shadow-xl w-full max-w-md mx-4">
+                                <div className="flex items-center justify-between px-6 py-4 border-b">
+                                    <h5 className="font-bold text-lg">Request Size for Product</h5>
+                                    <button onClick={() => setShowRequestModal(false)} className="text-gray-400 hover:text-black text-2xl leading-none">&times;</button>
+                                </div>
+
+                                <div className="px-6 py-4 space-y-4">
+                                    {/* Name */}
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">Your Name</label>
+                                        <input
+                                            type="text"
+                                            className={`w-full border rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-black ${formErrors.name ? 'border-red-500' : 'border-gray-300'}`}
+                                            value={formData.name}
+                                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                        />
+                                        {formErrors.name && <p className="text-red-500 text-xs mt-1">{formErrors.name}</p>}
+                                    </div>
+
+                                    {/* Contact */}
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">Contact Number</label>
+                                        <input
+                                            type="tel"
+                                            className={`w-full border rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-black ${formErrors.contact ? 'border-red-500' : 'border-gray-300'}`}
+                                            value={formData.contact}
+                                            onChange={(e) => setFormData({ ...formData, contact: e.target.value })}
+                                        />
+                                        {formErrors.contact && <p className="text-red-500 text-xs mt-1">{formErrors.contact}</p>}
+                                    </div>
+
+                                    {/* Email */}
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                                        <input
+                                            type="email"
+                                            className={`w-full border rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-black ${formErrors.email ? 'border-red-500' : 'border-gray-300'}`}
+                                            value={formData.email}
+                                            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                        />
+                                        {formErrors.email && <p className="text-red-500 text-xs mt-1">{formErrors.email}</p>}
+                                    </div>
+
+                                    {/* Product Name (read-only) */}
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">Product Name</label>
+                                        <input
+                                            type="text"
+                                            className="w-full border border-gray-200 rounded-lg px-3 py-2 bg-gray-50 text-gray-500"
+                                            value={product.productName}
+                                            disabled
+                                        />
+                                    </div>
+
+                                    {/* Preferred Size */}
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">Preferred Size</label>
+                                        <input
+                                            type="text"
+                                            className={`w-full border rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-black ${formErrors.size ? 'border-red-500' : 'border-gray-300'}`}
+                                            value={formData.size}
+                                            onChange={(e) => setFormData({ ...formData, size: e.target.value })}
+                                        />
+                                        {formErrors.size && <p className="text-red-500 text-xs mt-1">{formErrors.size}</p>}
+                                    </div>
+                                </div>
+
+                                <div className="flex justify-end gap-3 px-6 py-4 border-t">
+                                    <button
+                                        onClick={() => setShowRequestModal(false)}
+                                        className="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 transition-colors"
+                                    >
+                                        Close
+                                    </button>
+                                    <button
+                                        disabled={!formData.name.trim() || !formData.contact.trim() || !formData.email.trim() || !formData.size.trim()}
+                                        onClick={() => {
+                                            if (validateForm()) {
+                                                const message = `📦 *Product Request*\n\n👤 Name: ${formData.name}\n📱 Contact: ${formData.contact}\n📧 Email: ${formData.email}\n🛍️ Product: ${product.productName}\n👟 Requested Size: ${formData.size}\n🔗 URL: ${window.location.href}`;
+                                                window.open(`https://api.whatsapp.com/send?phone=${Brandphone}&text=${encodeURIComponent(message)}`, '_blank');
+                                                setShowRequestModal(false);
+                                            }
+                                        }}
+                                        className="px-4 py-2 rounded-lg bg-green-600 text-white font-semibold hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                    >
+                                        Send via WhatsApp
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
                 </div>
-
-
-            </>}
+            )}
         </>
-    )
-}
+    );
+};
 
-export default ProductDetailPage
+export default ProductDetailPage;

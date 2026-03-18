@@ -60,7 +60,7 @@ const App = () => {
         <Route path="/ShippingPolicy" element={<ShippingPolicy />} />
         <Route path="/TermsOfService" element={<TermsOfService />} />
         <Route path="/productpage/:id" element={<ProductDetailPage />} />
-        <Route path={`/productpage/:id/${msterCode}`} element={<ProductDetailPage />} />
+        <Route path={`/productpage/:id/:msterCode`} element={<ProductDetailPage />} />
         {/* OLD */}
         {/* <Route path={`/productpage/:id/${msterCode}`} element={<OriginalProductDetailPageWithprice />} /> */}
 

@@ -19,6 +19,7 @@ const ProductGride = ({ products }) => {
                                 id={product.productId}
                                 catName={product.catName}
                                 sizeName={product.sizeName || "[]"}
+                                primarycat={product.primarycat}
                             />
 
                         ))

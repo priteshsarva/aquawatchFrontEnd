@@ -2,9 +2,8 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { calculateAddedPrice, calculateDiscountedPrice, margin, toaddincutvalue } from '../data/data'
 
-const Card = ({ title, price, coverImg, id, key, calculateAddedPriceHidden, catName, sizeName }) => {
+const Card = ({ title, price, coverImg, id, key, calculateAddedPriceHidden, catName, sizeName, primarycat }) => {
 
-    console.log(sizeName);
 
     const sizeMap = {
         "35": ["35", "35-3", "35 UK-5", "UK-5", "Size 35"], // Added size 35 based on the pattern
@@ -23,7 +22,6 @@ const Card = ({ title, price, coverImg, id, key, calculateAddedPriceHidden, catN
     };
 
     const normalizeSize = (inputSize) => {
-        console.log("normalized");
 
         for (const [baseSize, variants] of Object.entries(sizeMap)) {
             if (variants.includes(inputSize)) {
@@ -36,7 +34,7 @@ const Card = ({ title, price, coverImg, id, key, calculateAddedPriceHidden, catN
     return (
         <div>
             {/* <div className="w-full h-screen flex justify-center items-center"  key={id}> */}
-            <Link to={`/productpage/${id}`} key={key} className='' target='_blank'>
+            <Link to={`/productpage/${id}?cat=${primarycat}`} key={key} className='' target='_blank'>
 
                 <div className="transition duration-300 ease-in-out xl:mb-0 lg:mb-0 md:mb-0 mb-6 cursor-pointer group">
                     <div className="overflow-hidden relative">

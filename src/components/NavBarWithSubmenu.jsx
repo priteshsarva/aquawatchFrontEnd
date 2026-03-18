@@ -66,19 +66,19 @@ export default function NavBarWithSubmenu() {
     setSearchResults([]);
   };
 
-  
+
   useEffect(() => {
     // Disable scrolling on the body
-  
+
 
     if (searchDrawerOpen) {
-        document.body.style.overflow = 'hidden';
-    }else{
+      document.body.style.overflow = 'hidden';
+    } else {
       document.body.style.overflow = 'unset';
 
     }
 
-   
+
   }, [searchDrawerOpen]);
 
   return (
@@ -137,6 +137,8 @@ export default function NavBarWithSubmenu() {
                             coverImg={product.featuredimg}
                             id={product.productId}
                             catName={product.catName}
+                            primarycat={product.primarycat}
+
                           />
                         ))}
                       </div>

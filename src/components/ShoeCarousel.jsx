@@ -109,6 +109,7 @@ export default function ShoeCarousel({ productss, primaryCat }) {
                 id={product.productId}
                 catName={product.catName}
                 sizeName={product.sizeName || "[]"}
+                primarycat={product.primarycat}
               />
             </div>
           </div>

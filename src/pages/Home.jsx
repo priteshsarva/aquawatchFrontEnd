@@ -84,7 +84,10 @@ const Home = () => {
                     <ShopbyBrand />
                     <ProductCategory />
                     <ShoeCarousel productss={product}  />
-                    <SingleCollection productss={product}  primaryCat="watches"/>
+                    <SingleCollection productss={product} 
+                    //  primaryCat="watches"
+                     />
+                     
                     {/* <Testimonials /> */}
                 </>}
         </>
