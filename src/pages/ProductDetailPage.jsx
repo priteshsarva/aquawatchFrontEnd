@@ -17,7 +17,7 @@ import { Truck, Recycle, Tag } from "lucide-react";
 import { msterCode } from '../data/data'
 import { useLocation } from 'react-router-dom';
 import BoxSelector from '../components/BoxSelector';
-import { boxOptions } from '../data/data';
+import { boxOptions } from '../data/data.jsx';
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
 
@@ -33,13 +33,13 @@ const ProductDetailPage = () => {
     }
 
     console.log(id);
-    let mastercode = null;
+    let mastercodeurl = null;
     if (catmasster && catmasster.includes("/")) {
         const parts = catmasster.split("/");
-        mastercode = parts[1]; // right side
+        mastercodeurl = parts[1]; // right side
     }
 
-    console.log(mastercode); // -> "viaksh" for "watches/viaksh"
+    console.log(mastercodeurl); // -> "viaksh" for "watches/viaksh"
 
     const [product, setproduct] = useState('');
     const [hash, sethash] = useState(window.location.hash);
@@ -268,7 +268,7 @@ const ProductDetailPage = () => {
                                 </p>
 
 
-                                {mastercode && (
+                                {mastercodeurl === msterCode && (
                                     <div className="mt-4 space-y-2">
                                         <p className="text-2xl font-semibold text-gray-900">
                                             ${product.productOriginalPrice}

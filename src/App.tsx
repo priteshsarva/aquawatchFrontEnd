@@ -22,7 +22,7 @@ import NavBarWithSubmenu from './components/NavBarWithSubmenu.jsx';
 import Footers1 from './components/Footers1.jsx'
 import ScrollToTop from './components/ScrollToTop.jsx';
 // import ScrollToHashElement from './components/ScrollToHashElement.jsx';
-import {msterCode } from './data/data.jsx'
+// import {msterCode } from './data/data.jsx'
 
 
 async function loadPreline() {
