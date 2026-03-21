@@ -30,8 +30,8 @@ export default function NavBarWithSubmenu() {
     // { name: "Citize", url: "product/brand/citi" },
     { name: "Home", url: "/" },
     { name: "Shop by Brands ", url: "/home#shopByBrand" },
-    { name: "Men's Watches", url: "/product/category/Men's%20Watch" },
-    { name: "Women's Watches", url: "/product/category/Ladies Watch" },
+    { name: "Men's", url: "/product/category/Men" },
+    { name: "Women's", url: "/product/category/Ladies" },
     { name: "Luxury collection", url: "/product/category/Luxury Watch" },
     { name: "Contact info", url: "#contactus" },
   ];
@@ -138,7 +138,7 @@ export default function NavBarWithSubmenu() {
                             id={product.productId}
                             catName={product.catName}
                             primarycat={product.primarycat}
-
+                            sizeName={product.sizeName || "[]"}
                           />
                         ))}
                       </div>

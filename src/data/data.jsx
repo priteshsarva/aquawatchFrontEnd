@@ -85,10 +85,22 @@ export const sidebarDataCategory = [
     title: "Women's Watches",
     items: [],
   },
+  {
+    id: "mensShoes",
+    title: "Men's shoes",
+    items: [],
+  },
+  {
+    id: "womensShoes",
+    title: "women shoes",
+    items: [],
+  },
 ];
 export const categorymap = {
-  "Women's Watches": "womens watch",
+  "Women's Watches": "ladies watch",
   "Men's Watches": "mens watch",
+  "Men's Watches": "mens watch",
+  "women shoes": "women's shoe",
 };
 
 // Sample data for brands
