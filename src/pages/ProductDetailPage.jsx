@@ -26,20 +26,20 @@ const ProductDetailPage = () => {
     const [searchParams] = useSearchParams();
     const catmasster = searchParams.get("cat");
 
-// Get left side (category)
-let category = null;
-if (catmasster) {
-  category = catmasster.split("/")[0]; // left side
-}
+    // Get left side (category)
+    let category = null;
+    if (catmasster) {
+        category = catmasster.split("/")[0]; // left side
+    }
 
     console.log(id);
     let mastercode = null;
-if (catmasster && catmasster.includes("/")) {
-  const parts = cat.split("/");
-  mastercode = parts[1]; // right side
-}
+    if (catmasster && catmasster.includes("/")) {
+        const parts = catmasster.split("/");
+        mastercode = parts[1]; // right side
+    }
 
-console.log(mastercode); // -> "viaksh" for "watches/viaksh"
+    console.log(mastercode); // -> "viaksh" for "watches/viaksh"
 
     const [product, setproduct] = useState('');
     const [hash, sethash] = useState(window.location.hash);
@@ -113,7 +113,7 @@ console.log(mastercode); // -> "viaksh" for "watches/viaksh"
         return Object.keys(errors).length === 0;
     };
 
-    const isShoes = cat === 'shoes';
+    const isShoes = (category ?? '').toLowerCase() === 'shoes';
 
     // ─── Accordion ───────────────────────────────────────────────────────────────
     const toggle = (index) => setOpenIndex(openIndex === index ? null : index);
@@ -187,13 +187,13 @@ console.log(mastercode); // -> "viaksh" for "watches/viaksh"
 
     // ─── Fetch product ────────────────────────────────────────────────────────────
     useEffect(() => {
-        if (!id || !cat || cat === 'undefined') {
+        if (!id || !category || category === 'undefined') {
             window.location.href = '/';
             return;
         }
         sethash(window.location.hash);
 
-        fetch(`${baseUrl}/product/${id}?cat=${cat}`, { method: 'GET' })
+        fetch(`${baseUrl}/product/${id}?cat=${category}`, { method: 'GET' })
             .then(res => res.json())
             .then(data => {
                 if (data.results && data.results.length > 0) {
@@ -203,14 +203,14 @@ console.log(mastercode); // -> "viaksh" for "watches/viaksh"
                     setimageUrlArray(JSON.parse(p.imageUrl));
 
                     // Parse sizes only for shoes
-                    if (cat === 'shoes') {
+                    if (category === 'shoes') {
                         const parsedSizes = JSON.parse(p.sizeName);
                         setsizes(parsedSizes);
                     }
                 }
             })
             .catch(error => console.error('Error:', error));
-    }, [id, cat]);
+    }, [id, category]);
 
     // ─── Fetch similar products ───────────────────────────────────────────────────
     useEffect(() => {

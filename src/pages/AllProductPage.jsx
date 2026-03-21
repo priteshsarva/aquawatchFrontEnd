@@ -306,6 +306,8 @@ const AllProductPage = () => {
                                         coverImg={product.featuredimg}
                                         id={product.productId}
                                         catName={product.catName}
+                                        primarycat={product.primarycat}
+                                        sizeName={product.sizeName || "[]"}
                                     />
                                 </div>
                             ))}
