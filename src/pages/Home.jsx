@@ -83,11 +83,15 @@ const Home = () => {
                     </div> */}
                     <ShopbyBrand />
                     <ProductCategory />
-                    <ShoeCarousel productss={product}  />
-                    <SingleCollection productss={product} 
-                    //  primaryCat="watches"
-                     />
-                     
+                    <ShoeCarousel productss={product} primaryCat="watches" />
+                    <SingleCollection productss={product}
+                        primaryCat="watches"
+                    />
+                    {/* <ShopbyBrand /> */}
+                    {/* <ProductCategory /> */}
+                    <ShoeCarousel productss={product} primaryCat="shoes" />
+                    <SingleCollection productss={product} primaryCat="shoes" />
+
                     {/* <Testimonials /> */}
                 </>}
         </>
