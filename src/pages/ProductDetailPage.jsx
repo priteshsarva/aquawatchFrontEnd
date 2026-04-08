@@ -300,9 +300,9 @@ const ProductDetailPage = () => {
                                     </div>
                                 </div>
 
-
+                                {console.log(product.dbName)}
                                 {/* ── Box selector: watches only ── */}
-                                {!isShoes && product.primarycat === 'watches' && (
+                                {!isShoes && product.dbName === 'watches' && (
                                     <div className="p-4 bg-white rounded-xl shadow-md w-full max-w-lg space-y-4">
                                         <div className="flex items-center gap-4">
                                             <span className="font-semibold text-gray-800">Buy with Box</span>
