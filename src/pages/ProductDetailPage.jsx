@@ -20,6 +20,8 @@ import BoxSelector from '../components/BoxSelector';
 import { boxOptions } from '../data/data.jsx';
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
+const liveUrl = import.meta.env.VITE_LIVE_URL;
+
 
 const ProductDetailPage = () => {
     const { id } = useParams();
@@ -32,7 +34,6 @@ const ProductDetailPage = () => {
         category = catmasster.split("/")[0]; // left side
     }
 
-    console.log(id);
     let mastercodeurl = null;
     if (catmasster && catmasster.includes("/")) {
         const parts = catmasster.split("/");
@@ -193,7 +194,7 @@ const ProductDetailPage = () => {
         }
         sethash(window.location.hash);
 
-        fetch(`${baseUrl}/product/${id}?cat=${category}`, { method: 'GET' })
+        fetch(`${liveUrl}/dev/update-single-product?productId=${id}&productDb=${category}`, { method: 'GET' })
             .then(res => res.json())
             .then(data => {
                 if (data.results && data.results.length > 0) {
