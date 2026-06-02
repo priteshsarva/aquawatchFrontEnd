@@ -99,7 +99,6 @@ export const sidebarDataCategory = [
 export const categorymap = {
   "Women's Watches": "ladies watch",
   "Men's Watches": "mens watch",
-  "Men's Watches": "mens watch",
   "women shoes": "women's shoe",
 };
 
@@ -6561,8 +6560,8 @@ export const announcements = [
     loop: 10,
     msg: (
       <span className="mx-20">
-        MONSOON SALE : PAY ONLINE WITH UPI AND GET 20% OFF — USE CODE{" "}
-        <span className="font-bold">"UPI20"</span> AT CHECKOUT.
+        MONSOON SALE : PAY ONLINE WITH UPI AND GET 15% OFF — USE CODE{" "}
+        <span className="font-bold">"UPI15"</span> AT CHECKOUT.
       </span>
     )
   }
