@@ -195,8 +195,15 @@ const ProductDetailPage = () => {
         sethash(window.location.hash);
 
         fetch(`${liveUrl}/dev/update-single-product?productId=${id}&productDb=${category}`, { method: 'GET' })
-            .then(res => res.json())
+            .then(res => {
+                // If the live response fails (status is not 200-299), throw an error to jump to the fallback
+                if (!res.ok) {
+                    throw new Error(`Live URL failed with status: ${res.status}`);
+                }
+                return res.json();
+            })
             .then(data => {
+                // Process the data from the live URL
                 if (data.results && data.results.length > 0) {
                     const p = data.results[0];
                     setproduct(p);
@@ -210,7 +217,36 @@ const ProductDetailPage = () => {
                     }
                 }
             })
-            .catch(error => console.error('Error:', error));
+            .catch(error => {
+                console.warn('Live fetch failed, trying fallback baseUrl...', error);
+
+                // Fallback fetch to baseUrl
+                return fetch(`${baseUrl}/product/${id}?cat=${category}`, { method: 'GET' })
+                    .then(fallbackRes => {
+                        if (!fallbackRes.ok) {
+                            throw new Error(`Fallback URL also failed with status: ${fallbackRes.status}`);
+                        }
+                        return fallbackRes.json();
+                    })
+                    .then(data => {
+                        // Process the data from the fallback URL
+                        if (data.results && data.results.length > 0) {
+                            const p = data.results[0];
+                            setproduct(p);
+                            setSelectedImage(Array.isArray(p.image) ? p.image[0] : p.featuredimg);
+                            setimageUrlArray(JSON.parse(p.imageUrl));
+
+                            // Parse sizes only for shoes
+                            if (category === 'shoes') {
+                                const parsedSizes = JSON.parse(p.sizeName);
+                                setsizes(parsedSizes);
+                            }
+                        }
+                    })
+                    .catch(fallbackError => {
+                        console.error('Both live and fallback fetches failed:', fallbackError);
+                    });
+            });
     }, [id, category]);
 
     // ─── Fetch similar products ───────────────────────────────────────────────────
