@@ -4,8 +4,12 @@ import './index.css'
 import App from './App.tsx'
 import 'flowbite';
 
-// import { BrowserRouter} from 'react-router-dom';
-import { HashRouter} from 'react-router-dom';
+// HashRouter -> BrowserRouter as of Phase 1D: real per-vendor subdomains and
+// SEO both need real paths (#/p/... is invisible to crawlers and to a wildcard
+// host's routing). This REQUIRES the host to SPA-fallback every path to
+// index.html — see public/_redirects (Netlify/Cloudflare) and vercel.json.
+// gh-pages cannot do that, so do not deploy this to gh-pages.
+import { BrowserRouter } from 'react-router-dom';
 
 import $ from 'jquery';
 import _ from 'lodash';
@@ -24,8 +28,8 @@ window.VanillaCalendarPro = VanillaCalendarPro;
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <HashRouter >
+    <BrowserRouter>
     <App />
-    </HashRouter>
+    </BrowserRouter>
   </StrictMode>,
 )

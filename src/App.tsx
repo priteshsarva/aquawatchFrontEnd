@@ -1,85 +1,103 @@
 import './App.css'
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
 
-// import NotFound from './pages/NotFound.jsx';
-import Home from './pages/Home.jsx';
-import FaqPage from './pages/legal/FaqPage.jsx';
-import TermsOfService from './pages/legal/TermsOfService.jsx';
-import ShippingPolicy from './pages/legal/ShippingPolicy.jsx';
-import ReturnPolicy from './pages/legal/ReturnPolicy.jsx';
-import PrivacyPolices from './pages/legal/PrivacyPolices.jsx';
-import ProductDetailPage from './pages/ProductDetailPage.jsx';
-// import OriginalProductDetailPageWithprice from './pages/OriginalProductDetailPageWithprice.jsx';
+import { StoreProvider, useStore } from './context/StoreContext.jsx';
+import { CartProvider } from './context/CartContext.jsx';
+import { CustomerAuthProvider } from './context/CustomerAuthContext.jsx';
+import { WishlistProvider } from './context/WishlistContext.jsx';
 
-import AllProductPage from './pages/AllProductPage.jsx';
+import StoreNavBar from './components/store/StoreNavBar.jsx';
+import StoreFooter from './components/store/StoreFooter.jsx';
+import StoreHome from './pages/store/StoreHome.jsx';
+import StoreCategoryPage from './pages/store/StoreCategoryPage.jsx';
+import StoreProductPage from './pages/store/StoreProductPage.jsx';
+import CartPage from './pages/store/CartPage.jsx';
+import CheckoutPage from './pages/store/CheckoutPage.jsx';
+import AccountPage from './pages/store/AccountPage.jsx';
+import PolicyPage from './pages/store/PolicyPage.jsx';
+import FaqPage from './pages/store/FaqPage.jsx';
+import WishlistPage from './pages/store/WishlistPage.jsx';
+import StoreNotFound from './pages/store/StoreNotFound.jsx';
 
-import NavBarWithSubmenu from './components/NavBarWithSubmenu.jsx';
-// import Footers from './components/Footers.jsx'
-import Footers1 from './components/Footers1.jsx'
 import ScrollToTop from './components/ScrollToTop.jsx';
-// import ScrollToHashElement from './components/ScrollToHashElement.jsx';
-// import {msterCode } from './data/data.jsx'
-
 
 async function loadPreline() {
   return import('preline/dist/index.js');
 }
 
-const App = () => {
+// On localhost the tenant is carried by ?store=slug — but a shopper who copies
+// or shares the URL /p/watches/28440 without that query gets "Store not found".
+// Keep the query in the address bar after every navigation so every copied
+// URL is a shareable, deep-link-safe URL. Skipped in production (subdomains
+// resolve natively; a subdomain URL is already shareable).
+function useShareableTenantUrl(slug: string | undefined) {
   const location = useLocation();
+  useEffect(() => {
+    if (!slug) return;
+    const host = window.location.hostname;
+    const isLocalHost = host === 'localhost' || host === '127.0.0.1' || /^\d+\.\d+\.\d+\.\d+$/.test(host);
+    if (!isLocalHost) return;
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('store') === slug) return;
+    params.set('store', slug);
+    const q = params.toString();
+    const url = `${window.location.pathname}${q ? '?' + q : ''}${window.location.hash}`;
+    window.history.replaceState(null, '', url);
+  }, [slug, location.pathname, location.search]);
+}
+
+function AppShell() {
+  const location = useLocation();
+  const { status, slug } = useStore();
+
+  useShareableTenantUrl(slug);
 
   useEffect(() => {
     const initPreline = async () => {
       await loadPreline();
-
-      if (
-        window.HSStaticMethods &&
-        typeof window.HSStaticMethods.autoInit === 'function'
-      ) {
+      if (window.HSStaticMethods && typeof window.HSStaticMethods.autoInit === 'function') {
         window.HSStaticMethods.autoInit();
       }
     };
-
     initPreline();
   }, [location.pathname]);
 
+  if (status === 'loading') return <div className="min-h-screen" />;
+  if (status !== 'ready') return <StoreNotFound reason={status} />;
+
   return (
-    <>
-      <NavBarWithSubmenu />
-      {/* <ScrollToHashElement /> */}
-      <ScrollToTop />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/faq" element={<FaqPage />} />
-        <Route path="/PrivacyPolicy" element={<PrivacyPolices />} />
-        <Route path="/ReturnPolicy" element={<ReturnPolicy />} />
-        <Route path="/ShippingPolicy" element={<ShippingPolicy />} />
-        <Route path="/TermsOfService" element={<TermsOfService />} />
-        <Route path="/productpage/:id" element={<ProductDetailPage />} />
-        <Route path={`/productpage/:id/:msterCode`} element={<ProductDetailPage />} />
-        {/* OLD */}
-        {/* <Route path={`/productpage/:id/${msterCode}`} element={<OriginalProductDetailPageWithprice />} /> */}
-
-        <Route path="/product" element={<AllProductPage />} />
-        <Route path="/product/category/:category" element={<AllProductPage />} />
-        <Route path="/product/brand/:brand" element={<AllProductPage />} />
-        <Route path="/search/brand/:brand" element={<AllProductPage />} />
-        <Route path="/product/category/:category/brand/:brand" element={<AllProductPage />} />
-
-        {/* Catch-all route for unmatched URLs */}
-        <Route path="*" element={<Navigate to="/" replace />} />
-        {/* <Route path="*" element={<NotFound />} /> */}
-      </Routes>
-      {/* <Footers /> */}
-      <Footers1 />
-
-
-    </>
-  )
+    <CartProvider>
+      <WishlistProvider>
+        <CustomerAuthProvider>
+          <StoreNavBar />
+          <ScrollToTop />
+          <Routes>
+            <Route path="/" element={<StoreHome />} />
+            <Route path="/c/:category" element={<StoreCategoryPage />} />
+            <Route path="/search" element={<StoreCategoryPage />} />
+            <Route path="/p/:dbName/:id" element={<StoreProductPage />} />
+            <Route path="/cart" element={<CartPage />} />
+            <Route path="/wishlist" element={<WishlistPage />} />
+            <Route path="/checkout" element={<CheckoutPage />} />
+            <Route path="/account" element={<AccountPage />} />
+            <Route path="/policy/:kind" element={<PolicyPage />} />
+            <Route path="/faq" element={<FaqPage />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+          <StoreFooter />
+        </CustomerAuthProvider>
+      </WishlistProvider>
+    </CartProvider>
+  );
 }
+
+const App = () => (
+  <StoreProvider>
+    <AppShell />
+  </StoreProvider>
+);
 
 export default App

@@ -8,4 +8,5 @@ export default defineConfig({
   //hide base vercel or netlify
   base: '/',
   plugins: [react(), tailwindcss(), flowbiteReact()],
+  server: { port: 5175 },
 })
