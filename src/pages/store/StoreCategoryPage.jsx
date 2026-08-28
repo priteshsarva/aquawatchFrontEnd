@@ -29,7 +29,8 @@ export default function StoreCategoryPage() {
   const sort = sp.get("sort") || "featured";
   const stock = sp.get("stock") || "in";
   const brandsSel = useMemo(() => (sp.get("brand") ? sp.get("brand").split(",").filter(Boolean) : []), [sp]);
-  const subBrandsSel = useMemo(() => (sp.get("sub_brand") ? sp.get("sub_brand").split(",").filter(Boolean) : []), [sp]);
+  // sub-brands as "Primary::Secondary" pairs, so each is scoped to its brand
+  const subSel = useMemo(() => (sp.get("sub_brand") ? sp.get("sub_brand").split(",").filter(Boolean) : []), [sp]);
   const sizesSel = useMemo(() => (sp.get("size") ? sp.get("size").split(",").filter(Boolean) : []), [sp]);
   const priceMin = sp.get("price_min");
   const priceMax = sp.get("price_max");
@@ -45,14 +46,13 @@ export default function StoreCategoryPage() {
   const listCategory = category || "all";
   const isAll = listCategory === "all";
 
-  // facets re-fetch when the category OR the cascade selection (sub-category /
-  // brand) changes — so the brand list narrows to the picked sub-category, and
-  // sub-brands appear for the picked brand.
+  // facets re-fetch when the category OR the sub-category changes — brands (with
+  // their nested sub-brands) narrow to the picked sub-category.
   useEffect(() => {
-    api.facets({ category: listCategory, ...(subcat && { cat: subcat }), ...(brandsSel.length && { brand: brandsSel.join(",") }) })
+    api.facets({ category: listCategory, ...(subcat && { cat: subcat }) })
       .then(setFacets)
-      .catch(() => setFacets({ price_min: 0, price_max: 0, brands: [], subBrands: [], subcategories: [], sizes: [] }));
-  }, [listCategory, subcat, brandsSel.join(",")]); // eslint-disable-line react-hooks/exhaustive-deps
+      .catch(() => setFacets({ price_min: 0, price_max: 0, brands: [], subcategories: [], sizes: [] }));
+  }, [listCategory, subcat]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const queryParams = useMemo(() => ({
     category: listCategory,
@@ -61,11 +61,11 @@ export default function StoreCategoryPage() {
     ...(sort && sort !== "featured" && { sort }),
     ...(stock && stock !== "in" && { stock }),
     ...(brandsSel.length && { brand: brandsSel.join(",") }),
-    ...(subBrandsSel.length && { sub_brand: subBrandsSel.join(",") }),
+    ...(subSel.length && { sub_brand: subSel.join(",") }),
     ...(sizesSel.length && { size: sizesSel.join(",") }),
     ...(priceMin && { price_min: priceMin }),
     ...(priceMax && { price_max: priceMax }),
-  }), [listCategory, q, subcat, sort, stock, brandsSel, subBrandsSel, sizesSel, priceMin, priceMax]);
+  }), [listCategory, q, subcat, sort, stock, brandsSel, subSel, sizesSel, priceMin, priceMax]);
 
   // reload from page 1 whenever any filter changes
   useEffect(() => {
@@ -92,16 +92,28 @@ export default function StoreCategoryPage() {
     }
     setSp(next, { replace: true });
   };
-  // clearing a brand also clears its sub-brands (they only make sense together)
+  // clearing a brand also clears its sub-brand selections (they only work together)
   const toggleBrand = (b) => {
     const on = brandsSel.includes(b);
-    patch({ brand: on ? brandsSel.filter((x) => x !== b) : [...brandsSel, b], ...(on && { sub_brand: null }) });
+    patch({
+      brand: on ? brandsSel.filter((x) => x !== b) : [...brandsSel, b],
+      ...(on && { sub_brand: subSel.filter((p) => !p.startsWith(`${b}::`)) }),
+    });
   };
-  const toggleSubBrand = (s) => patch({ sub_brand: subBrandsSel.includes(s) ? subBrandsSel.filter((x) => x !== s) : [...subBrandsSel, s] });
+  // toggling a sub-brand keeps its parent brand selected (a sub only filters
+  // within its brand)
+  const toggleSub = (b, s) => {
+    const key = `${b}::${s}`;
+    const has = subSel.includes(key);
+    patch({
+      sub_brand: has ? subSel.filter((p) => p !== key) : [...subSel, key],
+      brand: brandsSel.includes(b) ? brandsSel : [...brandsSel, b],
+    });
+  };
   const toggleSize = (s) => patch({ size: sizesSel.includes(s) ? sizesSel.filter((x) => x !== s) : [...sizesSel, s] });
   const clearAll = () => patch({ brand: null, sub_brand: null, size: null, cat: null, price_min: null, price_max: null, sort: null, stock: null });
 
-  const activeCount = brandsSel.length + subBrandsSel.length + sizesSel.length + (subcat ? 1 : 0)
+  const activeCount = brandsSel.length + subSel.length + sizesSel.length + (subcat ? 1 : 0)
     + (priceMin || priceMax ? 1 : 0) + (sort !== "featured" ? 1 : 0) + (stock !== "in" ? 1 : 0);
 
   // Prefer the vendor's menu label for the category; "all" → the mixed listing.
@@ -120,7 +132,7 @@ export default function StoreCategoryPage() {
     <FilterRail
       facets={facets} isAll={isAll} categories={categories}
       brandsSel={brandsSel} onToggleBrand={toggleBrand}
-      subBrandsSel={subBrandsSel} onToggleSubBrand={toggleSubBrand}
+      subSel={subSel} onToggleSub={toggleSub}
       sizesSel={sizesSel} onToggleSize={toggleSize}
       subcat={subcat} onSubcat={(name) => patch({ cat: subcat === name ? null : name, brand: null, sub_brand: null })}
       stock={stock} onStock={(v) => patch({ stock: v === "in" ? null : v })}
@@ -210,14 +222,49 @@ function Section({ title, children, defaultOpen = true, count }) {
   );
 }
 
+// One brand row: checkbox to select the brand, plus a chevron (when it has
+// sub-brands) that expands its own collapsible list of sub-brands.
+function BrandRow({ brand, brandsSel, subSel, onToggleBrand, onToggleSub }) {
+  const [open, setOpen] = useState(false);
+  const subs = brand.subBrands || [];
+  const on = brandsSel.includes(brand.name);
+  return (
+    <div>
+      <div className="flex items-center gap-2.5">
+        <label className="flex items-center gap-2.5 cursor-pointer text-ink-soft hover:text-ink transition-colors flex-1 min-w-0">
+          <input type="checkbox" checked={on} onChange={() => onToggleBrand(brand.name)} className="accent-[var(--store-primary,#1a1512)]" />
+          <span className="flex-1 truncate">{brand.name}</span>
+          <span className="text-xs text-muted num">{brand.count}</span>
+        </label>
+        {subs.length > 0 && (
+          <button type="button" onClick={() => setOpen((o) => !o)} aria-label={open ? "Collapse sub-brands" : "Expand sub-brands"} className="text-muted hover:text-ink shrink-0">
+            <ChevronDown size={14} className={`transition-transform ${open ? "rotate-180" : ""}`} />
+          </button>
+        )}
+      </div>
+      {open && subs.length > 0 && (
+        <div className="mt-1.5 ml-6 flex flex-col gap-1.5 border-l border-line pl-3">
+          {subs.map((s) => (
+            <label key={s.name} className="flex items-center gap-2.5 cursor-pointer text-ink-soft hover:text-ink transition-colors">
+              <input type="checkbox" checked={subSel.includes(`${brand.name}::${s.name}`)} onChange={() => onToggleSub(brand.name, s.name)} className="accent-[var(--store-primary,#1a1512)]" />
+              <span className="flex-1 truncate">{s.name}</span>
+              <span className="text-xs text-muted num">{s.count}</span>
+            </label>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function FilterRail({
-  facets, isAll, categories, brandsSel, onToggleBrand, subBrandsSel, onToggleSubBrand,
+  facets, isAll, categories, brandsSel, onToggleBrand, subSel, onToggleSub,
   sizesSel, onToggleSize, subcat, onSubcat, stock, onStock, priceMin, priceMax, onPrice, activeCount, onClear,
 }) {
   if (!facets) return <div className="text-sm text-muted">Loading filters…</div>;
   const subs = facets.subcategories || [];
-  const subBrands = facets.subBrands || [];
   const sizes = facets.sizes || [];
+  const cats = [...categories].sort((a, b) => String(a.label).localeCompare(String(b.label)));
   return (
     <div className="text-sm">
       <div className="flex items-center justify-between mb-1">
@@ -236,10 +283,10 @@ function FilterRail({
         </Section>
       )}
 
-      {isAll && categories.length > 0 && (
-        <Section title="Category" count={categories.length}>
+      {isAll && cats.length > 0 && (
+        <Section title="Category" count={cats.length}>
           <div className="flex flex-col gap-1.5">
-            {categories.map((c) => (
+            {cats.map((c) => (
               <Link key={c.category} to={withStore(`/c/${encodeURIComponent(c.category)}`)}
                 className="capitalize text-ink-soft hover:text-ink transition-colors">
                 {c.label}
@@ -263,30 +310,12 @@ function FilterRail({
         </Section>
       )}
 
+      {/* Brand — each brand with its own collapsible sub-brand dropdown */}
       {facets.brands.length > 0 && (
         <Section title="Brand" count={facets.brands.length}>
-          <div className="flex flex-col gap-2.5 max-h-72 overflow-y-auto pr-1">
+          <div className="flex flex-col gap-2 max-h-80 overflow-y-auto pr-1">
             {facets.brands.map((b) => (
-              <label key={b.name} className="flex items-center gap-2.5 cursor-pointer text-ink-soft hover:text-ink transition-colors">
-                <input type="checkbox" checked={brandsSel.includes(b.name)} onChange={() => onToggleBrand(b.name)} className="accent-[var(--store-primary,#1a1512)]" />
-                <span className="flex-1 truncate">{b.name}</span>
-                <span className="text-xs text-muted num">{b.count}</span>
-              </label>
-            ))}
-          </div>
-        </Section>
-      )}
-
-      {/* Cascade: sub-brands appear once a brand with sub-brands is selected */}
-      {subBrands.length > 0 && (
-        <Section title="Sub-brand" count={subBrands.length}>
-          <div className="flex flex-col gap-2.5 max-h-72 overflow-y-auto pr-1">
-            {subBrands.map((b) => (
-              <label key={b.name} className="flex items-center gap-2.5 cursor-pointer text-ink-soft hover:text-ink transition-colors">
-                <input type="checkbox" checked={subBrandsSel.includes(b.name)} onChange={() => onToggleSubBrand(b.name)} className="accent-[var(--store-primary,#1a1512)]" />
-                <span className="flex-1 truncate">{b.name}</span>
-                <span className="text-xs text-muted num">{b.count}</span>
-              </label>
+              <BrandRow key={b.name} brand={b} brandsSel={brandsSel} subSel={subSel} onToggleBrand={onToggleBrand} onToggleSub={onToggleSub} />
             ))}
           </div>
         </Section>
