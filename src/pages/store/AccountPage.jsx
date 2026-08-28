@@ -3,7 +3,7 @@ import { useStore } from "../../context/StoreContext";
 import { useCustomerAuth } from "../../context/CustomerAuthContext";
 import { inr } from "../../lib/money";
 
-const INPUT = "w-full border border-line-strong bg-white px-3.5 py-2.5 text-sm text-ink placeholder:text-muted focus:outline-none focus:border-ink transition-colors";
+const INPUT = "w-full border border-line-strong bg-paper px-3.5 py-2.5 text-sm text-ink placeholder:text-muted focus:outline-none focus:border-ink transition-colors";
 
 export default function AccountPage() {
   const { customer, booted, login, signup } = useCustomerAuth();
@@ -104,7 +104,7 @@ function AccountDashboard() {
         ) : (
           <div className="flex flex-col gap-2">
             {addresses.map((a) => (
-              <div key={a.id} className="border border-line bg-white p-4 text-sm">
+              <div key={a.id} className="border border-line bg-paper p-4 text-sm">
                 <strong className="text-ink">{a.name}</strong> · {a.phone} {a.is_default && <span className="text-xs text-muted">(default)</span>}
                 <div className="text-muted mt-0.5">{a.line1}, {a.city}, {a.state} - {a.pincode}</div>
               </div>
@@ -123,7 +123,7 @@ function AccountDashboard() {
         ) : (
           <div className="flex flex-col gap-2">
             {orders.map((o) => (
-              <div key={o.id} className="border border-line bg-white p-4 text-sm flex justify-between items-center">
+              <div key={o.id} className="border border-line bg-paper p-4 text-sm flex justify-between items-center">
                 <div>
                   <div className="text-ink" style={{ fontWeight: 600 }}>{o.order_no}</div>
                   <div className="text-muted text-xs mt-0.5">{new Date(o.created_at).toLocaleDateString()}</div>

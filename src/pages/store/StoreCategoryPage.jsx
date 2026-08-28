@@ -112,7 +112,7 @@ export default function StoreCategoryPage() {
           </button>
           <label className="text-sm text-muted flex items-center gap-2">
             <span className="hidden sm:inline uppercase tracking-[0.1em] text-xs">Sort</span>
-            <select value={sort} onChange={(e) => patch({ sort: e.target.value })} className="border border-line-strong bg-white px-3 py-2 text-sm text-ink focus:outline-none focus:border-ink transition-colors">
+            <select value={sort} onChange={(e) => patch({ sort: e.target.value })} className="border border-line-strong bg-paper px-3 py-2 text-sm text-ink focus:outline-none focus:border-ink transition-colors">
               {SORTS.map(([v, l]) => <option key={v} value={v}>{l}</option>)}
             </select>
           </label>

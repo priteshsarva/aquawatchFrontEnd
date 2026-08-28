@@ -7,7 +7,7 @@ import { inr } from "../../lib/money";
 import { withStore } from "../../lib/tenant";
 import { useCustomerAuth } from "../../context/CustomerAuthContext";
 
-const INPUT = "w-full border border-line-strong bg-white px-3.5 py-2.5 text-sm text-ink placeholder:text-muted focus:outline-none focus:border-ink transition-colors";
+const INPUT = "w-full border border-line-strong bg-paper px-3.5 py-2.5 text-sm text-ink placeholder:text-muted focus:outline-none focus:border-ink transition-colors";
 
 export default function CheckoutPage() {
   const { api, config } = useStore();
@@ -98,7 +98,7 @@ export default function CheckoutPage() {
     <div className="max-w-screen-md mx-auto px-4 lg:px-6 py-10">
       <h1 className="text-3xl md:text-4xl text-ink mb-8">Checkout</h1>
 
-      <div className="mb-8 border border-line bg-white p-5">
+      <div className="mb-8 border border-line bg-paper p-5">
         {lineItems.map((it, i) => (
           <div key={i} className="flex justify-between text-sm py-1.5 text-ink-soft">
             <span>{it.name}{it.size ? ` — Size ${it.size}` : ""} × {it.qty}</span>

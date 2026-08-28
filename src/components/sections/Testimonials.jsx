@@ -11,7 +11,7 @@ export default function Testimonials({ items = [] }) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
       {valid.map((t, i) => (
-        <figure key={i} className="reveal bg-white border border-line p-7 flex flex-col shadow-[var(--shadow-sm)]">
+        <figure key={i} className="reveal bg-paper border border-line p-7 flex flex-col shadow-[var(--shadow-sm)]">
           <div className="flex gap-0.5 mb-4" style={{ color: "#b8901f" }}>
             {Array.from({ length: Math.min(5, t.stars || 5) }).map((_, j) => (
               <Star key={j} size={15} fill="currentColor" strokeWidth={0} />

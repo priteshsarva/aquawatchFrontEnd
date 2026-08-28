@@ -259,7 +259,7 @@ export default function StoreNavBar() {
                   value={q}
                   onChange={(e) => setQ(e.target.value)}
                   placeholder="Search products…"
-                  className="w-full pl-11 pr-4 py-3 text-sm border border-line-strong bg-white text-ink placeholder:text-muted focus:outline-none focus:border-ink transition-colors"
+                  className="w-full pl-11 pr-4 py-3 text-sm border border-line-strong bg-paper text-ink placeholder:text-muted focus:outline-none focus:border-ink transition-colors"
                 />
               </form>
 

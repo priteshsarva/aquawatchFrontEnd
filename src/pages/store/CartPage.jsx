@@ -48,7 +48,7 @@ export default function CartPage() {
 
         {/* summary */}
         <div className="lg:sticky lg:top-28 lg:self-start">
-          <div className="border border-line bg-white p-6 shadow-[var(--shadow-sm)]">
+          <div className="border border-line bg-paper p-6 shadow-[var(--shadow-sm)]">
             <h2 className="eyebrow !text-ink mb-5">Order summary</h2>
             <div className="flex items-center justify-between text-sm text-ink-soft mb-2">
               <span>Subtotal</span><span className="num">{inr(total)}</span>
