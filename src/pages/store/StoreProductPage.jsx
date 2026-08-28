@@ -121,7 +121,7 @@ export default function StoreProductPage() {
 
         {/* detail */}
         <div className="md:pt-2">
-          {product.productBrand && <div className="eyebrow mb-3">{product.productBrand}</div>}
+          {product.productBrand && <div className="eyebrow mb-3">{product.productBrand}{product.subBrand ? ` · ${product.subBrand}` : ""}</div>}
           <h1 className="text-2xl md:text-[2rem] leading-tight text-ink mb-4">{product.productName}</h1>
 
           <div className="flex items-baseline gap-3 mb-5">
