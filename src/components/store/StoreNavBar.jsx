@@ -46,42 +46,93 @@ function CountBadge({ n }) {
 // filters by primary + secondary + brand. Data comes from the /menu tree.
 function CategoryNav({ node }) {
   const [open, setOpen] = useState(false);
+  const [openSub, setOpenSub] = useState(null); // which secondary category's brands are expanded
   const subs = node.subcategories || [];
   const hasMenu = subs.length > 0;
   const base = `/c/${encodeURIComponent(node.category)}`;
+  const close = () => { setOpen(false); setOpenSub(null); };
   return (
-    <div className="relative" onMouseEnter={() => setOpen(true)} onMouseLeave={() => setOpen(false)}>
+    <div className="relative" onMouseEnter={() => setOpen(true)} onMouseLeave={close}>
       <Link to={withStore(base)} className="flex items-center gap-1 uppercase tracking-[0.12em] capitalize hover:text-ink transition-colors">
         {node.label}{hasMenu && <ChevronDown size={13} className={`transition-transform ${open ? "rotate-180" : ""}`} />}
       </Link>
       {open && hasMenu && (
         <div className="absolute left-1/2 -translate-x-1/2 top-full pt-3 z-40">
-          <div className="bg-paper border border-line shadow-[var(--shadow-md)] min-w-[230px] py-2 max-h-[76vh] overflow-y-auto">
-            {subs.map((sub) => (
-              <div key={sub.name} className="py-1">
-                <Link
-                  to={withStore(`${base}?cat=${encodeURIComponent(sub.name)}`)}
-                  onClick={() => setOpen(false)}
-                  className="block px-4 py-1.5 text-sm font-semibold text-ink capitalize hover:bg-panel transition-colors"
-                >
-                  {sub.name}
-                </Link>
-                {(sub.brands || []).map((b) => (
-                  <Link
-                    key={b}
-                    to={withStore(`${base}?cat=${encodeURIComponent(sub.name)}&brand=${encodeURIComponent(b)}`)}
-                    onClick={() => setOpen(false)}
-                    className="block px-4 py-1 pl-7 text-[13px] text-ink-soft hover:bg-panel hover:text-ink transition-colors"
-                  >
-                    {b}
-                  </Link>
-                ))}
-              </div>
-            ))}
+          <div className="bg-paper border border-line shadow-[var(--shadow-md)] min-w-[240px] py-2 max-h-[76vh] overflow-y-auto">
+            {subs.map((sub) => {
+              const brands = sub.brands || [];
+              const expanded = openSub === sub.name;
+              return (
+                <div key={sub.name} className="py-0.5">
+                  {/* secondary category: label links to the filtered listing; the
+                      chevron toggles the collapsible brand list beneath it */}
+                  <div className="flex items-center">
+                    <Link
+                      to={withStore(`${base}?cat=${encodeURIComponent(sub.name)}`)}
+                      onClick={close}
+                      className="flex-1 px-4 py-1.5 text-sm font-semibold text-ink capitalize hover:bg-panel transition-colors"
+                    >
+                      {sub.name}
+                    </Link>
+                    {brands.length > 0 && (
+                      <button
+                        type="button"
+                        onClick={() => setOpenSub(expanded ? null : sub.name)}
+                        aria-label={expanded ? "Collapse brands" : "Expand brands"}
+                        className="px-3 py-1.5 text-muted hover:text-ink"
+                      >
+                        <ChevronDown size={14} className={`transition-transform ${expanded ? "rotate-180" : ""}`} />
+                      </button>
+                    )}
+                  </div>
+                  {expanded && brands.map((b) => (
+                    <Link
+                      key={b}
+                      to={withStore(`${base}?cat=${encodeURIComponent(sub.name)}&brand=${encodeURIComponent(b)}`)}
+                      onClick={close}
+                      className="block px-4 py-1 pl-7 text-[13px] text-ink-soft hover:bg-panel hover:text-ink transition-colors"
+                    >
+                      {b}
+                    </Link>
+                  ))}
+                </div>
+              );
+            })}
           </div>
         </div>
       )}
     </div>
+  );
+}
+
+// Mobile menu row: primary category with collapsible secondary categories, each
+// with its own collapsible brand list.
+function MobileCategory({ node, onNavigate }) {
+  const [openSub, setOpenSub] = useState(null);
+  const base = `/c/${encodeURIComponent(node.category)}`;
+  return (
+    <li className="pt-1">
+      <Link to={withStore(base)} onClick={onNavigate} className="block py-2 uppercase tracking-[0.1em] capitalize hover:text-ink">{node.label}</Link>
+      {(node.subcategories || []).map((sub) => {
+        const brands = sub.brands || [];
+        const expanded = openSub === sub.name;
+        return (
+          <div key={sub.name}>
+            <div className="flex items-center">
+              <Link to={withStore(`${base}?cat=${encodeURIComponent(sub.name)}`)} onClick={onNavigate} className="flex-1 py-1.5 pl-4 text-[13px] font-semibold text-ink capitalize hover:text-ink">{sub.name}</Link>
+              {brands.length > 0 && (
+                <button type="button" onClick={() => setOpenSub(expanded ? null : sub.name)} aria-label={expanded ? "Collapse brands" : "Expand brands"} className="px-3 py-1.5 text-muted hover:text-ink">
+                  <ChevronDown size={14} className={`transition-transform ${expanded ? "rotate-180" : ""}`} />
+                </button>
+              )}
+            </div>
+            {expanded && brands.map((b) => (
+              <Link key={b} to={withStore(`${base}?cat=${encodeURIComponent(sub.name)}&brand=${encodeURIComponent(b)}`)} onClick={onNavigate} className="block py-1 pl-7 text-[12.5px] text-muted hover:text-ink">{b}</Link>
+            ))}
+          </div>
+        );
+      })}
+    </li>
   );
 }
 
@@ -288,19 +339,9 @@ export default function StoreNavBar() {
             </div>
             <ul className="flex flex-col gap-1 text-sm text-ink-soft">
               <li><Link to={withStore("/")} onClick={() => setMenuOpen(false)} className="block py-2.5 uppercase tracking-[0.1em] hover:text-ink">Home</Link></li>
-              {/* Primary category → secondary categories → brands, indented */}
+              {/* Primary category → secondary categories → brands, collapsible */}
               {menuNodes.map((node) => (
-                <li key={node.category} className="pt-1">
-                  <Link to={withStore(`/c/${encodeURIComponent(node.category)}`)} onClick={() => setMenuOpen(false)} className="block py-2 uppercase tracking-[0.1em] capitalize hover:text-ink">{node.label}</Link>
-                  {(node.subcategories || []).map((sub) => (
-                    <div key={sub.name}>
-                      <Link to={withStore(`/c/${encodeURIComponent(node.category)}?cat=${encodeURIComponent(sub.name)}`)} onClick={() => setMenuOpen(false)} className="block py-1.5 pl-4 text-[13px] font-semibold text-ink capitalize hover:text-ink">{sub.name}</Link>
-                      {(sub.brands || []).map((b) => (
-                        <Link key={b} to={withStore(`/c/${encodeURIComponent(node.category)}?cat=${encodeURIComponent(sub.name)}&brand=${encodeURIComponent(b)}`)} onClick={() => setMenuOpen(false)} className="block py-1 pl-7 text-[12.5px] text-muted hover:text-ink">{b}</Link>
-                      ))}
-                    </div>
-                  ))}
-                </li>
+                <MobileCategory key={node.category} node={node} onNavigate={() => setMenuOpen(false)} />
               ))}
               <li><Link to={withStore("/c/all")} onClick={() => setMenuOpen(false)} className="block py-2.5 uppercase tracking-[0.1em] hover:text-ink">Shop</Link></li>
               <li className="border-t border-line mt-3 pt-3">

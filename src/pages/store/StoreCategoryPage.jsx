@@ -1,11 +1,11 @@
-// Category / search listing with an advanced filter rail: brand checklist,
-// draggable + typable price range, sort, and stock toggle. Page-based paging
-// ("Load more"). All filters are reflected in the URL query so a filtered view
-// is shareable.
+// Category / search listing with a compact, collapsible filter rail: category
+// (on the all-shop), sub-category, brand, size, price, and availability. Every
+// filter is reflected in the URL query so a filtered view is shareable.
 import React, { useEffect, useMemo, useState } from "react";
-import { useParams, useSearchParams } from "react-router-dom";
-import { SlidersHorizontal, X } from "lucide-react";
+import { useParams, useSearchParams, Link } from "react-router-dom";
+import { SlidersHorizontal, X, ChevronDown } from "lucide-react";
 import { useStore } from "../../context/StoreContext";
+import { withStore } from "../../lib/tenant";
 import ProductCard from "../../components/store/ProductCard";
 import PriceRange from "../../components/store/PriceRange";
 
@@ -16,6 +16,8 @@ const SORTS = [
   ["price_desc", "Price: high to low"],
 ];
 
+const STOCK = [["in", "In stock"], ["out", "Out of stock"], ["all", "All"]];
+
 export default function StoreCategoryPage() {
   const { category: rawCategory } = useParams();
   const category = rawCategory ? decodeURIComponent(rawCategory) : "";
@@ -25,7 +27,9 @@ export default function StoreCategoryPage() {
   const q = sp.get("q") || "";
   const subcat = sp.get("cat") || ""; // sub-category (canonical category-map name)
   const sort = sp.get("sort") || "featured";
+  const stock = sp.get("stock") || "in";
   const brandsSel = useMemo(() => (sp.get("brand") ? sp.get("brand").split(",").filter(Boolean) : []), [sp]);
+  const sizesSel = useMemo(() => (sp.get("size") ? sp.get("size").split(",").filter(Boolean) : []), [sp]);
   const priceMin = sp.get("price_min");
   const priceMax = sp.get("price_max");
 
@@ -36,14 +40,16 @@ export default function StoreCategoryPage() {
   const [hasMore, setHasMore] = useState(false);
   const [filtersOpen, setFiltersOpen] = useState(false); // mobile drawer
 
-  // No category in the URL (the /search route) → search across ALL categories,
-  // not just the first one. /c/:category and /c/all pass their own category.
+  // No category in the URL (the /search route) → search across ALL categories.
   const listCategory = category || "all";
+  const isAll = listCategory === "all";
 
-  // one facets fetch per category (price bounds + brands)
+  // one facets fetch per category (price bounds + brands + subcats + sizes)
   useEffect(() => {
     setFacets(null);
-    api.facets({ category: listCategory }).then(setFacets).catch(() => setFacets({ price_min: 0, price_max: 0, brands: [] }));
+    api.facets({ category: listCategory })
+      .then(setFacets)
+      .catch(() => setFacets({ price_min: 0, price_max: 0, brands: [], subcategories: [], sizes: [] }));
   }, [listCategory]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const queryParams = useMemo(() => ({
@@ -51,10 +57,12 @@ export default function StoreCategoryPage() {
     ...(q && { q }),
     ...(subcat && { cat: subcat }),
     ...(sort && sort !== "featured" && { sort }),
+    ...(stock && stock !== "in" && { stock }),
     ...(brandsSel.length && { brand: brandsSel.join(",") }),
+    ...(sizesSel.length && { size: sizesSel.join(",") }),
     ...(priceMin && { price_min: priceMin }),
     ...(priceMax && { price_max: priceMax }),
-  }), [listCategory, q, subcat, sort, brandsSel, priceMin, priceMax]);
+  }), [listCategory, q, subcat, sort, stock, brandsSel, sizesSel, priceMin, priceMax]);
 
   // reload from page 1 whenever any filter changes
   useEffect(() => {
@@ -82,17 +90,31 @@ export default function StoreCategoryPage() {
     setSp(next, { replace: true });
   };
   const toggleBrand = (b) => patch({ brand: brandsSel.includes(b) ? brandsSel.filter((x) => x !== b) : [...brandsSel, b] });
-  const clearAll = () => patch({ brand: null, price_min: null, price_max: null, sort: null });
+  const toggleSize = (s) => patch({ size: sizesSel.includes(s) ? sizesSel.filter((x) => x !== s) : [...sizesSel, s] });
+  const clearAll = () => patch({ brand: null, size: null, cat: null, price_min: null, price_max: null, sort: null, stock: null });
 
-  const activeCount = brandsSel.length + (priceMin || priceMax ? 1 : 0) + (sort !== "featured" ? 1 : 0);
+  const activeCount = brandsSel.length + sizesSel.length + (subcat ? 1 : 0)
+    + (priceMin || priceMax ? 1 : 0) + (sort !== "featured" ? 1 : 0) + (stock !== "in" ? 1 : 0);
+
   // Prefer the vendor's menu label for the category; "all" → the mixed listing.
   const catLabel = category === "all" ? "All products"
     : ((config?.nav?.items || []).find((i) => i.category === category)?.label || category);
   const title = q ? `Search results for "${q}"` : (subcat || catLabel || "All products");
 
+  // primary categories for the all-shop category filter (from the vendor nav)
+  const categories = useMemo(() => {
+    const items = config?.nav?.items;
+    if (Array.isArray(items) && items.length) return items.filter((i) => i && i.category).map((i) => ({ category: i.category, label: i.label || i.category }));
+    return (config?.categories || []).map((c) => ({ category: c, label: c }));
+  }, [config]);
+
   const Sidebar = (
     <FilterRail
-      facets={facets} brandsSel={brandsSel} onToggleBrand={toggleBrand}
+      facets={facets} isAll={isAll} categories={categories}
+      brandsSel={brandsSel} onToggleBrand={toggleBrand}
+      sizesSel={sizesSel} onToggleSize={toggleSize}
+      subcat={subcat} onSubcat={(name) => patch({ cat: subcat === name ? null : name })}
+      stock={stock} onStock={(v) => patch({ stock: v === "in" ? null : v })}
       priceMin={priceMin} priceMax={priceMax}
       onPrice={([lo, hi]) => patch({ price_min: lo, price_max: hi })}
       activeCount={activeCount} onClear={clearAll}
@@ -126,7 +148,7 @@ export default function StoreCategoryPage() {
           {products.length === 0 && !loading ? (
             <div className="text-center py-24">
               <div className="text-lg text-ink mb-1">Nothing matches these filters</div>
-              <div className="text-sm text-muted mb-6">Try widening the price range or clearing a brand.</div>
+              <div className="text-sm text-muted mb-6">Try widening the price range or clearing a filter.</div>
               <button onClick={clearAll} className="btn btn-outline">Clear filters</button>
             </div>
           ) : (
@@ -163,29 +185,65 @@ export default function StoreCategoryPage() {
   );
 }
 
-function FilterRail({ facets, brandsSel, onToggleBrand, priceMin, priceMax, onPrice, activeCount, onClear }) {
+// A collapsible filter section. Open by default; click the header to collapse.
+function Section({ title, children, defaultOpen = true, count }) {
+  const [open, setOpen] = useState(defaultOpen);
+  return (
+    <section className="border-b border-line py-4">
+      <button onClick={() => setOpen((o) => !o)} className="w-full flex items-center justify-between text-left">
+        <h3 className="font-semibold uppercase text-[11px] tracking-[0.14em] text-muted">
+          {title}{count ? <span className="text-ink-soft"> ({count})</span> : null}
+        </h3>
+        <ChevronDown size={15} className={`text-muted transition-transform ${open ? "rotate-180" : ""}`} />
+      </button>
+      {open && <div className="mt-3.5">{children}</div>}
+    </section>
+  );
+}
+
+function FilterRail({
+  facets, isAll, categories, brandsSel, onToggleBrand, sizesSel, onToggleSize,
+  subcat, onSubcat, stock, onStock, priceMin, priceMax, onPrice, activeCount, onClear,
+}) {
   if (!facets) return <div className="text-sm text-muted">Loading filters…</div>;
+  const subs = facets.subcategories || [];
+  const sizes = facets.sizes || [];
   return (
     <div className="text-sm">
-      <div className="flex items-center justify-between mb-5">
+      <div className="flex items-center justify-between mb-1">
         <h2 className="eyebrow !text-ink">Filter</h2>
         {activeCount > 0 && <button onClick={onClear} className="text-xs text-muted hover:text-ink underline transition-colors">Clear all</button>}
       </div>
 
-      {facets.price_max > facets.price_min && (
-        <section className="mb-6 pb-6 border-b border-line">
-          <h3 className="font-semibold mb-3.5 uppercase text-[11px] tracking-[0.14em] text-muted">Price</h3>
-          <PriceRange
-            min={facets.price_min} max={facets.price_max}
-            value={[priceMin ? Number(priceMin) : facets.price_min, priceMax ? Number(priceMax) : facets.price_max]}
-            onChange={onPrice}
-          />
-        </section>
+      {isAll && categories.length > 0 && (
+        <Section title="Category" count={categories.length}>
+          <div className="flex flex-col gap-1.5">
+            {categories.map((c) => (
+              <Link key={c.category} to={withStore(`/c/${encodeURIComponent(c.category)}`)}
+                className="capitalize text-ink-soft hover:text-ink transition-colors">
+                {c.label}
+              </Link>
+            ))}
+          </div>
+        </Section>
+      )}
+
+      {!isAll && subs.length > 0 && (
+        <Section title="Sub-category" count={subs.length}>
+          <div className="flex flex-col gap-2 max-h-64 overflow-y-auto pr-1">
+            {subs.map((s) => (
+              <label key={s.name} className="flex items-center gap-2.5 cursor-pointer text-ink-soft hover:text-ink transition-colors capitalize">
+                <input type="checkbox" checked={subcat === s.name} onChange={() => onSubcat(s.name)} className="accent-[var(--store-primary,#1a1512)]" />
+                <span className="flex-1 truncate">{s.name}</span>
+                <span className="text-xs text-muted num">{s.count}</span>
+              </label>
+            ))}
+          </div>
+        </Section>
       )}
 
       {facets.brands.length > 0 && (
-        <section>
-          <h3 className="font-semibold mb-3.5 uppercase text-[11px] tracking-[0.14em] text-muted">Brand</h3>
+        <Section title="Brand" count={facets.brands.length}>
           <div className="flex flex-col gap-2.5 max-h-72 overflow-y-auto pr-1">
             {facets.brands.map((b) => (
               <label key={b.name} className="flex items-center gap-2.5 cursor-pointer text-ink-soft hover:text-ink transition-colors">
@@ -195,8 +253,42 @@ function FilterRail({ facets, brandsSel, onToggleBrand, priceMin, priceMax, onPr
               </label>
             ))}
           </div>
-        </section>
+        </Section>
       )}
+
+      {sizes.length > 0 && (
+        <Section title="Size" count={sizes.length}>
+          <div className="flex flex-wrap gap-2">
+            {sizes.map((s) => (
+              <button key={s} onClick={() => onToggleSize(s)}
+                className={`min-w-[40px] px-2.5 py-1.5 text-[13px] border transition-colors ${sizesSel.includes(s) ? "border-ink bg-ink text-paper" : "border-line-strong text-ink-soft hover:border-ink"}`}>
+                {s}
+              </button>
+            ))}
+          </div>
+        </Section>
+      )}
+
+      {facets.price_max > facets.price_min && (
+        <Section title="Price">
+          <PriceRange
+            min={facets.price_min} max={facets.price_max}
+            value={[priceMin ? Number(priceMin) : facets.price_min, priceMax ? Number(priceMax) : facets.price_max]}
+            onChange={onPrice}
+          />
+        </Section>
+      )}
+
+      <Section title="Availability" defaultOpen={false}>
+        <div className="flex flex-col gap-2">
+          {STOCK.map(([v, l]) => (
+            <label key={v} className="flex items-center gap-2.5 cursor-pointer text-ink-soft hover:text-ink transition-colors">
+              <input type="radio" name="stock" checked={stock === v} onChange={() => onStock(v)} className="accent-[var(--store-primary,#1a1512)]" />
+              <span>{l}</span>
+            </label>
+          ))}
+        </div>
+      </Section>
     </div>
   );
 }
