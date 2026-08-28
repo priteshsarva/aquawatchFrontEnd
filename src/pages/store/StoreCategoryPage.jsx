@@ -29,6 +29,7 @@ export default function StoreCategoryPage() {
   const sort = sp.get("sort") || "featured";
   const stock = sp.get("stock") || "in";
   const brandsSel = useMemo(() => (sp.get("brand") ? sp.get("brand").split(",").filter(Boolean) : []), [sp]);
+  const subBrandsSel = useMemo(() => (sp.get("sub_brand") ? sp.get("sub_brand").split(",").filter(Boolean) : []), [sp]);
   const sizesSel = useMemo(() => (sp.get("size") ? sp.get("size").split(",").filter(Boolean) : []), [sp]);
   const priceMin = sp.get("price_min");
   const priceMax = sp.get("price_max");
@@ -44,13 +45,14 @@ export default function StoreCategoryPage() {
   const listCategory = category || "all";
   const isAll = listCategory === "all";
 
-  // one facets fetch per category (price bounds + brands + subcats + sizes)
+  // facets re-fetch when the category OR the cascade selection (sub-category /
+  // brand) changes — so the brand list narrows to the picked sub-category, and
+  // sub-brands appear for the picked brand.
   useEffect(() => {
-    setFacets(null);
-    api.facets({ category: listCategory })
+    api.facets({ category: listCategory, ...(subcat && { cat: subcat }), ...(brandsSel.length && { brand: brandsSel.join(",") }) })
       .then(setFacets)
-      .catch(() => setFacets({ price_min: 0, price_max: 0, brands: [], subcategories: [], sizes: [] }));
-  }, [listCategory]); // eslint-disable-line react-hooks/exhaustive-deps
+      .catch(() => setFacets({ price_min: 0, price_max: 0, brands: [], subBrands: [], subcategories: [], sizes: [] }));
+  }, [listCategory, subcat, brandsSel.join(",")]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const queryParams = useMemo(() => ({
     category: listCategory,
@@ -59,10 +61,11 @@ export default function StoreCategoryPage() {
     ...(sort && sort !== "featured" && { sort }),
     ...(stock && stock !== "in" && { stock }),
     ...(brandsSel.length && { brand: brandsSel.join(",") }),
+    ...(subBrandsSel.length && { sub_brand: subBrandsSel.join(",") }),
     ...(sizesSel.length && { size: sizesSel.join(",") }),
     ...(priceMin && { price_min: priceMin }),
     ...(priceMax && { price_max: priceMax }),
-  }), [listCategory, q, subcat, sort, stock, brandsSel, sizesSel, priceMin, priceMax]);
+  }), [listCategory, q, subcat, sort, stock, brandsSel, subBrandsSel, sizesSel, priceMin, priceMax]);
 
   // reload from page 1 whenever any filter changes
   useEffect(() => {
@@ -89,11 +92,16 @@ export default function StoreCategoryPage() {
     }
     setSp(next, { replace: true });
   };
-  const toggleBrand = (b) => patch({ brand: brandsSel.includes(b) ? brandsSel.filter((x) => x !== b) : [...brandsSel, b] });
+  // clearing a brand also clears its sub-brands (they only make sense together)
+  const toggleBrand = (b) => {
+    const on = brandsSel.includes(b);
+    patch({ brand: on ? brandsSel.filter((x) => x !== b) : [...brandsSel, b], ...(on && { sub_brand: null }) });
+  };
+  const toggleSubBrand = (s) => patch({ sub_brand: subBrandsSel.includes(s) ? subBrandsSel.filter((x) => x !== s) : [...subBrandsSel, s] });
   const toggleSize = (s) => patch({ size: sizesSel.includes(s) ? sizesSel.filter((x) => x !== s) : [...sizesSel, s] });
-  const clearAll = () => patch({ brand: null, size: null, cat: null, price_min: null, price_max: null, sort: null, stock: null });
+  const clearAll = () => patch({ brand: null, sub_brand: null, size: null, cat: null, price_min: null, price_max: null, sort: null, stock: null });
 
-  const activeCount = brandsSel.length + sizesSel.length + (subcat ? 1 : 0)
+  const activeCount = brandsSel.length + subBrandsSel.length + sizesSel.length + (subcat ? 1 : 0)
     + (priceMin || priceMax ? 1 : 0) + (sort !== "featured" ? 1 : 0) + (stock !== "in" ? 1 : 0);
 
   // Prefer the vendor's menu label for the category; "all" → the mixed listing.
@@ -112,8 +120,9 @@ export default function StoreCategoryPage() {
     <FilterRail
       facets={facets} isAll={isAll} categories={categories}
       brandsSel={brandsSel} onToggleBrand={toggleBrand}
+      subBrandsSel={subBrandsSel} onToggleSubBrand={toggleSubBrand}
       sizesSel={sizesSel} onToggleSize={toggleSize}
-      subcat={subcat} onSubcat={(name) => patch({ cat: subcat === name ? null : name })}
+      subcat={subcat} onSubcat={(name) => patch({ cat: subcat === name ? null : name, brand: null, sub_brand: null })}
       stock={stock} onStock={(v) => patch({ stock: v === "in" ? null : v })}
       priceMin={priceMin} priceMax={priceMax}
       onPrice={([lo, hi]) => patch({ price_min: lo, price_max: hi })}
@@ -202,11 +211,12 @@ function Section({ title, children, defaultOpen = true, count }) {
 }
 
 function FilterRail({
-  facets, isAll, categories, brandsSel, onToggleBrand, sizesSel, onToggleSize,
-  subcat, onSubcat, stock, onStock, priceMin, priceMax, onPrice, activeCount, onClear,
+  facets, isAll, categories, brandsSel, onToggleBrand, subBrandsSel, onToggleSubBrand,
+  sizesSel, onToggleSize, subcat, onSubcat, stock, onStock, priceMin, priceMax, onPrice, activeCount, onClear,
 }) {
   if (!facets) return <div className="text-sm text-muted">Loading filters…</div>;
   const subs = facets.subcategories || [];
+  const subBrands = facets.subBrands || [];
   const sizes = facets.sizes || [];
   return (
     <div className="text-sm">
@@ -214,6 +224,17 @@ function FilterRail({
         <h2 className="eyebrow !text-ink">Filter</h2>
         {activeCount > 0 && <button onClick={onClear} className="text-xs text-muted hover:text-ink underline transition-colors">Clear all</button>}
       </div>
+
+      {/* Price stays on top */}
+      {facets.price_max > facets.price_min && (
+        <Section title="Price">
+          <PriceRange
+            min={facets.price_min} max={facets.price_max}
+            value={[priceMin ? Number(priceMin) : facets.price_min, priceMax ? Number(priceMax) : facets.price_max]}
+            onChange={onPrice}
+          />
+        </Section>
+      )}
 
       {isAll && categories.length > 0 && (
         <Section title="Category" count={categories.length}>
@@ -256,6 +277,21 @@ function FilterRail({
         </Section>
       )}
 
+      {/* Cascade: sub-brands appear once a brand with sub-brands is selected */}
+      {subBrands.length > 0 && (
+        <Section title="Sub-brand" count={subBrands.length}>
+          <div className="flex flex-col gap-2.5 max-h-72 overflow-y-auto pr-1">
+            {subBrands.map((b) => (
+              <label key={b.name} className="flex items-center gap-2.5 cursor-pointer text-ink-soft hover:text-ink transition-colors">
+                <input type="checkbox" checked={subBrandsSel.includes(b.name)} onChange={() => onToggleSubBrand(b.name)} className="accent-[var(--store-primary,#1a1512)]" />
+                <span className="flex-1 truncate">{b.name}</span>
+                <span className="text-xs text-muted num">{b.count}</span>
+              </label>
+            ))}
+          </div>
+        </Section>
+      )}
+
       {sizes.length > 0 && (
         <Section title="Size" count={sizes.length}>
           <div className="flex flex-wrap gap-2">
@@ -266,16 +302,6 @@ function FilterRail({
               </button>
             ))}
           </div>
-        </Section>
-      )}
-
-      {facets.price_max > facets.price_min && (
-        <Section title="Price">
-          <PriceRange
-            min={facets.price_min} max={facets.price_max}
-            value={[priceMin ? Number(priceMin) : facets.price_min, priceMax ? Number(priceMax) : facets.price_max]}
-            onChange={onPrice}
-          />
         </Section>
       )}
 
