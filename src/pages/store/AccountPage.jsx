@@ -64,6 +64,12 @@ function AccountDashboard() {
   const [addresses, setAddresses] = useState(null);
   const [orders, setOrders] = useState(null);
   const [addingAddress, setAddingAddress] = useState(false);
+  const [editingId, setEditingId] = useState(null); // address being edited
+
+  async function removeAddress(id) {
+    if (!window.confirm("Delete this address?")) return;
+    try { await api.deleteAddress(id); loadAddresses(); } catch (e) { alert(e.message); }
+  }
 
   function loadAddresses() { api.me().then((r) => setAddresses(r.addresses || [])); }
   useEffect(() => {
@@ -104,14 +110,27 @@ function AccountDashboard() {
         ) : (
           <div className="flex flex-col gap-2">
             {addresses.map((a) => (
-              <div key={a.id} className="border border-line bg-paper p-4 text-sm">
-                <strong className="text-ink">{a.name}</strong> · {a.phone} {a.is_default && <span className="text-xs text-muted">(default)</span>}
-                <div className="text-muted mt-0.5">{a.line1}, {a.city}, {a.state} - {a.pincode}</div>
-              </div>
+              editingId === a.id ? (
+                <AddressForm key={a.id} api={api} initial={a}
+                  onDone={() => { setEditingId(null); loadAddresses(); }} onClose={() => setEditingId(null)} />
+              ) : (
+                <div key={a.id} className="border border-line bg-paper p-4 text-sm">
+                  <div className="flex justify-between items-start gap-3">
+                    <div>
+                      <strong className="text-ink">{a.name}</strong> · {a.phone} {a.is_default && <span className="text-xs text-muted">(default)</span>}
+                      <div className="text-muted mt-0.5">{a.line1}, {a.city}, {a.state} - {a.pincode}</div>
+                    </div>
+                    <div className="flex gap-3 shrink-0">
+                      <button onClick={() => { setAddingAddress(false); setEditingId(a.id); }} className="text-xs underline text-ink-soft hover:text-ink">Edit</button>
+                      <button onClick={() => removeAddress(a.id)} className="text-xs underline text-rose-600 hover:text-rose-700">Delete</button>
+                    </div>
+                  </div>
+                </div>
+              )
             ))}
           </div>
         )}
-        {addingAddress && <AddAddressForm api={api} onDone={() => { setAddingAddress(false); loadAddresses(); }} onClose={() => setAddingAddress(false)} />}
+        {addingAddress && <AddressForm api={api} onDone={() => { setAddingAddress(false); loadAddresses(); }} onClose={() => setAddingAddress(false)} />}
       </section>
 
       <section>
@@ -141,8 +160,13 @@ function AccountDashboard() {
   );
 }
 
-function AddAddressForm({ api, onDone, onClose }) {
-  const [form, setForm] = useState({ name: "", phone: "", line1: "", city: "", state: "", pincode: "", is_default: false });
+function AddressForm({ api, initial, onDone, onClose }) {
+  const editing = !!(initial && initial.id);
+  const [form, setForm] = useState({
+    name: initial?.name || "", phone: initial?.phone || "", line1: initial?.line1 || "",
+    city: initial?.city || "", state: initial?.state || "", pincode: initial?.pincode || "",
+    is_default: !!initial?.is_default,
+  });
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState(null);
   function set(k, v) { setForm((f) => ({ ...f, [k]: v })); }
@@ -150,7 +174,7 @@ function AddAddressForm({ api, onDone, onClose }) {
   async function submit(e) {
     e.preventDefault();
     setBusy(true); setError(null);
-    try { await api.addAddress(form); onDone(); }
+    try { editing ? await api.updateAddress(initial.id, form) : await api.addAddress(form); onDone(); }
     catch (err) { setError(err.message); setBusy(false); }
   }
 
@@ -170,7 +194,7 @@ function AddAddressForm({ api, onDone, onClose }) {
       </label>
       <div className="flex gap-2 mt-1">
         <button type="submit" disabled={busy} className="btn btn-primary" style={{ padding: "0.65rem 1.4rem" }}>
-          {busy ? "Saving…" : "Save address"}
+          {busy ? "Saving…" : editing ? "Update address" : "Save address"}
         </button>
         <button type="button" onClick={onClose} className="btn btn-outline" style={{ padding: "0.65rem 1.4rem" }}>Cancel</button>
       </div>
