@@ -77,6 +77,8 @@ export const storeApi = (slug) => ({
   facets: (params = {}) => req(slug, `/facets?${new URLSearchParams(params)}`),
   // sub-categories (the vendor's canonical category-map names) for one parent category
   subcategories: (category) => req(slug, `/subcategories?category=${encodeURIComponent(category)}`),
+  // full menu tree: primary → secondary categories → brands (one call)
+  menu: () => req(slug, "/menu"),
   product: (dbName, id) => req(slug, `/products/${dbName}/${id}`),
   // triggers a background re-scrape server-side; returns only a status, never
   // product data (so supplier cost/URL never reach the browser).

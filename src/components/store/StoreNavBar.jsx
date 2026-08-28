@@ -41,53 +41,43 @@ function CountBadge({ n }) {
   );
 }
 
-// A top-level category link with a hover dropdown of its sub-categories (from
-// the vendor's category map) and then its featured brands. Priority in the menu:
-// parent category (the link) → sub-categories → brands.
-function CategoryNav({ item, subcats, brands }) {
+// A top-level (primary) category link with a hover dropdown of its SECONDARY
+// categories, and under each secondary category, its brands. Clicking a brand
+// filters by primary + secondary + brand. Data comes from the /menu tree.
+function CategoryNav({ node }) {
   const [open, setOpen] = useState(false);
-  const subs = subcats || [];
-  const brs = brands || [];
-  const hasMenu = subs.length > 0 || brs.length > 0;
+  const subs = node.subcategories || [];
+  const hasMenu = subs.length > 0;
+  const base = `/c/${encodeURIComponent(node.category)}`;
   return (
     <div className="relative" onMouseEnter={() => setOpen(true)} onMouseLeave={() => setOpen(false)}>
-      <Link
-        to={withStore(`/c/${encodeURIComponent(item.category)}`)}
-        className="flex items-center gap-1 uppercase tracking-[0.12em] capitalize hover:text-ink transition-colors"
-      >
-        {item.label}{hasMenu && <ChevronDown size={13} />}
+      <Link to={withStore(base)} className="flex items-center gap-1 uppercase tracking-[0.12em] capitalize hover:text-ink transition-colors">
+        {node.label}{hasMenu && <ChevronDown size={13} className={`transition-transform ${open ? "rotate-180" : ""}`} />}
       </Link>
       {open && hasMenu && (
         <div className="absolute left-1/2 -translate-x-1/2 top-full pt-3 z-40">
-          <div className="bg-paper border border-line shadow-[var(--shadow-md)] min-w-[210px] py-2 max-h-[70vh] overflow-y-auto">
-            {subs.length > 0 && (
-              <>
-                <div className="px-4 py-1 text-[10px] uppercase tracking-[0.14em] text-muted">Categories</div>
-                {subs.map((sc) => (
+          <div className="bg-paper border border-line shadow-[var(--shadow-md)] min-w-[230px] py-2 max-h-[76vh] overflow-y-auto">
+            {subs.map((sub) => (
+              <div key={sub.name} className="py-1">
+                <Link
+                  to={withStore(`${base}?cat=${encodeURIComponent(sub.name)}`)}
+                  onClick={() => setOpen(false)}
+                  className="block px-4 py-1.5 text-sm font-semibold text-ink capitalize hover:bg-panel transition-colors"
+                >
+                  {sub.name}
+                </Link>
+                {(sub.brands || []).map((b) => (
                   <Link
-                    key={sc.name}
-                    to={withStore(`/c/${encodeURIComponent(item.category)}?cat=${encodeURIComponent(sc.name)}`)}
-                    className="block px-4 py-2 text-sm text-ink-soft hover:bg-panel hover:text-ink transition-colors"
+                    key={b}
+                    to={withStore(`${base}?cat=${encodeURIComponent(sub.name)}&brand=${encodeURIComponent(b)}`)}
+                    onClick={() => setOpen(false)}
+                    className="block px-4 py-1 pl-7 text-[13px] text-ink-soft hover:bg-panel hover:text-ink transition-colors"
                   >
-                    {sc.name}
+                    {b}
                   </Link>
                 ))}
-              </>
-            )}
-            {brs.length > 0 && (
-              <>
-                <div className={`px-4 py-1 text-[10px] uppercase tracking-[0.14em] text-muted ${subs.length ? "mt-1 border-t border-line pt-2" : ""}`}>Brands</div>
-                {brs.map((b) => (
-                  <Link
-                    key={b.brand}
-                    to={withStore(`/c/${encodeURIComponent(item.category)}?brand=${encodeURIComponent(b.brand)}`)}
-                    className="block px-4 py-2 text-sm text-ink-soft hover:bg-panel hover:text-ink transition-colors"
-                  >
-                    {b.label || b.brand}
-                  </Link>
-                ))}
-              </>
-            )}
+              </div>
+            ))}
           </div>
         </div>
       )}
@@ -109,23 +99,20 @@ export default function StoreNavBar() {
   const [results, setResults] = useState(null); // null = idle, [] = no results
   const debounceRef = useRef(null);
 
-  const navItems = navItemsFrom(config);
-  // Featured brands, grouped under their parent category → each category's menu
-  // dropdown lists its sub-categories (from the vendor's map) then its brands.
-  const navBrands = Array.isArray(config?.nav?.brands) ? config.nav.brands.filter((b) => b && b.brand) : [];
-  const brandsByCat = navBrands.reduce((m, b) => { (m[b.category] ||= []).push(b); return m; }, {});
-  const [subcats, setSubcats] = useState({}); // category -> [{ name, mapped }]
-  const catKey = navItems.map((i) => i.category).join("|");
+  const navItems = navItemsFrom(config); // fallback (plain category links) + labels
+  const [menu, setMenu] = useState([]);  // [{ category, label, subcategories:[{name, brands:[]}] }]
   const customer = auth?.customer;
   const onHome = location.pathname === "/";
 
-  // fetch each category's sub-categories once (for the dropdowns)
+  // the whole menu tree (primary → secondary → brands) in one call
   useEffect(() => {
     let alive = true;
-    Promise.all(navItems.map((it) => api.subcategories(it.category).then((r) => [it.category, r.subcategories || []]).catch(() => [it.category, []])))
-      .then((pairs) => { if (alive) setSubcats(Object.fromEntries(pairs)); });
+    api.menu().then((r) => { if (alive) setMenu(r.menu || []); }).catch(() => {});
     return () => { alive = false; };
-  }, [catKey]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [config?.slug]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // menu when available; else plain category links (no dropdown) from config
+  const menuNodes = menu.length ? menu : navItems.map((it) => ({ category: it.category, label: it.label, subcategories: [] }));
 
   // live search: 3+ chars, debounced 250ms — same threshold the original had
   useEffect(() => {
@@ -191,9 +178,9 @@ export default function StoreNavBar() {
           >
             Home
           </Link>
-          {/* Each category is a link with a dropdown of its sub-categories + brands */}
-          {navItems.map((it) => (
-            <CategoryNav key={it.category} item={it} subcats={subcats[it.category]} brands={brandsByCat[it.category]} />
+          {/* Primary category → dropdown of secondary categories → brands under each */}
+          {menuNodes.map((node) => (
+            <CategoryNav key={node.category} node={node} />
           ))}
           {/* Shop = all products mixed across every category */}
           <Link to={withStore("/c/all")} className="uppercase tracking-[0.12em] hover:text-ink transition-colors">Shop</Link>
@@ -301,15 +288,17 @@ export default function StoreNavBar() {
             </div>
             <ul className="flex flex-col gap-1 text-sm text-ink-soft">
               <li><Link to={withStore("/")} onClick={() => setMenuOpen(false)} className="block py-2.5 uppercase tracking-[0.1em] hover:text-ink">Home</Link></li>
-              {/* Each category, with its sub-categories + brands indented beneath */}
-              {navItems.map((it) => (
-                <li key={it.category} className="pt-1">
-                  <Link to={withStore(`/c/${encodeURIComponent(it.category)}`)} onClick={() => setMenuOpen(false)} className="block py-2 uppercase tracking-[0.1em] capitalize hover:text-ink">{it.label}</Link>
-                  {(subcats[it.category] || []).map((sc) => (
-                    <Link key={sc.name} to={withStore(`/c/${encodeURIComponent(it.category)}?cat=${encodeURIComponent(sc.name)}`)} onClick={() => setMenuOpen(false)} className="block py-1.5 pl-4 text-[13px] hover:text-ink">{sc.name}</Link>
-                  ))}
-                  {(brandsByCat[it.category] || []).map((b) => (
-                    <Link key={b.brand} to={withStore(`/c/${encodeURIComponent(it.category)}?brand=${encodeURIComponent(b.brand)}`)} onClick={() => setMenuOpen(false)} className="block py-1.5 pl-4 text-[13px] text-muted hover:text-ink">{b.label || b.brand}</Link>
+              {/* Primary category → secondary categories → brands, indented */}
+              {menuNodes.map((node) => (
+                <li key={node.category} className="pt-1">
+                  <Link to={withStore(`/c/${encodeURIComponent(node.category)}`)} onClick={() => setMenuOpen(false)} className="block py-2 uppercase tracking-[0.1em] capitalize hover:text-ink">{node.label}</Link>
+                  {(node.subcategories || []).map((sub) => (
+                    <div key={sub.name}>
+                      <Link to={withStore(`/c/${encodeURIComponent(node.category)}?cat=${encodeURIComponent(sub.name)}`)} onClick={() => setMenuOpen(false)} className="block py-1.5 pl-4 text-[13px] font-semibold text-ink capitalize hover:text-ink">{sub.name}</Link>
+                      {(sub.brands || []).map((b) => (
+                        <Link key={b} to={withStore(`/c/${encodeURIComponent(node.category)}?cat=${encodeURIComponent(sub.name)}&brand=${encodeURIComponent(b)}`)} onClick={() => setMenuOpen(false)} className="block py-1 pl-7 text-[12.5px] text-muted hover:text-ink">{b}</Link>
+                      ))}
+                    </div>
                   ))}
                 </li>
               ))}
