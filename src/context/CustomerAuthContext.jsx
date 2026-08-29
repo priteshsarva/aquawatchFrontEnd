@@ -31,8 +31,16 @@ export function CustomerAuthProvider({ children }) {
   }
   function logout() { setCustomerToken(slug, ""); setCustomer(null); }
 
+  // Log the buyer in from a guest checkout: the order response hands back a
+  // session token for the (auto-created or reused unclaimed) account.
+  function sessionFromCheckout(token, cust) {
+    if (!token) return;
+    setCustomerToken(slug, token);
+    if (cust) setCustomer(cust);
+  }
+
   return (
-    <AuthCtx.Provider value={{ customer, booted, login, signup, logout }}>
+    <AuthCtx.Provider value={{ customer, booted, login, signup, logout, sessionFromCheckout }}>
       {children}
     </AuthCtx.Provider>
   );

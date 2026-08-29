@@ -12,7 +12,7 @@ const INPUT = "w-full border border-line-strong bg-paper px-3.5 py-2.5 text-sm t
 export default function CheckoutPage() {
   const { api, config } = useStore();
   const { items: cartItems, total: cartTotal, clear } = useCart();
-  const { customer, booted } = useCustomerAuth();
+  const { customer, booted, sessionFromCheckout } = useCustomerAuth();
   const location = useLocation();
 
   const quickItem = location.state?.quickItem || null;
@@ -21,7 +21,7 @@ export default function CheckoutPage() {
 
   const [addresses, setAddresses] = useState([]);
   const [addressId, setAddressId] = useState("");
-  const [form, setForm] = useState({ name: "", phone: "", line1: "", line2: "", city: "", state: "", pincode: "" });
+  const [form, setForm] = useState({ name: "", phone: "", email: "", line1: "", line2: "", city: "", state: "", pincode: "" });
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState(null);
   const [result, setResult] = useState(null); // { order_no, total, wa_url }
@@ -61,9 +61,13 @@ export default function CheckoutPage() {
         ...(address ? { address } : { address_id: addressId }),
         buyer_name: address ? address.name : undefined,
         buyer_phone: address ? address.phone : undefined,
+        buyer_email: !customer && form.email ? form.email.trim() : undefined,
         note,
       });
       setResult(r);
+      // Guest checkout: the backend hands back a session for the (new or unclaimed)
+      // account — log them straight in so their order history is theirs.
+      if (r.token) sessionFromCheckout(r.token, r.customer);
       if (!quickItem) clear();
     } catch (err) {
       setError(err.message);
@@ -82,6 +86,16 @@ export default function CheckoutPage() {
         <p className="text-ink-soft mb-8 leading-relaxed">
           Total <span className="num">{inr(result.total)}</span>. Send this order to {config?.store_name} on WhatsApp to confirm it.
         </p>
+        {result.token && (
+          <p className="text-sm text-ink-soft mb-6">
+            You're now signed in — see this order any time under <Link to={withStore("/account")} className="text-ink underline">your account</Link>.
+          </p>
+        )}
+        {result.account_exists && (
+          <p className="text-sm text-ink-soft mb-6">
+            You already have an account with this email. <Link to={withStore("/account")} className="text-ink underline">Log in</Link> to see this order in your history.
+          </p>
+        )}
         <a href={result.wa_url} target="_blank" rel="noreferrer" className="btn text-white" style={{ background: "#25D366" }}>
           Complete on WhatsApp
         </a>
@@ -134,6 +148,11 @@ export default function CheckoutPage() {
           <div className="grid sm:grid-cols-2 gap-4 mb-5">
             <Field label="Full name"><input required className={INPUT} value={form.name} onChange={(e) => set("name", e.target.value)} /></Field>
             <Field label="Phone"><input required type="tel" className={INPUT} value={form.phone} onChange={(e) => set("phone", e.target.value)} /></Field>
+            {!customer && (
+              <Field label="Email" className="sm:col-span-2">
+                <input required type="email" className={INPUT} value={form.email} onChange={(e) => set("email", e.target.value)} placeholder="you@email.com" />
+              </Field>
+            )}
             <Field label="Address line" className="sm:col-span-2"><input required className={INPUT} value={form.line1} onChange={(e) => set("line1", e.target.value)} /></Field>
             <Field label="Landmark (optional)" className="sm:col-span-2"><input className={INPUT} value={form.line2} onChange={(e) => set("line2", e.target.value)} /></Field>
             <Field label="City"><input required className={INPUT} value={form.city} onChange={(e) => set("city", e.target.value)} /></Field>
@@ -144,7 +163,8 @@ export default function CheckoutPage() {
 
         {!customer && (
           <p className="text-xs text-muted mb-5">
-            Checking out as a guest. <Link to={withStore("/account")} className="text-ink underline">Log in</Link> to save this address for next time.
+            We'll create an account with your email so you can track this order — no password needed now.
+            Already have one? <Link to={withStore("/account")} className="text-ink underline">Log in</Link>.
           </p>
         )}
 
