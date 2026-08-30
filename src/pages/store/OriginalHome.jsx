@@ -10,7 +10,9 @@ import SectionHeading from "../../components/store/SectionHeading";
 import WhatsAppPromoBar from "../../components/store/WhatsAppPromoBar";
 import ProductRail from "../../components/store/ProductRail";
 import ProductCard from "../../components/store/ProductCard";
+import ReviewsSlider from "../../components/store/ReviewsSlider";
 import { withStore } from "../../lib/tenant";
+import { watchBrandImg } from "../../lib/watchBrandImg";
 
 const cap = (s) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : "");
 
@@ -123,6 +125,9 @@ export default function OriginalHome() {
         </section>
       )}
 
+      {/* Customer reviews — vendor-added images, auto-sliding */}
+      <ReviewsSlider images={config?.reviews} />
+
       {config?.about && (
         <section className="max-w-2xl mx-auto px-4 py-16 text-center">
           <div className="eyebrow mb-4">Our story</div>
@@ -138,7 +143,7 @@ function CategoryTile({ category, label, thumb }) {
     <Link to={withStore(`/c/${encodeURIComponent(category)}`)} className="flex flex-col items-center text-center group">
       <div className="w-full aspect-square overflow-hidden mb-3.5 bg-panel">
         {thumb
-          ? <img src={thumb} alt={label || category} loading="lazy" className="object-cover w-full h-full transition duration-700 ease-out group-hover:scale-[1.06]" />
+          ? <img src={thumb} alt={label || category} loading="lazy" referrerPolicy="no-referrer" className="object-cover w-full h-full transition duration-700 ease-out group-hover:scale-[1.06]" />
           : null}
       </div>
       <h5 className="text-sm capitalize text-ink-soft group-hover:text-ink transition-colors" style={{ fontWeight: 500 }}>{label || category}</h5>
@@ -151,11 +156,13 @@ function CategoryTile({ category, label, thumb }) {
 function BrandTile({ item }) {
   const label = item.label || item.brand;
   const to = withStore(`/c/${encodeURIComponent(item.category)}?brand=${encodeURIComponent(item.brand)}`);
+  // vendor thumbnail → bundled watch-brand image (watches only) → text tile
+  const img = item.thumbnail || (item.category === "watches" && watchBrandImg(item.brand));
   return (
     <Link to={to} className="flex flex-col items-center text-center group">
       <div className="w-full aspect-square overflow-hidden mb-3.5 bg-panel flex items-center justify-center">
-        {item.thumbnail
-          ? <img src={item.thumbnail} alt={label} loading="lazy" className="object-cover w-full h-full transition duration-700 ease-out group-hover:scale-[1.06]" />
+        {img
+          ? <img src={img} alt={label} loading="lazy" referrerPolicy="no-referrer" className="object-cover w-full h-full transition duration-700 ease-out group-hover:scale-[1.06]" />
           : <span className="text-ink-soft text-sm font-medium px-2 leading-tight">{label}</span>}
       </div>
       <h5 className="text-sm text-ink-soft group-hover:text-ink transition-colors" style={{ fontWeight: 500 }}>{label}</h5>

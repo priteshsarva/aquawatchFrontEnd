@@ -85,7 +85,7 @@ export default function StoreProductPage() {
   const subCat = product.catName && product.catName.toLowerCase() !== String(parentCat).toLowerCase() ? product.catName : null;
 
   return (
-    <div className="max-w-screen-xl mx-auto px-4 lg:px-6 py-6">
+    <div className="max-w-screen-xl mx-auto px-4 lg:px-6 py-6 pb-24 md:pb-6">
       {/* breadcrumb */}
       <nav className="flex items-center gap-1.5 text-xs text-muted mb-6" aria-label="Breadcrumb">
         <Link to={withStore("/")} className="hover:text-ink transition-colors">Home</Link>
@@ -100,7 +100,7 @@ export default function StoreProductPage() {
         <div className="md:sticky md:top-28 md:self-start">
           <div className="bg-panel overflow-hidden mb-3 relative" style={{ aspectRatio: "1/1" }}>
             {images[activeImg]
-              ? <img src={images[activeImg]} alt={product.productName} className="w-full h-full object-cover" />
+              ? <img src={images[activeImg]} alt={product.productName} referrerPolicy="no-referrer" className="w-full h-full object-cover" />
               : <div className="w-full h-full flex items-center justify-center text-muted">No image</div>}
             {product.savings_pct > 0 && (
               <span className="absolute top-4 left-4 text-white text-[11px] font-semibold tracking-wide px-2.5 py-1 num" style={{ background: "var(--store-primary, #1a1512)" }}>
@@ -112,7 +112,7 @@ export default function StoreProductPage() {
             <div className="flex gap-2.5 flex-wrap">
               {images.map((img, i) => (
                 <button key={img + i} onClick={() => setActiveImg(i)} className={`w-16 h-16 overflow-hidden border transition-colors ${i === activeImg ? "border-ink" : "border-line hover:border-line-strong"}`}>
-                  <img src={img} alt="" className="w-full h-full object-cover" />
+                  <img src={img} alt="" referrerPolicy="no-referrer" className="w-full h-full object-cover" />
                 </button>
               ))}
             </div>
@@ -173,7 +173,8 @@ export default function StoreProductPage() {
             <WishlistToggle product={product} />
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-3">
+          {/* desktop action buttons — on mobile these live in the sticky bar below */}
+          <div className="hidden md:flex flex-col sm:flex-row gap-3">
             <button onClick={handleAddToCart} disabled={!canOrder} className="btn btn-outline flex-1">
               {added ? <><Check size={16} /> Added</> : "Add to cart"}
             </button>
@@ -208,6 +209,20 @@ export default function StoreProductPage() {
           </div>
         </section>
       )}
+
+      {/* mobile sticky action bar — price + add/buy always reachable */}
+      <div className="md:hidden fixed bottom-0 inset-x-0 z-30 bg-paper border-t border-line px-4 py-3 flex items-center gap-3" style={{ paddingBottom: "max(0.75rem, env(safe-area-inset-bottom))" }}>
+        <div className="shrink-0">
+          <div className="price text-lg text-ink leading-none">{inr(product.price)}</div>
+          {needsSize && !size && <div className="text-[11px] text-rose-700 mt-0.5">Select a size</div>}
+        </div>
+        <button onClick={handleAddToCart} disabled={!canOrder} className="btn btn-outline flex-1 px-2">
+          {added ? <><Check size={16} /> Added</> : "Add"}
+        </button>
+        <button onClick={handleBuyNow} disabled={!canOrder} className="btn btn-primary flex-1 px-2">
+          Buy now
+        </button>
+      </div>
     </div>
   );
 }

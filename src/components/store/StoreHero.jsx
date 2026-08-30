@@ -7,11 +7,13 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { useStore } from "../../context/StoreContext";
 import { withStore } from "../../lib/tenant";
+import { videoEmbed } from "../../lib/videoEmbed";
 
 export default function StoreHero() {
   const { config } = useStore();
   const hero = config?.hero || {};
-  const hasVideo = !!hero.video_url;
+  const video = videoEmbed(hero.video_url);
+  const hasVideo = !!video;
   const hasImage = !!hero.image_url;
   const firstCat = config?.categories?.[0];
   const media = hasVideo || hasImage;
@@ -29,10 +31,23 @@ export default function StoreHero() {
       {hasImage && (
         <div className="absolute inset-0 bg-cover bg-center scale-105" style={{ backgroundImage: `url(${hero.image_url})` }} />
       )}
-      {hasVideo && (
+      {hasVideo && video.kind === "file" && (
         <video autoPlay loop muted playsInline poster={hero.image_url || undefined} className="absolute inset-0 w-full h-full object-cover">
-          <source src={hero.video_url} type="video/mp4" />
+          <source src={video.src} />
         </video>
+      )}
+      {hasVideo && video.kind === "embed" && (
+        // YouTube/Vimeo background: an oversized iframe centred so a 16:9 video
+        // covers the hero box without letterboxing; no controls, no interaction.
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <iframe
+            src={video.src}
+            title="Hero video"
+            allow="autoplay; encrypted-media; picture-in-picture"
+            frameBorder="0"
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[max(100%,177.78vh)] h-[max(100%,56.25vw)]"
+          />
+        </div>
       )}
 
       {/* Directional scrim — heavier at the base where the text sits, with a
