@@ -142,16 +142,15 @@ export default function VelocityHome() {
               ))}
             </div>
           )}
-          {/* products sit on a white panel so the cards read clearly against lime */}
+          {/* products sit directly on the lime — v-cards recolours the card text
+              and borders dark so they stay legible without a panel */}
           {products === null ? (
             <div className="py-16 v-on-lime">Loading…</div>
           ) : shown.length === 0 ? (
             <div className="py-16 v-on-lime">No products yet.</div>
           ) : (
-            <div className="bg-paper rounded-2xl p-5 md:p-8">
-              <div className="stagger grid grid-cols-2 md:grid-cols-4 gap-x-5 gap-y-9 text-left">
-                {shown.slice(0, 8).map((p) => <ProductCard key={`${p.dbName}-${p.productId}`} product={p} />)}
-              </div>
+            <div className="stagger v-cards grid grid-cols-2 md:grid-cols-4 gap-x-5 gap-y-9 text-left">
+              {shown.slice(0, 8).map((p) => <ProductCard key={`${p.dbName}-${p.productId}`} product={p} />)}
             </div>
           )}
           <div className="mt-10">
@@ -277,6 +276,11 @@ export default function VelocityHome() {
         .velocity .v-ink { background: var(--v-ink); }
         /* readable body text on the lime backgrounds */
         .velocity .v-on-lime { color: rgba(13,13,13,0.78); }
+        /* recolour product-card text/borders dark so cards read on the lime bg
+           (no white panel behind them) */
+        .velocity .v-cards .text-ink-soft { color: rgba(13,13,13,0.82); }
+        .velocity .v-cards .text-muted { color: rgba(13,13,13,0.60); }
+        .velocity .v-cards .border-line { border-color: rgba(13,13,13,0.30); }
         .velocity .v-display {
           font-weight: 900; font-style: italic; text-transform: uppercase;
           letter-spacing: -0.01em; line-height: 0.95; transform: skewX(-6deg);
