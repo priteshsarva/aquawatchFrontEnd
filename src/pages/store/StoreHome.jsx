@@ -7,10 +7,14 @@ import { useStore } from "../../context/StoreContext";
 import SectionRenderer from "../../components/sections/registry";
 import WhatsAppPromoBar from "../../components/store/WhatsAppPromoBar";
 import OriginalHome from "./OriginalHome";
+import VelocityHome from "./VelocityHome";
 
 export default function StoreHome() {
   const { config } = useStore();
   if (!config) return <div className="min-h-[60vh]" />;
+
+  // hand-built full-page templates selected by preset id (no section list)
+  if (config.preset === "velocity") return <VelocityHome />;
 
   // vendor explicitly configured a custom section layout → render that
   if (Array.isArray(config.sections) && config.sections.length) {
