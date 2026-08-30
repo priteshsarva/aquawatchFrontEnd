@@ -210,8 +210,8 @@ export default function StoreProductPage() {
         </section>
       )}
 
-      {/* mobile sticky action bar — price + add/buy always reachable */}
-      <div className="md:hidden fixed bottom-0 inset-x-0 z-30 bg-paper border-t border-line px-4 py-3 flex items-center gap-3" style={{ paddingBottom: "max(0.75rem, env(safe-area-inset-bottom))" }}>
+      {/* mobile sticky action bar — sits just above the bottom tab bar */}
+      <div className="md:hidden fixed inset-x-0 z-40 bg-paper border-t border-line px-4 py-3 flex items-center gap-3" style={{ bottom: "calc(var(--mnav-h) + env(safe-area-inset-bottom))" }}>
         <div className="shrink-0">
           <div className="price text-lg text-ink leading-none">{inr(product.price)}</div>
           {needsSize && !size && <div className="text-[11px] text-rose-700 mt-0.5">Select a size</div>}

@@ -11,6 +11,7 @@ import { WishlistProvider } from './context/WishlistContext.jsx';
 
 import StoreNavBar from './components/store/StoreNavBar.jsx';
 import StoreFooter from './components/store/StoreFooter.jsx';
+import MobileBottomNav from './components/store/MobileBottomNav.jsx';
 import StoreHome from './pages/store/StoreHome.jsx';
 import StoreCategoryPage from './pages/store/StoreCategoryPage.jsx';
 import StoreProductPage from './pages/store/StoreProductPage.jsx';
@@ -90,6 +91,7 @@ function AppShell() {
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
           <StoreFooter />
+          <MobileBottomNav />
         </CustomerAuthProvider>
       </WishlistProvider>
     </CartProvider>

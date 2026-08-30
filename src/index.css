@@ -36,6 +36,13 @@
 
 html { scroll-behavior: smooth; }
 
+/* Mobile bottom tab bar height — content/footer clear it, the product page's
+   sticky action bar sits just above it. */
+:root { --mnav-h: 3.7rem; }
+@media (max-width: 767px) {
+  body { padding-bottom: calc(var(--mnav-h) + env(safe-area-inset-bottom)); }
+}
+
 body {
   font-family: var(--font-sans);
   color: var(--color-ink);

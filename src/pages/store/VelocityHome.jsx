@@ -133,22 +133,25 @@ export default function VelocityHome() {
           <h2 className="v-display v-h2 mb-2">Get There</h2>
           <p className="v-on-lime mb-8">The pieces designed to keep you a step ahead.</p>
           {hasGender && (
-            <div className="flex items-center justify-center gap-6 mb-10">
+            <div className="flex items-center justify-center gap-7 mb-10">
               {["men", "women"].map((g) => (
                 <button key={g} onClick={() => setGender(gender === g ? "all" : g)}
-                  className={`v-display text-2xl md:text-3xl transition-colors ${gender === g ? "text-black" : "text-black/40 hover:text-black/70"}`}>
+                  className={`v-display text-2xl md:text-3xl transition-colors border-b-4 pb-1 ${gender === g ? "text-black border-[var(--v-red)]" : "text-black/55 border-transparent hover:text-black"}`}>
                   {g === "men" ? "Men's" : "Women's"}
                 </button>
               ))}
             </div>
           )}
+          {/* products sit on a white panel so the cards read clearly against lime */}
           {products === null ? (
             <div className="py-16 v-on-lime">Loading…</div>
           ) : shown.length === 0 ? (
             <div className="py-16 v-on-lime">No products yet.</div>
           ) : (
-            <div className="stagger grid grid-cols-2 md:grid-cols-4 gap-x-5 gap-y-9 text-left">
-              {shown.slice(0, 8).map((p) => <ProductCard key={`${p.dbName}-${p.productId}`} product={p} />)}
+            <div className="bg-paper rounded-2xl p-5 md:p-8">
+              <div className="stagger grid grid-cols-2 md:grid-cols-4 gap-x-5 gap-y-9 text-left">
+                {shown.slice(0, 8).map((p) => <ProductCard key={`${p.dbName}-${p.productId}`} product={p} />)}
+              </div>
             </div>
           )}
           <div className="mt-10">
