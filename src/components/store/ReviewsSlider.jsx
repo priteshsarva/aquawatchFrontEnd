@@ -16,7 +16,7 @@ export default function ReviewsSlider({ images }) {
       <SectionHeading eyebrow="Loved by">What our customers say</SectionHeading>
       <div className="reviews-marquee group relative overflow-hidden mt-2">
         <div
-          className="flex gap-5 w-max px-4 reviews-track group-hover:[animation-play-state:paused]"
+          className="flex gap-5 w-max px-4 reviews-track"
           style={{ animation: imgs.length > 1 ? `reviews-scroll ${loop.length * 4}s linear infinite` : "none" }}
         >
           {loop.map((src, i) => (
@@ -28,6 +28,7 @@ export default function ReviewsSlider({ images }) {
       </div>
       <style>{`
         @keyframes reviews-scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+        .reviews-marquee:hover .reviews-track { animation-play-state: paused !important; }
       `}</style>
     </section>
   );
