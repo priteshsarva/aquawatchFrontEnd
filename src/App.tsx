@@ -23,6 +23,7 @@ import WishlistPage from './pages/store/WishlistPage.jsx';
 import StoreNotFound from './pages/store/StoreNotFound.jsx';
 
 import ScrollToTop from './components/ScrollToTop.jsx';
+import { useScrollReveal } from './hooks/useScrollReveal.js';
 
 async function loadPreline() {
   return import('preline/dist/index.js');
@@ -54,6 +55,7 @@ function AppShell() {
   const { status, slug } = useStore();
 
   useShareableTenantUrl(slug);
+  useScrollReveal();
 
   useEffect(() => {
     const initPreline = async () => {

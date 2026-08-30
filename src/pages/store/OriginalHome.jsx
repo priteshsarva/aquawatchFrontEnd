@@ -56,7 +56,7 @@ export default function OriginalHome() {
         <section>
           <SectionHeading eyebrow="Explore">Browse the collection</SectionHeading>
           <div className="container mx-auto px-4 pb-6">
-            <div className="grid grid-cols-3 gap-5 md:gap-8 max-w-3xl mx-auto">
+            <div className="stagger grid grid-cols-3 gap-5 md:gap-8 max-w-3xl mx-auto">
               {homeItems.map((it) => (
                 // thumbnail fallback chain: vendor-set thumbnail → first product image → empty tile
                 <CategoryTile key={it.category} category={it.category} label={it.label || cap(it.category)}
@@ -118,7 +118,7 @@ export default function OriginalHome() {
         <section>
           <SectionHeading eyebrow="Shop by">Brands</SectionHeading>
           <div className="container mx-auto px-4 pb-14">
-            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-5 md:gap-7 max-w-4xl mx-auto">
+            <div className="stagger grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-5 md:gap-7 max-w-4xl mx-auto">
               {brandItems.map((b) => <BrandTile key={`${b.category}-${b.brand}`} item={b} />)}
             </div>
           </div>

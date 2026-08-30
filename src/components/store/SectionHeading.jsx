@@ -5,7 +5,7 @@ import React from "react";
 
 export default function SectionHeading({ children, eyebrow }) {
   return (
-    <div className="container mx-auto px-4 pt-14 pb-6 text-center">
+    <div className="container mx-auto px-4 pt-14 pb-6 text-center reveal">
       {eyebrow && <div className="eyebrow mb-3">{eyebrow}</div>}
       <h2 className="text-2xl md:text-[2rem] font-normal text-ink leading-tight">{children}</h2>
       <span

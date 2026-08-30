@@ -120,7 +120,7 @@ export default function StoreProductPage() {
         </div>
 
         {/* detail */}
-        <div className="md:pt-2">
+        <div className="md:pt-2 reveal">
           {product.productBrand && <div className="eyebrow mb-3">{product.productBrand}{product.subBrand ? ` · ${product.subBrand}` : ""}</div>}
           <h1 className="text-2xl md:text-[2rem] leading-tight text-ink mb-4">{product.productName}</h1>
 
