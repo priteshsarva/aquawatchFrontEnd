@@ -204,8 +204,10 @@ export default function StoreNavBar() {
   const showCats = navCfg.show_categories !== false;
   const showBrands = !!navCfg.show_brands;
   const brandNodes = (Array.isArray(navCfg.brands) ? navCfg.brands : []).filter((b) => b && b.brand);
+  const subbrandNodes = (Array.isArray(navCfg.subbrands) ? navCfg.subbrands : []).filter((s) => s && s.brand && s.sub_brand);
   const customLinks = (Array.isArray(navCfg.links) ? navCfg.links : []).filter((l) => l && l.label && l.url);
   const isExternal = (u) => /^https?:\/\//i.test(u);
+  const subbrandTo = (s) => withStore(`/c/${encodeURIComponent(s.category)}?brand=${encodeURIComponent(s.brand)}&sub_brand=${encodeURIComponent(`${s.brand}::${s.sub_brand}`)}`);
 
   const logo = config?.logo_url
     ? <img src={config.logo_url} alt={config.store_name} className="h-10 md:h-12 w-auto" />
@@ -218,6 +220,10 @@ export default function StoreNavBar() {
       {showBrands && brandNodes.map((b) => (
         <Link key={`${b.category}-${b.brand}`} to={withStore(`/c/${encodeURIComponent(b.category)}?brand=${encodeURIComponent(b.brand)}`)}
           className="uppercase tracking-[0.12em] hover:text-ink transition-colors">{b.label || b.brand}</Link>
+      ))}
+      {showBrands && subbrandNodes.map((s) => (
+        <Link key={`${s.category}-${s.brand}-${s.sub_brand}`} to={subbrandTo(s)}
+          className="uppercase tracking-[0.12em] hover:text-ink transition-colors">{s.label || s.sub_brand}</Link>
       ))}
       <Link to={withStore("/c/all")} className="uppercase tracking-[0.12em] hover:text-ink transition-colors">Shop</Link>
       {customLinks.map((l, i) => (
@@ -381,6 +387,11 @@ export default function StoreNavBar() {
               {showBrands && brandNodes.map((b) => (
                 <li key={`${b.category}-${b.brand}`}>
                   <Link to={withStore(`/c/${encodeURIComponent(b.category)}?brand=${encodeURIComponent(b.brand)}`)} onClick={() => setMenuOpen(false)} className="block py-2 uppercase tracking-[0.1em] hover:text-ink">{b.label || b.brand}</Link>
+                </li>
+              ))}
+              {showBrands && subbrandNodes.map((s) => (
+                <li key={`${s.category}-${s.brand}-${s.sub_brand}`}>
+                  <Link to={subbrandTo(s)} onClick={() => setMenuOpen(false)} className="block py-2 uppercase tracking-[0.1em] hover:text-ink">{s.label || s.sub_brand}</Link>
                 </li>
               ))}
               <li><Link to={withStore("/c/all")} onClick={() => setMenuOpen(false)} className="block py-2.5 uppercase tracking-[0.1em] hover:text-ink">Shop</Link></li>
