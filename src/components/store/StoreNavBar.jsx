@@ -204,6 +204,8 @@ export default function StoreNavBar() {
   const showCats = navCfg.show_categories !== false;
   const showBrands = !!navCfg.show_brands;
   const brandNodes = (Array.isArray(navCfg.brands) ? navCfg.brands : []).filter((b) => b && b.brand);
+  const customLinks = (Array.isArray(navCfg.links) ? navCfg.links : []).filter((l) => l && l.label && l.url);
+  const isExternal = (u) => /^https?:\/\//i.test(u);
 
   const logo = config?.logo_url
     ? <img src={config.logo_url} alt={config.store_name} className="h-10 md:h-12 w-auto" />
@@ -218,6 +220,11 @@ export default function StoreNavBar() {
           className="uppercase tracking-[0.12em] hover:text-ink transition-colors">{b.label || b.brand}</Link>
       ))}
       <Link to={withStore("/c/all")} className="uppercase tracking-[0.12em] hover:text-ink transition-colors">Shop</Link>
+      {customLinks.map((l, i) => (
+        isExternal(l.url)
+          ? <a key={`lnk${i}`} href={l.url} target="_blank" rel="noopener noreferrer" className="uppercase tracking-[0.12em] hover:text-ink transition-colors">{l.label}</a>
+          : <Link key={`lnk${i}`} to={withStore(l.url)} className="uppercase tracking-[0.12em] hover:text-ink transition-colors">{l.label}</Link>
+      ))}
     </>
   );
 
@@ -377,6 +384,13 @@ export default function StoreNavBar() {
                 </li>
               ))}
               <li><Link to={withStore("/c/all")} onClick={() => setMenuOpen(false)} className="block py-2.5 uppercase tracking-[0.1em] hover:text-ink">Shop</Link></li>
+              {customLinks.map((l, i) => (
+                <li key={`mlnk${i}`}>
+                  {isExternal(l.url)
+                    ? <a href={l.url} target="_blank" rel="noopener noreferrer" onClick={() => setMenuOpen(false)} className="block py-2.5 uppercase tracking-[0.1em] hover:text-ink">{l.label}</a>
+                    : <Link to={withStore(l.url)} onClick={() => setMenuOpen(false)} className="block py-2.5 uppercase tracking-[0.1em] hover:text-ink">{l.label}</Link>}
+                </li>
+              ))}
               <li className="border-t border-line mt-3 pt-3">
                 {customer ? (
                   <>

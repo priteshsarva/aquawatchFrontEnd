@@ -29,6 +29,8 @@ export default function OriginalHome() {
   // Featured brands the vendor put on the home page (portal "Navigation" panel).
   const navBrands = config?.nav?.brands;
   const brandItems = Array.isArray(navBrands) ? navBrands.filter((b) => b && b.brand && b.on_home !== false) : [];
+  const subcatItems = Array.isArray(config?.nav?.subcats) ? config.nav.subcats.filter((s) => s && s.subcat && s.on_home !== false) : [];
+  const subbrandItems = Array.isArray(config?.nav?.subbrands) ? config.nav.subbrands.filter((s) => s && s.sub_brand && s.on_home !== false) : [];
   const [byCat, setByCat] = useState(null); // { [category]: product[] }
   const [allProducts, setAllProducts] = useState(null); // mixed rail across every category
   const multiCat = categories.length > 1;
@@ -113,13 +115,31 @@ export default function OriginalHome() {
         </section>
       )}
 
-      {/* Shop by Brand — the vendor's curated, home-flagged brands */}
-      {brandItems.length > 0 && (
+      {/* Shop by Sub-category — the vendor's curated, home-flagged sub-categories */}
+      {subcatItems.length > 0 && (
+        <section>
+          <SectionHeading eyebrow="Shop by">Category</SectionHeading>
+          <div className="container mx-auto px-4 pb-8">
+            <div className="stagger grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-5 md:gap-7 max-w-4xl mx-auto">
+              {subcatItems.map((s) => (
+                <Link key={`${s.category}-${s.subcat}`} to={withStore(`/c/${encodeURIComponent(s.category)}?cat=${encodeURIComponent(s.subcat)}`)} className="flex flex-col items-center text-center group">
+                  <div className="w-full aspect-square overflow-hidden mb-3 bg-panel flex items-center justify-center capitalize text-sm text-ink-soft group-hover:bg-[color-mix(in_srgb,var(--store-primary,#1a1512)_10%,transparent)] transition-colors px-2">{s.label || s.subcat}</div>
+                  <h5 className="text-sm text-ink-soft group-hover:text-ink transition-colors capitalize" style={{ fontWeight: 500 }}>{s.label || s.subcat}</h5>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Shop by Brand — the vendor's curated, home-flagged brands + sub-brands */}
+      {(brandItems.length > 0 || subbrandItems.length > 0) && (
         <section>
           <SectionHeading eyebrow="Shop by">Brands</SectionHeading>
           <div className="container mx-auto px-4 pb-14">
             <div className="stagger grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-5 md:gap-7 max-w-4xl mx-auto">
               {brandItems.map((b) => <BrandTile key={`${b.category}-${b.brand}`} item={b} />)}
+              {subbrandItems.map((s) => <BrandTile key={`${s.category}-${s.brand}-${s.sub_brand}`} item={s} />)}
             </div>
           </div>
         </section>
@@ -154,8 +174,11 @@ function CategoryTile({ category, label, thumb }) {
 // A featured brand → the category listing pre-filtered to that brand. Thumbnail
 // falls back to the brand name on a plain tile when no image is set.
 function BrandTile({ item }) {
-  const label = item.label || item.brand;
-  const to = withStore(`/c/${encodeURIComponent(item.category)}?brand=${encodeURIComponent(item.brand)}`);
+  const label = item.label || item.sub_brand || item.brand;
+  // a sub-brand tile deep-links to the brand + sub-brand filter (Primary::Secondary)
+  const to = withStore(item.sub_brand
+    ? `/c/${encodeURIComponent(item.category)}?brand=${encodeURIComponent(item.brand)}&sub_brand=${encodeURIComponent(`${item.brand}::${item.sub_brand}`)}`
+    : `/c/${encodeURIComponent(item.category)}?brand=${encodeURIComponent(item.brand)}`);
   // vendor thumbnail → bundled watch-brand image (watches only) → text tile
   const img = item.thumbnail || (item.category === "watches" && watchBrandImg(item.brand));
   return (
