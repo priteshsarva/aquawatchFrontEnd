@@ -105,15 +105,48 @@ function CategoryNav({ node }) {
   );
 }
 
+// Featured sub-categories grouped under their parent category, as a hover
+// dropdown labelled by the category (the "under" style).
+function SubcatGroupNav({ label, subcats }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="relative" onMouseEnter={() => setOpen(true)} onMouseLeave={() => setOpen(false)}>
+      <span className="flex items-center gap-1 uppercase tracking-[0.12em] capitalize cursor-default hover:text-ink transition-colors">
+        {label}<ChevronDown size={13} className={`transition-transform ${open ? "rotate-180" : ""}`} />
+      </span>
+      {open && (
+        <div className="absolute left-1/2 -translate-x-1/2 top-full pt-3 z-40">
+          <div className="bg-paper border border-line shadow-[var(--shadow-md)] min-w-[200px] py-2">
+            {subcats.map((s) => (
+              <Link key={s.subcat} to={withStore(`/c/${encodeURIComponent(s.category)}?cat=${encodeURIComponent(s.subcat)}`)} onClick={() => setOpen(false)}
+                className="block px-4 py-1.5 text-sm text-ink-soft hover:bg-panel hover:text-ink transition-colors capitalize">{s.label || s.subcat}</Link>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 // Mobile menu row: primary category with collapsible secondary categories, each
 // with its own collapsible brand list.
 function MobileCategory({ node, onNavigate }) {
+  const [open, setOpen] = useState(false);      // is this category's sub-list expanded
   const [openSub, setOpenSub] = useState(null);
   const base = `/c/${encodeURIComponent(node.category)}`;
+  const subs = node.subcategories || [];
   return (
     <li className="pt-1">
-      <Link to={withStore(base)} onClick={onNavigate} className="block py-2 uppercase tracking-[0.1em] capitalize hover:text-ink">{node.label}</Link>
-      {(node.subcategories || []).map((sub) => {
+      {/* primary: label links to the category; the chevron collapses its sub-list */}
+      <div className="flex items-center">
+        <Link to={withStore(base)} onClick={onNavigate} className="flex-1 block py-2 uppercase tracking-[0.1em] capitalize hover:text-ink">{node.label}</Link>
+        {subs.length > 0 && (
+          <button type="button" onClick={() => setOpen((o) => !o)} aria-label={open ? "Collapse" : "Expand"} className="px-3 py-2 text-muted hover:text-ink">
+            <ChevronDown size={16} className={`transition-transform ${open ? "rotate-180" : ""}`} />
+          </button>
+        )}
+      </div>
+      {open && subs.map((sub) => {
         const brands = sub.brands || [];
         const expanded = openSub === sub.name;
         return (
@@ -162,8 +195,12 @@ export default function StoreNavBar() {
     return () => { alive = false; };
   }, [config?.slug]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // menu when available; else plain category links (no dropdown) from config
-  const menuNodes = menu.length ? menu : navItems.map((it) => ({ category: it.category, label: it.label, subcategories: [] }));
+  // menu when available; else plain category links (no dropdown) from config.
+  // Only show categories the vendor kept "In menu" — navItems is the curated set
+  // (or every category when nothing is configured), so filter the tree to it.
+  const includedCats = new Set(navItems.map((it) => it.category));
+  const menuNodes = (menu.length ? menu : navItems.map((it) => ({ category: it.category, label: it.label, subcategories: [] })))
+    .filter((n) => includedCats.has(n.category));
 
   // live search: 3+ chars, debounced 250ms — same threshold the original had
   useEffect(() => {
@@ -205,9 +242,14 @@ export default function StoreNavBar() {
   const showBrands = !!navCfg.show_brands;
   const brandNodes = (Array.isArray(navCfg.brands) ? navCfg.brands : []).filter((b) => b && b.brand);
   const subbrandNodes = (Array.isArray(navCfg.subbrands) ? navCfg.subbrands : []).filter((s) => s && s.brand && s.sub_brand);
+  const subcatNodes = (Array.isArray(navCfg.subcats) ? navCfg.subcats : []).filter((s) => s && s.subcat);
+  const subcatStyle = navCfg.subcat_style === "under" ? "under" : "link"; // individual links vs grouped under their category
   const customLinks = (Array.isArray(navCfg.links) ? navCfg.links : []).filter((l) => l && l.label && l.url);
   const isExternal = (u) => /^https?:\/\//i.test(u);
   const subbrandTo = (s) => withStore(`/c/${encodeURIComponent(s.category)}?brand=${encodeURIComponent(s.brand)}&sub_brand=${encodeURIComponent(`${s.brand}::${s.sub_brand}`)}`);
+  const subcatTo = (s) => withStore(`/c/${encodeURIComponent(s.category)}?cat=${encodeURIComponent(s.subcat)}`);
+  // featured sub-categories grouped by their parent category (for the "under" style)
+  const subcatGroups = subcatNodes.reduce((acc, s) => { (acc[s.category] ||= []).push(s); return acc; }, {});
 
   const logo = config?.logo_url
     ? <img src={config.logo_url} alt={config.store_name} className="h-10 md:h-12 w-auto" />
@@ -217,6 +259,13 @@ export default function StoreNavBar() {
     <>
       <Link to={withStore("/")} className={`uppercase tracking-[0.12em] hover:text-ink transition-colors ${onHome ? "text-ink" : ""}`}>Home</Link>
       {showCats && menuNodes.map((node) => <CategoryNav key={node.category} node={node} />)}
+      {showCats && subcatStyle === "link" && subcatNodes.map((s) => (
+        <Link key={`${s.category}-${s.subcat}`} to={subcatTo(s)}
+          className="uppercase tracking-[0.12em] hover:text-ink transition-colors capitalize">{s.label || s.subcat}</Link>
+      ))}
+      {showCats && subcatStyle === "under" && Object.entries(subcatGroups).map(([cat, subs]) => (
+        <SubcatGroupNav key={cat} label={navItems.find((i) => i.category === cat)?.label || cat} subcats={subs} />
+      ))}
       {showBrands && brandNodes.map((b) => (
         <Link key={`${b.category}-${b.brand}`} to={withStore(`/c/${encodeURIComponent(b.category)}?brand=${encodeURIComponent(b.brand)}`)}
           className="uppercase tracking-[0.12em] hover:text-ink transition-colors">{b.label || b.brand}</Link>
@@ -383,6 +432,11 @@ export default function StoreNavBar() {
               {/* Primary category → secondary categories → brands, collapsible */}
               {showCats && menuNodes.map((node) => (
                 <MobileCategory key={node.category} node={node} onNavigate={() => setMenuOpen(false)} />
+              ))}
+              {showCats && subcatNodes.map((s) => (
+                <li key={`${s.category}-${s.subcat}`}>
+                  <Link to={subcatTo(s)} onClick={() => setMenuOpen(false)} className="block py-2 uppercase tracking-[0.1em] capitalize hover:text-ink">{s.label || s.subcat}</Link>
+                </li>
               ))}
               {showBrands && brandNodes.map((b) => (
                 <li key={`${b.category}-${b.brand}`}>
