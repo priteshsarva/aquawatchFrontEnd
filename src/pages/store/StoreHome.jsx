@@ -14,7 +14,8 @@ export default function StoreHome() {
   if (!config) return <div className="min-h-[60vh]" />;
 
   // hand-built full-page templates selected by preset id (no section list)
-  if (config.preset === "velocity") return <VelocityHome />;
+  if (config.preset === "velocity") return <VelocityHome variant="velocity" />;
+  if (config.preset === "chrono") return <VelocityHome variant="chrono" />;
 
   // vendor explicitly configured a custom section layout → render that
   if (Array.isArray(config.sections) && config.sections.length) {

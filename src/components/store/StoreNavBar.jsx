@@ -194,6 +194,72 @@ export default function StoreNavBar() {
 
   const iconBtn = "text-ink-soft hover:text-ink transition-colors";
 
+  // Menu configuration (portal "Navigation" panel):
+  //   nav.layout          "single" (default) | "double" (logo-centred top row + a
+  //                       second row of nav links)
+  //   nav.show_categories show category dropdowns in the nav (default true)
+  //   nav.show_brands     show the vendor's featured brands in the nav (default false)
+  const navCfg = config?.nav || {};
+  const layout = navCfg.layout === "double" ? "double" : "single";
+  const showCats = navCfg.show_categories !== false;
+  const showBrands = !!navCfg.show_brands;
+  const brandNodes = (Array.isArray(navCfg.brands) ? navCfg.brands : []).filter((b) => b && b.brand);
+
+  const logo = config?.logo_url
+    ? <img src={config.logo_url} alt={config.store_name} className="h-10 md:h-12 w-auto" />
+    : <span className="font-display text-xl md:text-2xl tracking-tight text-ink">{config?.store_name}</span>;
+
+  const navLinks = (
+    <>
+      <Link to={withStore("/")} className={`uppercase tracking-[0.12em] hover:text-ink transition-colors ${onHome ? "text-ink" : ""}`}>Home</Link>
+      {showCats && menuNodes.map((node) => <CategoryNav key={node.category} node={node} />)}
+      {showBrands && brandNodes.map((b) => (
+        <Link key={`${b.category}-${b.brand}`} to={withStore(`/c/${encodeURIComponent(b.category)}?brand=${encodeURIComponent(b.brand)}`)}
+          className="uppercase tracking-[0.12em] hover:text-ink transition-colors">{b.label || b.brand}</Link>
+      ))}
+      <Link to={withStore("/c/all")} className="uppercase tracking-[0.12em] hover:text-ink transition-colors">Shop</Link>
+    </>
+  );
+
+  const utils = (
+    <>
+      <button onClick={() => setSearchOpen(true)} className={iconBtn} aria-label="Search">
+        <Search size={20} strokeWidth={1.75} />
+      </button>
+      {customer ? (
+        <div className="relative hidden sm:block" onMouseLeave={() => setAcctOpen(false)}>
+          <button onClick={() => setAcctOpen((o) => !o)} onMouseEnter={() => setAcctOpen(true)}
+            className="flex items-center gap-1.5 text-sm text-ink-soft hover:text-ink transition-colors">
+            <User size={18} strokeWidth={1.75} /> <span className="max-w-[110px] truncate">{customer.name || "Account"}</span> <ChevronDown size={13} />
+          </button>
+          {acctOpen && (
+            <div className="absolute right-0 top-full pt-3 z-40">
+              <div className="bg-paper border border-line shadow-[var(--shadow-md)] min-w-[180px] py-1.5">
+                <Link to={withStore("/account")} onClick={() => setAcctOpen(false)} className="block px-4 py-2.5 text-sm text-ink-soft hover:bg-panel hover:text-ink transition-colors">Dashboard</Link>
+                <Link to={withStore("/wishlist")} onClick={() => setAcctOpen(false)} className="block px-4 py-2.5 text-sm text-ink-soft hover:bg-panel hover:text-ink transition-colors">Wishlist</Link>
+                <button onClick={doLogout} className="w-full text-left flex items-center gap-2 px-4 py-2.5 text-sm text-ink-soft hover:bg-panel hover:text-ink transition-colors">
+                  <LogOut size={14} /> Logout
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      ) : (
+        <Link to={withStore("/account")} className="hidden sm:flex items-center gap-1.5 text-sm text-ink-soft hover:text-ink transition-colors">
+          <User size={18} strokeWidth={1.75} /> Login
+        </Link>
+      )}
+      <Link to={withStore("/wishlist")} className={`relative hidden sm:inline-flex ${iconBtn}`} aria-label="Wishlist">
+        <Heart size={20} strokeWidth={1.75} />
+        <CountBadge n={wishlist?.count} />
+      </Link>
+      <Link to={withStore("/cart")} className={`relative ${iconBtn}`} aria-label="Cart">
+        <ShoppingBag size={20} strokeWidth={1.75} />
+        <CountBadge n={count} />
+      </Link>
+    </>
+  );
+
   return (
     // NOTE: the search + mobile-menu overlays are rendered as SIBLINGS of
     // <header>, not children. The header uses backdrop-blur, and a
@@ -211,75 +277,37 @@ export default function StoreNavBar() {
     >
       <StoreAnnouncementBar />
 
-      <div className="store-nav max-w-screen-xl mx-auto px-4 lg:px-6 h-16 md:h-20 flex items-center gap-4">
-        <button className="md:hidden text-ink-soft hover:text-ink" onClick={() => setMenuOpen(true)} aria-label="Open menu">
-          <Menu size={22} />
-        </button>
-
-        <Link to={withStore("/")} className="flex items-center gap-2 shrink-0">
-          {config?.logo_url
-            ? <img src={config.logo_url} alt={config.store_name} className="h-10 md:h-12 w-auto" />
-            : <span className="font-display text-xl md:text-2xl tracking-tight text-ink">{config?.store_name}</span>}
-        </Link>
-
-        <nav className="hidden md:flex flex-1 items-center justify-center gap-8 text-[13px] font-medium text-ink-soft">
-          <Link
-            to={withStore("/")}
-            className={`uppercase tracking-[0.12em] hover:text-ink transition-colors ${onHome ? "text-ink" : ""}`}
-          >
-            Home
-          </Link>
-          {/* Primary category → dropdown of secondary categories → brands under each */}
-          {menuNodes.map((node) => (
-            <CategoryNav key={node.category} node={node} />
-          ))}
-          {/* Shop = all products mixed across every category */}
-          <Link to={withStore("/c/all")} className="uppercase tracking-[0.12em] hover:text-ink transition-colors">Shop</Link>
-        </nav>
-
-        <div className="ml-auto flex items-center gap-4 md:gap-5">
-          <button onClick={() => setSearchOpen(true)} className={iconBtn} aria-label="Search">
-            <Search size={20} strokeWidth={1.75} />
-          </button>
-
-          {/* Account: logged-out → Login; logged-in → name → Dashboard / Logout */}
-          {customer ? (
-            <div className="relative hidden sm:block" onMouseLeave={() => setAcctOpen(false)}>
-              <button
-                onClick={() => setAcctOpen((o) => !o)}
-                onMouseEnter={() => setAcctOpen(true)}
-                className="flex items-center gap-1.5 text-sm text-ink-soft hover:text-ink transition-colors"
-              >
-                <User size={18} strokeWidth={1.75} /> <span className="max-w-[110px] truncate">{customer.name || "Account"}</span> <ChevronDown size={13} />
+      {layout === "double" ? (
+        <>
+          {/* Row 1 — logo centred, utilities on the side */}
+          <div className="store-nav max-w-screen-xl mx-auto px-4 lg:px-6 h-16 md:h-20 grid grid-cols-[1fr_auto_1fr] items-center gap-4">
+            <div className="flex items-center">
+              <button className="md:hidden text-ink-soft hover:text-ink" onClick={() => setMenuOpen(true)} aria-label="Open menu">
+                <Menu size={22} />
               </button>
-              {acctOpen && (
-                <div className="absolute right-0 top-full pt-3 z-40">
-                  <div className="bg-paper border border-line shadow-[var(--shadow-md)] min-w-[180px] py-1.5">
-                    <Link to={withStore("/account")} onClick={() => setAcctOpen(false)} className="block px-4 py-2.5 text-sm text-ink-soft hover:bg-panel hover:text-ink transition-colors">Dashboard</Link>
-                    <Link to={withStore("/wishlist")} onClick={() => setAcctOpen(false)} className="block px-4 py-2.5 text-sm text-ink-soft hover:bg-panel hover:text-ink transition-colors">Wishlist</Link>
-                    <button onClick={doLogout} className="w-full text-left flex items-center gap-2 px-4 py-2.5 text-sm text-ink-soft hover:bg-panel hover:text-ink transition-colors">
-                      <LogOut size={14} /> Logout
-                    </button>
-                  </div>
-                </div>
-              )}
             </div>
-          ) : (
-            <Link to={withStore("/account")} className="hidden sm:flex items-center gap-1.5 text-sm text-ink-soft hover:text-ink transition-colors">
-              <User size={18} strokeWidth={1.75} /> Login
-            </Link>
-          )}
-
-          <Link to={withStore("/wishlist")} className={`relative hidden sm:inline-flex ${iconBtn}`} aria-label="Wishlist">
-            <Heart size={20} strokeWidth={1.75} />
-            <CountBadge n={wishlist?.count} />
-          </Link>
-          <Link to={withStore("/cart")} className={`relative ${iconBtn}`} aria-label="Cart">
-            <ShoppingBag size={20} strokeWidth={1.75} />
-            <CountBadge n={count} />
-          </Link>
+            <Link to={withStore("/")} className="flex items-center justify-center gap-2">{logo}</Link>
+            <div className="flex items-center justify-end gap-4 md:gap-5">{utils}</div>
+          </div>
+          {/* Row 2 — nav links (categories and/or brands) */}
+          <div className="hidden md:block border-t" style={{ borderColor: "color-mix(in srgb, var(--store-on-bg, #1a1512) 10%, transparent)" }}>
+            <nav className="max-w-screen-xl mx-auto px-4 lg:px-6 h-12 flex items-center justify-center gap-8 text-[13px] font-medium text-ink-soft">
+              {navLinks}
+            </nav>
+          </div>
+        </>
+      ) : (
+        <div className="store-nav max-w-screen-xl mx-auto px-4 lg:px-6 h-16 md:h-20 flex items-center gap-4">
+          <button className="md:hidden text-ink-soft hover:text-ink" onClick={() => setMenuOpen(true)} aria-label="Open menu">
+            <Menu size={22} />
+          </button>
+          <Link to={withStore("/")} className="flex items-center gap-2 shrink-0">{logo}</Link>
+          <nav className="hidden md:flex flex-1 items-center justify-center gap-8 text-[13px] font-medium text-ink-soft">
+            {navLinks}
+          </nav>
+          <div className="ml-auto flex items-center gap-4 md:gap-5">{utils}</div>
         </div>
-      </div>
+      )}
     </header>
 
       {searchOpen && (
@@ -340,8 +368,13 @@ export default function StoreNavBar() {
             <ul className="flex flex-col gap-1 text-sm text-ink-soft">
               <li><Link to={withStore("/")} onClick={() => setMenuOpen(false)} className="block py-2.5 uppercase tracking-[0.1em] hover:text-ink">Home</Link></li>
               {/* Primary category → secondary categories → brands, collapsible */}
-              {menuNodes.map((node) => (
+              {showCats && menuNodes.map((node) => (
                 <MobileCategory key={node.category} node={node} onNavigate={() => setMenuOpen(false)} />
+              ))}
+              {showBrands && brandNodes.map((b) => (
+                <li key={`${b.category}-${b.brand}`}>
+                  <Link to={withStore(`/c/${encodeURIComponent(b.category)}?brand=${encodeURIComponent(b.brand)}`)} onClick={() => setMenuOpen(false)} className="block py-2 uppercase tracking-[0.1em] hover:text-ink">{b.label || b.brand}</Link>
+                </li>
               ))}
               <li><Link to={withStore("/c/all")} onClick={() => setMenuOpen(false)} className="block py-2.5 uppercase tracking-[0.1em] hover:text-ink">Shop</Link></li>
               <li className="border-t border-line mt-3 pt-3">

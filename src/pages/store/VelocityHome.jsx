@@ -40,12 +40,32 @@ function upgradesFor(cat) {
     { title: "Built to Last", body: "Durable construction that stands up to daily wear." },
   ];
 }
-const TECH = ["Protective Material", "Multilayer Cushioning System", "High-Rebound Midsole", "Upgraded Abrasion-Resistant Rubber"];
+const TECH_BY_CAT = {
+  shoes: ["Protective Material", "Multilayer Cushioning System", "High-Rebound Midsole", "Upgraded Abrasion-Resistant Rubber"],
+  watches: ["Precision Movement", "Sapphire-Coated Crystal", "Water-Resistant Case", "Premium Strap & Clasp"],
+  default: ["Premium Materials", "Precision Craftsmanship", "Everyday Durability", "Signature Finish"],
+};
 
-export default function VelocityHome() {
+// Two palettes sharing one layout. Velocity = shoes (neon-lime + crimson);
+// Chrono = watches (gold + deep-blue). Colours are just CSS-var overrides on the
+// root, so the whole template recolours without touching the markup. Both keep
+// dark text on a bright ground, so nothing needs re-contrasting.
+const VARIANTS = {
+  velocity: {
+    css: { "--v-lime": "#d8ff53", "--v-lime-soft": "#e9ff8a", "--v-red": "#d90429", "--v-ink": "#0d0d0d" },
+    isPrimary: isShoeCat, heroFallback: "Move Faster",
+  },
+  chrono: {
+    css: { "--v-lime": "#f2c94c", "--v-lime-soft": "#f7dd8f", "--v-red": "#1e3a8a", "--v-ink": "#141414" },
+    isPrimary: (c) => /watch|horolog|time|chrono/i.test(c || ""), heroFallback: "Time to Move",
+  },
+};
+
+export default function VelocityHome({ variant = "velocity" }) {
+  const V = VARIANTS[variant] || VARIANTS.velocity;
   const { config, api } = useStore();
   const cats = config?.categories || [];
-  const shoeCat = useMemo(() => cats.find(isShoeCat) || cats[0], [cats.join("|")]); // eslint-disable-line react-hooks/exhaustive-deps
+  const shoeCat = useMemo(() => cats.find(V.isPrimary) || cats[0], [cats.join("|")]); // eslint-disable-line react-hooks/exhaustive-deps
   const otherCats = cats.filter((c) => c !== shoeCat);
 
   const [products, setProducts] = useState(null); // shoe products
@@ -70,13 +90,14 @@ export default function VelocityHome() {
   const hero = config?.hero || {};
   const storeName = config?.store_name || "";
   const upgrades = upgradesFor(shoeCat);
+  const tech = isShoeCat(shoeCat) ? TECH_BY_CAT.shoes : /watch|horolog|time|chrono/i.test(shoeCat || "") ? TECH_BY_CAT.watches : TECH_BY_CAT.default;
   const floats = withImg.slice(0, 2);              // hero floating shoes (clickable)
   const marquee = withImg.slice(0, 10);            // "made for" scrolling strip
   const spotlights = withImg.slice(0, 2);
   const shopShoes = withStore(`/c/${encodeURIComponent(shoeCat || "all")}`);
 
   return (
-    <div className="velocity">
+    <div className="velocity" style={V.css}>
       {/* WhatsApp CTA sits between the header and the hero */}
       <WhatsAppPromoBar />
 
@@ -84,7 +105,7 @@ export default function VelocityHome() {
       <section className="v-hero">
         <div className="v-wrap text-center relative z-10">
           <h1 className="v-display v-hero-title">
-            {hero.title || storeName || "Move Faster"}
+            {hero.title || storeName || V.heroFallback}
           </h1>
           <Link to={shopShoes} className="v-btn-red mt-6">Explore the collection</Link>
         </div>
@@ -220,7 +241,7 @@ export default function VelocityHome() {
           <div>
             <h2 className="v-display v-h2 mb-8 text-[var(--v-lime)]">The Tech</h2>
             <ul className="space-y-5">
-              {TECH.map((t) => (
+              {tech.map((t) => (
                 <li key={t} className="reveal flex items-start gap-3">
                   <span className="v-tag-red shrink-0 mt-0.5">New</span>
                   <span className="v-display text-lg">{t}</span>

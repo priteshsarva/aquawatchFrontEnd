@@ -53,10 +53,21 @@ function useShareableTenantUrl(slug: string | undefined) {
 
 function AppShell() {
   const location = useLocation();
-  const { status, slug } = useStore();
+  const { status, slug, config } = useStore();
 
   useShareableTenantUrl(slug);
   useScrollReveal();
+
+  // Tab title + favicon from the vendor's branding (favicon_url, else the logo).
+  useEffect(() => {
+    if (config?.store_name) document.title = config.store_name;
+    const icon = config?.favicon_url || config?.logo_url;
+    if (icon) {
+      let link = document.querySelector("link[rel~='icon']") as HTMLLinkElement | null;
+      if (!link) { link = document.createElement("link"); link.rel = "icon"; document.head.appendChild(link); }
+      link.href = icon;
+    }
+  }, [config?.store_name, config?.favicon_url, config?.logo_url]);
 
   useEffect(() => {
     const initPreline = async () => {
