@@ -59,6 +59,7 @@ export default function VelocityHome() {
   const list = products || [];
   const withImg = list.filter((p) => p.thumbnail);
   const pdp = (p) => withStore(`/p/${p.dbName}/${p.productId}`);
+  const newTab = { target: "_blank", rel: "noopener noreferrer" }; // product clicks open in a new tab
   const hasGender = useMemo(() => list.some((p) => /women/i.test(p.catName || "")) || list.some((p) => /\bmen/i.test(p.catName || "")), [list]);
   const shown = useMemo(() => {
     if (gender === "all" || !hasGender) return list;
@@ -90,12 +91,12 @@ export default function VelocityHome() {
         {/* floating angled shoe shots — real products, each links to its page */}
         <div className="v-hero-floats">
           {floats[0] && (
-            <Link to={pdp(floats[0])} className="v-float v-float-a" aria-label={floats[0].productName}>
+            <Link to={pdp(floats[0])} {...newTab} className="v-float v-float-a" aria-label={floats[0].productName}>
               <img src={floats[0].thumbnail} alt={floats[0].productName} referrerPolicy="no-referrer" />
             </Link>
           )}
           {floats[1] && (
-            <Link to={pdp(floats[1])} className="v-float v-float-b" aria-label={floats[1].productName}>
+            <Link to={pdp(floats[1])} {...newTab} className="v-float v-float-b" aria-label={floats[1].productName}>
               <img src={floats[1].thumbnail} alt={floats[1].productName} referrerPolicy="no-referrer" />
             </Link>
           )}
@@ -112,7 +113,7 @@ export default function VelocityHome() {
               const Media = p ? Link : "div";
               return (
                 <div key={u.title} className="reveal flex flex-col items-center text-center">
-                  <Media {...(p ? { to: pdp(p) } : {})} className="w-full aspect-[4/3] bg-white/50 mb-5 overflow-hidden flex items-center justify-center rounded-sm group">
+                  <Media {...(p ? { to: pdp(p), ...newTab } : {})} className="w-full aspect-[4/3] bg-white/50 mb-5 overflow-hidden flex items-center justify-center rounded-sm group">
                     {p
                       ? <img src={p.thumbnail} alt={p.productName} referrerPolicy="no-referrer" className="w-full h-full object-cover transition duration-500 group-hover:scale-105" />
                       : <span className="text-black/30 text-4xl v-display">{String(i + 1).padStart(2, "0")}</span>}
@@ -180,7 +181,7 @@ export default function VelocityHome() {
           <div className="v-mosaic overflow-hidden">
             <div className="v-mosaic-track flex" style={{ animation: `v-mosaic-scroll ${marquee.length * 4}s linear infinite` }}>
               {[...marquee, ...marquee].map((p, i) => (
-                <Link key={i} to={pdp(p)} className="v-mosaic-cell shrink-0 aspect-square bg-black block relative group" aria-label={p.productName}>
+                <Link key={i} to={pdp(p)} {...newTab} className="v-mosaic-cell shrink-0 aspect-square bg-black block relative group" aria-label={p.productName}>
                   <img src={p.thumbnail} alt={p.productName} referrerPolicy="no-referrer" className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity" />
                 </Link>
               ))}
@@ -200,11 +201,11 @@ export default function VelocityHome() {
               <p className={`leading-relaxed mb-6 ${i % 2 ? "v-on-lime" : "text-ink-soft"}`}>
                 Built for people who want responsive feel, lockdown support and all-day comfort — engineered to elevate your everyday.
               </p>
-              <Link to={pdp(p)} className="inline-flex items-center gap-1.5 v-display text-sm hover:gap-2.5 transition-all">
+              <Link to={pdp(p)} {...newTab} className="inline-flex items-center gap-1.5 v-display text-sm hover:gap-2.5 transition-all">
                 Shop {p.productName.split(" ").slice(0, 3).join(" ")} <ArrowRight size={16} />
               </Link>
             </div>
-            <Link to={pdp(p)} className={`reveal block ${i % 2 ? "md:order-1" : ""}`}>
+            <Link to={pdp(p)} {...newTab} className={`reveal block ${i % 2 ? "md:order-1" : ""}`}>
               <div className="aspect-square bg-panel overflow-hidden">
                 <img src={p.thumbnail} alt={p.productName} referrerPolicy="no-referrer" className="w-full h-full object-cover" />
               </div>
@@ -229,7 +230,7 @@ export default function VelocityHome() {
             <Link to={shopShoes} className="v-btn-red mt-9">Shop Now</Link>
           </div>
           {withImg[0] && (
-            <Link to={pdp(withImg[0])} className="reveal block">
+            <Link to={pdp(withImg[0])} {...newTab} className="reveal block">
               <img src={withImg[0].thumbnail} alt={withImg[0].productName} referrerPolicy="no-referrer" className="w-full object-contain drop-shadow-2xl" />
             </Link>
           )}

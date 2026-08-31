@@ -32,7 +32,7 @@ export default function ProductCard({ product }) {
   }
 
   return (
-    <Link to={withStore(`/p/${product.dbName}/${product.productId}`)} className="group block">
+    <Link to={withStore(`/p/${product.dbName}/${product.productId}`)} target="_blank" rel="noopener noreferrer" className="group block">
       <div className="relative overflow-hidden bg-panel" style={{ aspectRatio: "1/1" }}>
         {product.thumbnail
           ? <img src={product.thumbnail} alt={product.productName} loading="lazy" className={`w-full h-full object-cover transition duration-700 ease-out group-hover:scale-[1.06] ${!product.inStock ? "opacity-70" : ""}`} />
