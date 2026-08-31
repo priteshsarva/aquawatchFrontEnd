@@ -70,7 +70,8 @@ function CategoryNav({ node }) {
                     <Link
                       to={withStore(`${base}?cat=${encodeURIComponent(sub.name)}`)}
                       onClick={close}
-                      className="flex-1 px-4 py-1.5 text-sm font-semibold text-ink capitalize hover:bg-panel transition-colors"
+                      title={sub.mapped === false ? "Not in your category map" : undefined}
+                      className={`flex-1 px-4 py-1.5 text-sm font-semibold capitalize hover:bg-panel transition-colors ${sub.mapped === false ? "text-amber-600" : "text-ink"}`}
                     >
                       {sub.name}
                     </Link>
@@ -107,13 +108,14 @@ function CategoryNav({ node }) {
 
 // Featured sub-categories grouped under their parent category, as a hover
 // dropdown labelled by the category (the "under" style).
-function SubcatGroupNav({ label, subcats }) {
+function SubcatGroupNav({ category, label, subcats }) {
   const [open, setOpen] = useState(false);
   return (
     <div className="relative" onMouseEnter={() => setOpen(true)} onMouseLeave={() => setOpen(false)}>
-      <span className="flex items-center gap-1 uppercase tracking-[0.12em] capitalize cursor-default hover:text-ink transition-colors">
+      {/* the label links to the real category; the chevron opens its featured sub-cats */}
+      <Link to={withStore(`/c/${encodeURIComponent(category)}`)} className="flex items-center gap-1 uppercase tracking-[0.12em] capitalize hover:text-ink transition-colors">
         {label}<ChevronDown size={13} className={`transition-transform ${open ? "rotate-180" : ""}`} />
-      </span>
+      </Link>
       {open && (
         <div className="absolute left-1/2 -translate-x-1/2 top-full pt-3 z-40">
           <div className="bg-paper border border-line shadow-[var(--shadow-md)] min-w-[200px] py-2">
@@ -152,7 +154,7 @@ function MobileCategory({ node, onNavigate }) {
         return (
           <div key={sub.name}>
             <div className="flex items-center">
-              <Link to={withStore(`${base}?cat=${encodeURIComponent(sub.name)}`)} onClick={onNavigate} className="flex-1 py-1.5 pl-4 text-[13px] font-semibold text-ink capitalize hover:text-ink">{sub.name}</Link>
+              <Link to={withStore(`${base}?cat=${encodeURIComponent(sub.name)}`)} onClick={onNavigate} title={sub.mapped === false ? "Not in your category map" : undefined} className={`flex-1 py-1.5 pl-4 text-[13px] font-semibold capitalize ${sub.mapped === false ? "text-amber-600" : "text-ink"}`}>{sub.name}</Link>
               {brands.length > 0 && (
                 <button type="button" onClick={() => setOpenSub(expanded ? null : sub.name)} aria-label={expanded ? "Collapse brands" : "Expand brands"} className="px-3 py-1.5 text-muted hover:text-ink">
                   <ChevronDown size={14} className={`transition-transform ${expanded ? "rotate-180" : ""}`} />
@@ -240,6 +242,7 @@ export default function StoreNavBar() {
   const layout = navCfg.layout === "double" ? "double" : "single";
   const showCats = navCfg.show_categories !== false;
   const showBrands = !!navCfg.show_brands;
+  const showSubcats = navCfg.show_subcats !== false; // featured sub-categories, independent of the category dropdowns
   const brandNodes = (Array.isArray(navCfg.brands) ? navCfg.brands : []).filter((b) => b && b.brand);
   const subbrandNodes = (Array.isArray(navCfg.subbrands) ? navCfg.subbrands : []).filter((s) => s && s.brand && s.sub_brand);
   const subcatNodes = (Array.isArray(navCfg.subcats) ? navCfg.subcats : []).filter((s) => s && s.subcat);
@@ -259,12 +262,12 @@ export default function StoreNavBar() {
     <>
       <Link to={withStore("/")} className={`uppercase tracking-[0.12em] hover:text-ink transition-colors ${onHome ? "text-ink" : ""}`}>Home</Link>
       {showCats && menuNodes.map((node) => <CategoryNav key={node.category} node={node} />)}
-      {showCats && subcatStyle === "link" && subcatNodes.map((s) => (
+      {showSubcats && subcatStyle === "link" && subcatNodes.map((s) => (
         <Link key={`${s.category}-${s.subcat}`} to={subcatTo(s)}
           className="uppercase tracking-[0.12em] hover:text-ink transition-colors capitalize">{s.label || s.subcat}</Link>
       ))}
-      {showCats && subcatStyle === "under" && Object.entries(subcatGroups).map(([cat, subs]) => (
-        <SubcatGroupNav key={cat} label={navItems.find((i) => i.category === cat)?.label || cat} subcats={subs} />
+      {showSubcats && subcatStyle === "under" && Object.entries(subcatGroups).map(([cat, subs]) => (
+        <SubcatGroupNav key={cat} category={cat} label={navItems.find((i) => i.category === cat)?.label || cat} subcats={subs} />
       ))}
       {showBrands && brandNodes.map((b) => (
         <Link key={`${b.category}-${b.brand}`} to={withStore(`/c/${encodeURIComponent(b.category)}?brand=${encodeURIComponent(b.brand)}`)}
@@ -433,7 +436,7 @@ export default function StoreNavBar() {
               {showCats && menuNodes.map((node) => (
                 <MobileCategory key={node.category} node={node} onNavigate={() => setMenuOpen(false)} />
               ))}
-              {showCats && subcatNodes.map((s) => (
+              {showSubcats && subcatNodes.map((s) => (
                 <li key={`${s.category}-${s.subcat}`}>
                   <Link to={subcatTo(s)} onClick={() => setMenuOpen(false)} className="block py-2 uppercase tracking-[0.1em] capitalize hover:text-ink">{s.label || s.subcat}</Link>
                 </li>
