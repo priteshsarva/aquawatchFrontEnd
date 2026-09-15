@@ -416,66 +416,57 @@ const ProductDetailPage = () => {
                                 )}
 
                                 {/* ── Size selector: shoes only ── */}
-                                {isShoes && (
-                                    <div className="my-5">
-                                        {sizes.length === 0 || JSON.stringify(sizes) === '[]' ? (
-                                            <button className="w-full py-3 bg-red-500 text-white font-semibold rounded-xl cursor-not-allowed" disabled>
-                                                Out of Stock
-                                            </button>
-                                        ) : (
-                                            <>
-                                                <h5 className="font-semibold text-gray-800 mb-3">Select Size</h5>
-                                                <div className="flex flex-wrap gap-2 mb-4">
-                                                    {sizes.map((size) => {
-                                                        const normalized = normalizeSize(size);
-                                                        return (
-                                                            <button
-                                                                key={size}
-                                                                onClick={() => { setSelectedSize(size); setSizeError(''); }}
-                                                                className={`px-4 py-2 border rounded-lg font-medium text-sm transition-colors ${selectedSize === size
-                                                                    ? 'bg-black text-white border-black'
-                                                                    : 'bg-white text-black border-gray-300 hover:border-black'
-                                                                    }`}
-                                                            >
-                                                                {normalized}
-                                                            </button>
-                                                        );
-                                                    })}
-                                                </div>
-                                                {sizeError && <p className="text-red-500 text-sm mb-3">{sizeError}</p>}
+                                {/* ── Size / Out of Stock logic ── */}
+{isShoes ? (
+    /* Shoes: Check if sizes array is empty */
+    sizes.length === 0 || JSON.stringify(sizes) === '[]' ? (
+        <button className="w-full py-3 bg-red-500 text-white font-semibold rounded-xl cursor-not-allowed" disabled>
+            Out of Stock
+        </button>
+    ) : (
+        <>
+            <h5 className="font-semibold text-gray-800 mb-3">Select Size</h5>
+            <div className="flex flex-wrap gap-2 mb-4">
+                {sizes.map((size) => {
+                    const normalized = normalizeSize(size);
+                    return (
+                        <button
+                            key={size}
+                            onClick={() => { setSelectedSize(size); setSizeError(''); }}
+                            className={`px-4 py-2 border rounded-lg font-medium text-sm transition-colors ${selectedSize === size
+                                ? 'bg-black text-white border-black'
+                                : 'bg-white text-black border-gray-300 hover:border-black'
+                                }`}
+                        >
+                            {normalized}
+                        </button>
+                    );
+                })}
+            </div>
+            {sizeError && <p className="text-red-500 text-sm mb-3">{sizeError}</p>}
 
-                                                {/* Request for Size button */}
-                                                <button
-                                                    onClick={() => setShowRequestModal(true)}
-                                                    className="w-full py-3 border-2 border-black text-black font-semibold rounded-xl hover:bg-black hover:text-white transition-colors mb-3"
-                                                >
-                                                    Request for size
-                                                </button>
-                                            </>
-                                        )}
-                                    </div>
-                                )}
+            {/* Request for Size button */}
+            <button
+                onClick={() => setShowRequestModal(true)}
+                className="w-full py-3 border-2 border-black text-black font-semibold rounded-xl hover:bg-black hover:text-white transition-colors mb-3"
+            >
+                Request for size
+            </button>
+        </>
+    )
+) : (
+    /* Non-shoes: Check product availability */
+    [0, '0', 'zero', false, 'false'].includes(
+        typeof product.availability === 'string' 
+            ? product.availability.toLowerCase().trim() 
+            : product.availability
 
-                                {/* ── Action buttons ── */}
-                                <div className="flex items-center space-x-4 py-4">
-                                    {product.videoUrl && (
-                                        <>
-                                            <button
-                                                onClick={openVideoModal}
-                                                className="h-14 px-6 py-2 font-semibold rounded-xl bg-black hover:bg-neutral-800 text-white transition-colors"
-                                            >
-                                                Live Video
-                                            </button>
-                                            <VideoModal
-                                                isOpen={showModal}
-                                                onClose={closeVideoModal}
-                                                videoUrl={product.videoUrl}
-                                                name={product.productName}
-                                            />
-                                        </>
-                                    )}
-
-                                    <button
+    ) ? (
+        <button className="w-full py-3 bg-red-500 text-white font-semibold rounded-xl cursor-not-allowed my-4" disabled>
+            Out of Stock
+        </button>
+    ):(
+         <button
                                         onClick={() => {
                                             // For shoes: require a size selection
                                             if (isShoes && !selectedSize) {
@@ -520,6 +511,29 @@ const ProductDetailPage = () => {
                                     >
                                         Buy via WhatsApp
                                     </button>
+    )
+)}
+
+                                {/* ── Action buttons ── */}
+                                <div className="flex items-center space-x-4 py-4">
+                                    {product.videoUrl && (
+                                        <>
+                                            <button
+                                                onClick={openVideoModal}
+                                                className="h-14 px-6 py-2 font-semibold rounded-xl bg-black hover:bg-neutral-800 text-white transition-colors"
+                                            >
+                                                Live Video
+                                            </button>
+                                            <VideoModal
+                                                isOpen={showModal}
+                                                onClose={closeVideoModal}
+                                                videoUrl={product.videoUrl}
+                                                name={product.productName}
+                                            />
+                                        </>
+                                    )}
+
+                                   
                                 </div>
 
                                 {location.pathname.includes(msterCode) && (
